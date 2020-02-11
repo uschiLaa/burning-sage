@@ -78,6 +78,11 @@ As a first example lets look at a 6D full hypersphere. The animation on the left
 
 <img src="sphere6_xy.gif" width="450"/><img src="sphere6_fe.gif" width="450"/>
 
+The fisheye display makes it look more like a hollow sphere, so how then does a hollow sphere look like with this new display? In this case the standard projected view is still denser in the center (but less so than the full hypersphere), and the fisheye display now shows lower density in the center.
+
+<img src="sphere6h_xy.gif" width="450"/><img src="sphere6h_fe.gif" width="450"/>
+
+
 The second example is the pollen data, again we have xy display on the left, and fisheye display on the right. In this case I use pixels instead of points.
 
 <img src="pollen_xy.gif" width="450"/><img src="pollen_fe.gif" width="450"/>
