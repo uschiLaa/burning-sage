@@ -1,0 +1,137 @@
+---
+title: |
+  Burning sage: Reversing the curse of dimensionality in the visualisation of high-dimensional data
+type: Short Technical Note
+author:
+  - name: Ursula Laa
+    affil: a, b
+    email: ursula.laa@monash.edu
+  - name: Dianne Cook
+    affil: b
+    email: dicook@monash.edu
+  - name: Stuart Lee
+    affil: b, c
+    email: stuart.lee1@monash.edu
+affiliation:
+  - num: a
+    address: |
+      School of Physics and Astronomy, Monash University
+  - num: b
+    address: |
+      Department of Econometrics and Business Statistics, Monash University
+  - num: c
+    address: |
+      Molecular Medicine Division, Walter and Eliza Hall Institute, Parkville, Australia
+bibliography: biblio.bib
+geometry: margin=2.5cm
+abstract: |
+  XXX
+keywords: |
+  data visualisation; grand tour; statistical computing; statistical graphics; multivariate data; dynamic graphics
+header-includes: |
+  \usepackage{hyperref}
+  \usepackage[utf8]{inputenc}
+  \def\tightlist{}
+  \usepackage{setspace}
+output: rticles::tf_article
+keep_tex: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+\doublespacing
+# Introduction
+
+Talk about:
+
+- linear projections and tours [@As85,@BCAH05]
+- most projections are approximately gaussian, as dimensionality increases, observations pile in the center [@diaconis1984]
+- related: crowding problem as addressed in t-SNE [@tsne], data piling [XXX]
+- regularisation?
+
+# Projecting pD hyperspheres
+## Radial distribution of projected points
+When projecting points that are uniformly sampled inside a $p$ dimensional hypersphere with radius $R$ onto a 2D plane, the cumulative distribution function (CDF) in projected radius $r$ is
+\begin{equation}
+f(r;p,R) = 1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
+\label{eq:cdf}
+\end{equation}
+As $p$ increases, the distribution of points will be more peaked towards low values of $r$.
+This is often unwanted as it makes it difficult to see patterns in the interesting region, and gives large optical weight to the tails of distribution.
+
+Under the assumption that points are indeed from this distribution, we can invert the effect using the CDF. This is achieved by transforming $r$ such that the points follow the CDF of $f(r; 2, R)$ instead, i.e. starting from the distribution that arises for points that are uniform in the $p$ sphere, we find the transformation of $r$ that redistributes points such that they are uniform in a 2D disk.
+
+## Smudging: rescaling the radius
+
+In practice we get projected points in $x, y$ coordinates, and the first step is to calculate polar coordinates $r, \theta$. $\theta$ is uniform for this distribution (by the rotation invariance of the sphere). The radial component is transformed by first calculating the CDF to get a uniform distribution, and then transformed as the inverse of $f(r; 2, R)$ to arrive at the desired radial distribution. Thus we replace $r$ by $r'$ according to
+\begin{equation}
+r'' = f(r; p, R) = 1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}
+\end{equation}
+\begin{equation}
+r' = f^{-1}(r''; 2, R) = R \sqrt{r''} = R \sqrt{1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}}.
+\end{equation}
+Note that for the purpose of fitting the displayed data onto a pre-defined display (e.g. range $[-1,1]$), we can directly scale $r'$, e.g. by a factor $x/R$ where $x$ sets the range on the display, e.g. $x=0.9$ in what follows. We then calculate the new plotting coordinates $x', y'$ from $r', \theta$.
+
+FIXME For the display function currently I calculate $R$ for each projection as the current maximum radius among all points, so this is not fixed across views. What is the preferred approach here?
+
+The relation between $r'$ and $r$ depends on the number of dimensions $p$, and is illustrated for selected values in Figure \ref{fig:radii}. We see that the transformation is approximately linear near the center. As $p$ increases it becomes non-linear faster, and e.g. for $p=10$ the points with radius $r>0.5$ will alrady be highly distorted and pushed out towards the last eighth in $r'$.
+
+```{r radii, fig.cap="Relation between $r$ and $r'$ for different values of $p$. The scaling is approximately linear near the center, but leads to distortion at large radii when $p$ is large.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
+library(tidyverse)
+# define index as function of c
+trans_p <- function(p){
+  function(r){
+    sqrt( 1 - (1-r^2)^(p/2))
+  }
+}
+  
+# plot dependence for selected values
+ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
+    stat_function(
+        fun = trans_p(2),
+        mapping = aes(color = "ca")) +
+  stat_function(
+        fun = trans_p(3),
+        mapping = aes(color = "cb")) +
+  stat_function(
+        fun = trans_p(4),
+        mapping = aes(color = "cc")) +
+    stat_function(
+        fun = trans_p(6),
+        mapping = aes(color = "cd")) +
+      stat_function(
+        fun = trans_p(10),
+        mapping = aes(color = "ce")) +
+  scale_color_manual(name = "p",
+                     values = RColorBrewer::brewer.pal(5, "Dark2"),
+                     labels = c("2 (baseline)","3", "4", "6", "10")) +
+  xlab("r") + ylab("r'") + theme_bw()
+
+```
+
+## Results
+
+show 2D projections with and without smudging, for p=3, 6, 10?
+
+# Application to known structures
+
+To understand how to interpret the rescaled projections, let us look at a few simple examples. 
+
+Things to note here: rescaling is nearly linear near the center of the distribution (that we want to focus on), limited distortion here. "Curlig" effect near the maximum radius
+
+- Interesting central distribution, few outlying points (pollen?)
+- Linear distributions in multiple parameters (simulation of points that are linearly dinstributed along different (orthogonal) directions?)
+
+
+# Applications
+
+Maybe look at multidimensional t-SNE output?
+
+# Discussion
+
+What if we assume a multivariate normal instead? Maybe this is actually not that different?
+
+Other transformations on the projected data?
+
