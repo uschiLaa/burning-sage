@@ -115,6 +115,48 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 
 show 2D projections with and without smudging, for p=3, 6, 10?
 
+# Parametrised scaling
+
+Here we describe a parametrised scaling that is controlled by a scaling parameter, rather than fixed given $p$.
+
+We assume that the 2D projected distribution is approximately a bivariate normal with spherical shape (equal variance $\sigma$ on both variables, no co-covariance). In this setting the Mahalanobis distance $r_M$ of any point $(x,y)$ can be written as $r_M = \sqrt{x^2 + y^2}/ \sigma = r / \sigma$, using the polar coordinate $r = \sqrt{x^2 + y^2}$. Using the parametrisation in polar coordinates, we can integrate the distribution to derive the radial CDF $g(r; \sigma) = 1 - e^{-r^2 / 2\sigma^2}$. As before we use $r''=g(r;\sigma)$ and derive the rescaled radius as 
+\begin{equation}
+r' = f^{-1}(r''; 2, R=1) = \sqrt{1-e^{-r^2 / 2\sigma^2}}.
+\end{equation}
+Thus we have a rescaling that can be parametrised by $\sigma$, the dependence between $r$ and $r'$ for selected values of $\sigma$ is shown in Figure \ref{fig:radii-normal}.
+
+```{r radii-normal, fig.cap="Relation between $r$ and $r'$ for different values of $\\sigma$. The scaling is approximately linear near the center, but leads to distortion at large radii when $p$ is large.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
+# define index as function of c
+trans_sig <- function(sig){
+  function(r){
+    sqrt( 1 - exp(- r^2 / (2* sig^2)))
+  }
+}
+  
+# plot dependence for selected values
+ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
+    stat_function(
+        fun = trans_sig(1),
+        mapping = aes(color = "ca")) +
+  stat_function(
+        fun = trans_sig(0.5),
+        mapping = aes(color = "cb")) +
+  stat_function(
+        fun = trans_sig(0.3),
+        mapping = aes(color = "cc")) +
+    stat_function(
+        fun = trans_sig(0.2),
+        mapping = aes(color = "cd")) +
+      stat_function(
+        fun = trans_sig(0.1),
+        mapping = aes(color = "ce")) +
+  scale_color_manual(name = expression(sigma),
+                     values = RColorBrewer::brewer.pal(5, "Dark2"),
+                     labels = c("1 (baseline)","0.5", "0.4", "0.2", "0.1")) +
+  xlab("r") + ylab("r'") + theme_bw()
+
+```
+
 # Application to known structures
 
 To understand how to interpret the rescaled projections, let us look at a few simple examples. 
