@@ -112,6 +112,28 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 
 ```
 
+```{r circles, fig.cap="Rescaled equidistant concentric circles."}
+library(ggforce)
+
+lbl <- c("p=4", "p=6", "p=10", "p=20")
+names(lbl) <- c("p4", "p6", "p10", "p20")
+
+tibble(x = 0, y = 0, r = seq(0.1, 1, length.out = 10)) %>%
+  mutate(p4 = trans_p(4)(r)) %>%
+  mutate(p6 = trans_p(6)(r)) %>%
+  mutate(p10 = trans_p(10)(r)) %>%
+  mutate(p20 = trans_p(20)(r)) %>%
+  mutate(r = as.factor(r)) %>%
+  pivot_longer(cols = starts_with(("p"))) %>%
+  mutate(name = factor(name, levels = c("p4", "p6", "p10", "p20"))) %>%
+  ggplot() +
+  geom_circle(aes(x0=x, y0=y, r=value, color=r)) +
+  coord_fixed() +
+  theme_bw() +
+  facet_wrap(~name, labeller = labeller(name = lbl))
+
+```
+
 ## Results
 
 show 2D projections with and without smudging, for p=3, 6, 10?
