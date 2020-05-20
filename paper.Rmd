@@ -46,10 +46,11 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 Talk about:
 
-- linear projections and tours [@As85,@BCAH05]
+- linear projections and tours [@As85,@BCAH05]: we want to discover features, by looking at the data from all sides
 - most projections are approximately gaussian, as dimensionality increases, observations pile in the center [@diaconis1984]
-- related: crowding problem as addressed in t-SNE [@tsne], data piling [XXX]
-- regularisation?
+- related: crowding problem as addressed in t-SNE [@tsne]
+- connection with high-dimension low-sample data? observations will be away from the center, on the vertices of a simples [@doi:10.1111/j.1467-9868.2005.00510.x], and we can find directions where data is piling in a single point [@10.2307/27639976,@10.1093/biomet/asp084]
+- connection with regularisation? (optimisation vs visualisation)
 
 # Projecting pD hyperspheres
 ## Radial distribution of projected points
