@@ -50,7 +50,11 @@ Talk about:
 - most projections are approximately gaussian, as dimensionality increases, observations pile in the center [@diaconis1984]
 - related: crowding problem as addressed in t-SNE [@tsne]
 - connection with high-dimension low-sample data? observations will be away from the center, on the vertices of a simples [@doi:10.1111/j.1467-9868.2005.00510.x], and we can find directions where data is piling in a single point [@10.2307/27639976,@10.1093/biomet/asp084]
-- connection with regularisation? (optimisation vs visualisation)
+- for modelling, we often address high-dimensional problems with regularisation methods (ridge regression, Lasso). These are optimisation techniques that shrink the parameter estimates (ridge regression gives global shrinkage, Lasso can be thought of as variable selection and will shrink some of the estimates to zero). Our approach is complementary, we still consider all variables and possible combinations, but move the focus away from the extreme values, instead focusing in towards the center, where observations tend to pile up.
+
+We have to think about the low-d projections differently than the full distribution. As $p$ increases the full volume of the parameter space grows exponentially, and we get a low density of points, and in general the center of the distribution will be empty [@doi:10.1111/j.1467-9868.2005.00510.x]. Similarly, sections of the data will typically capture only a very small fraction of the points. When making projections, we are effectively marginalising the distribution over all orthogonal directions, and this averaging often leads to the piling of observations in the center.
+
+XXX maybe in real applications we need to do both? Use some form of dimension reduction that can screen some of the noise, followed by zooming in on the center?
 
 # Projecting pD hyperspheres
 ## Radial distribution of projected points
@@ -64,7 +68,7 @@ This is often unwanted as it makes it difficult to see patterns in the interesti
 
 Under the assumption that points are indeed from this distribution, we can invert the effect using the CDF. This is achieved by transforming $r$ such that the points follow the CDF of $f(r; 2, R)$ instead, i.e. starting from the distribution that arises for points that are uniform in the $p$ sphere, we find the transformation of $r$ that redistributes points such that they are uniform in a 2D disk.
 
-## Smudging: rescaling the radius
+## Rescaling the radius
 
 In practice we get projected points in $x, y$ coordinates, and the first step is to calculate polar coordinates $r, \theta$. $\theta$ is uniform for this distribution (by the rotation invariance of the sphere). The radial component is transformed by first calculating the CDF to get a uniform distribution, and then transformed as the inverse of $f(r; 2, R)$ to arrive at the desired radial distribution. Thus we replace $r$ by $r'$ according to
 \begin{equation}
@@ -148,6 +152,8 @@ r' = f^{-1}(r''; 2, R=1) = \sqrt{1-e^{-r^2 / 2\sigma^2}}.
 \end{equation}
 Thus we have a rescaling that can be parametrised by $\sigma$, the dependence between $r$ and $r'$ for selected values of $\sigma$ is shown in Figure \ref{fig:radii-normal}.
 
+XXX as $\sigma$ approaches $r/2$ we see that $r'_{max} < r_{max}$, and larger values of $\sigma$ do not make sense. Using $\sigma=r$ gives linear scaling that shrinks the overall scale...
+
 ```{r radii-normal, fig.cap="Relation between $r$ and $r'$ for different values of $\\sigma$. The scaling is approximately linear near the center, but leads to distortion at large radii when $p$ is large.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
 # define index as function of c
 trans_sig <- function(sig){
@@ -159,24 +165,46 @@ trans_sig <- function(sig){
 # plot dependence for selected values
 ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
     stat_function(
-        fun = trans_sig(1),
+        fun = trans_sig(0.4),
         mapping = aes(color = "ca")) +
   stat_function(
-        fun = trans_sig(0.5),
+        fun = trans_sig(0.3),
         mapping = aes(color = "cb")) +
   stat_function(
-        fun = trans_sig(0.3),
+        fun = trans_sig(0.2),
         mapping = aes(color = "cc")) +
     stat_function(
-        fun = trans_sig(0.2),
+        fun = trans_sig(0.1),
         mapping = aes(color = "cd")) +
       stat_function(
-        fun = trans_sig(0.1),
+        fun = trans_sig(0.05),
         mapping = aes(color = "ce")) +
   scale_color_manual(name = expression(sigma),
                      values = RColorBrewer::brewer.pal(5, "Dark2"),
-                     labels = c("1 (baseline)","0.5", "0.4", "0.2", "0.1")) +
+                     labels = c("0.4", "0.3", "0.2", "0.1", "0.05")) +
   xlab("r") + ylab("r'") + theme_bw()
+
+```
+
+```{r circles-normal, fig.cap="Rescaled equidistant concentric circles."}
+library(ggforce)
+
+lbl <- c("sig=0.3", "sig=0.25", "sig=0.2", "sig=0.15")
+names(lbl) <- c("s03", "s025", "s02", "s015")
+
+tibble(x = 0, y = 0, r = seq(0.1, 1, length.out = 10)) %>%
+  mutate(s03 = trans_sig(0.3)(r)) %>%
+  mutate(s025 = trans_sig(0.25)(r)) %>%
+  mutate(s02 = trans_sig(0.2)(r)) %>%
+  mutate(s015 = trans_sig(0.15)(r)) %>%
+  mutate(r = as.factor(r)) %>%
+  pivot_longer(cols = starts_with(("s"))) %>%
+  mutate(name = factor(name, levels = c("s03", "s025", "s02", "s015"))) %>%
+  ggplot() +
+  geom_circle(aes(x0=x, y0=y, r=value, color=r)) +
+  coord_fixed() +
+  theme_bw() +
+  facet_wrap(~name, labeller = labeller(name = lbl))
 
 ```
 
@@ -184,7 +212,7 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 
 To understand how to interpret the rescaled projections, let us look at a few simple examples. 
 
-Things to note here: rescaling is nearly linear near the center of the distribution (that we want to focus on), limited distortion here. "Curlig" effect near the maximum radius
+Things to note here: rescaling is nearly linear near the center of the distribution (that we want to focus on), limited distortion here. "Curling" effect near the maximum radius
 
 - Interesting central distribution, few outlying points (pollen?)
 - Linear distributions in multiple parameters (simulation of points that are linearly dinstributed along different (orthogonal) directions?)
@@ -195,8 +223,6 @@ Things to note here: rescaling is nearly linear near the center of the distribut
 Maybe look at multidimensional t-SNE output?
 
 # Discussion
-
-What if we assume a multivariate normal instead? Maybe this is actually not that different?
 
 Other transformations on the projected data?
 
