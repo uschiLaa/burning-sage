@@ -42,6 +42,7 @@ display_fisheye <- function(axes = "center",
   }
   
   render_data <- function(data, proj, geodesic) {
+    # XXXX need to change this!
     tourr:::draw_tour_axes(proj, labels, 1, "bottomleft")
     
     

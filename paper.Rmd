@@ -229,14 +229,44 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 
 By default we calculate $R$ as the maximum $p$ dimensional distance from the center of the distribution. However, this is not robust and might lead to large values because of outlying points. XXX alternatives: percentile based radius? user input radius?
 
+XXX what happens when we reduce dimensionality with PCA? maybe we should use larger $s$ along some notion of "effective dimensionality"? Omitted componenets mainly noise, but we should still consider them as part of the projected space?
 
 Note that for the purpose of fitting the displayed data onto a pre-defined display (e.g. range $[-1,1]$), we can directly scale $r'$, e.g. by a factor $x/R$ where $x$ sets the range on the display, e.g. $x=0.9$ in what follows. We then calculate the new plotting coordinates $x', y'$ from $r', \theta$.
 
 
-
 # Applications
 
-Maybe look at multidimensional t-SNE output?
+## Image classification
+
+We can use the new display to look at different distribution of images from Google quickdraw (XXX REFERENCE). These are $28\times28=784$ pixel greyscale data, large dataset publicly available, here use small subset of three types of sketches (banana, cactus, crab) and observations (1000 sketches from each class) and see if we can separate the classes in the high-dimensional parameter space. We first reduce dimensionality using PCA and look at the first five PCs.
+
+XXX is this a good example? can see that the fisheye display is using the space better, but I don't think we learn much more compared to what we see with the standard projected display...
+
+```{r sketches, eval=F}
+load("sketches_train.rda")
+source("display-fisheye.R")
+sk_small <- dplyr::filter(sketches, word %in% c("banana", "cactus", "crab")) %>%
+  mutate(word = factor(word, levels = c("banana", "cactus", "crab")))
+pal <- RColorBrewer::brewer.pal(3, "Dark2")
+col <- pal[as.numeric(as.factor(sk_small$word))]
+sk_pca <- prcomp(select(sk_small, -word, -id))
+scale2 <- function(x, na.rm = FALSE) (x - mean(x, na.rm = na.rm)) / sd(x, na.rm)
+sk_5 <- sk_pca$x[,1:5] %>%
+  as_tibble() %>%
+  mutate_all(scale2)
+
+set.seed(1006)
+bases <- save_history(sk_5, max = 5)
+tour_path <- interpolate(bases, 0.1)
+d <- dim(tour_path)
+
+render(sk_5, planned_tour(bases), display_fisheye(axes="bottomleft", col=col, s=1), "png", "pngs/sketches1-%02d.png", apf=0.1, frames = d[3], rescale = FALSE)
+render(sk_5, planned_tour(bases), display_fisheye(axes="bottomleft", col=col, s=2), "png", "pngs/sketches2-%02d.png", apf=0.1, frames = d[3], rescale = FALSE)
+render(sk_5, planned_tour(bases), display_xy(axes="bottomleft", col=col), "png", "pngs/sketches3-%02d.png", apf=0.1, frames = d[3], rescale = FALSE)
+
+```
+
+
 
 # Discussion
 
