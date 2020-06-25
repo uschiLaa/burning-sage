@@ -227,11 +227,10 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 
 # Implementation
 
-XXX some practical considerations, in particular how to estimate unknown $R$, how to map to the display
+By default we calculate $R$ as the maximum $p$ dimensional distance from the center of the distribution. However, this is not robust and might lead to large values because of outlying points. XXX alternatives: percentile based radius? user input radius?
+
 
 Note that for the purpose of fitting the displayed data onto a pre-defined display (e.g. range $[-1,1]$), we can directly scale $r'$, e.g. by a factor $x/R$ where $x$ sets the range on the display, e.g. $x=0.9$ in what follows. We then calculate the new plotting coordinates $x', y'$ from $r', \theta$.
-
-FIXME For the display function currently I calculate $R$ for each projection as the current maximum radius among all points, so this is not fixed across views. What is the preferred approach here?
 
 
 

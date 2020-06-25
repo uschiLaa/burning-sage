@@ -21,13 +21,15 @@
 
 
 display_fisheye <- function(axes = "center",
-                              col = "black", pch  = 20, ...) {
+                              col = "black", pch  = 20, s = 1, ...) {
   
   labels <- NULL
+  peff <- NULL
   
   init <- function(data) {
-    half_range <<- 1
+    half_range <<- tourr:::compute_half_range(NULL, data, TRUE)
     labels <<- abbreviate(colnames(data), 3)
+    peff <<- s * ncol(data)
   }
   
   
@@ -49,10 +51,8 @@ display_fisheye <- function(axes = "center",
     # Calculate polar coordinates
     rad <- sqrt(x[,1]^2+x[,2]^2)
     ang <- atan2(x[,2], x[,1])
-    # Calculate rescaled radius
-    r_max <- max(rad) # adapt to maximum value of radius for each projection
     # transform with cumulative to get uniform distribution in radius
-    rad <- cumulative_radial(rad, r_max, nrow(proj))
+    rad <- cumulative_radial(rad, half_range, peff)
     # square-root is the inverse of the cumulative of a uniform disk (rescaling to maximum radius = 1)
     rad <- sqrt(rad)
     # transform back to x, y coordinates
