@@ -1,7 +1,7 @@
 ---
 title: |
   Burning sage: Reversing the curse of dimensionality in the visualisation of high-dimensional data
-type: Short Technical Note
+type: Article
 author:
   - name: Ursula Laa
     affil: a, b
@@ -39,6 +39,7 @@ keep_tex: true
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+library(tidyverse)
 ```
 
 \doublespacing
@@ -52,34 +53,81 @@ Talk about:
 - connection with high-dimension low-sample data? observations will be away from the center, on the vertices of a simples [@doi:10.1111/j.1467-9868.2005.00510.x], and we can find directions where data is piling in a single point [@10.2307/27639976,@10.1093/biomet/asp084]
 - for modelling, we often address high-dimensional problems with regularisation methods (ridge regression, Lasso). These are optimisation techniques that shrink the parameter estimates (ridge regression gives global shrinkage, Lasso can be thought of as variable selection and will shrink some of the estimates to zero). Our approach is complementary, we still consider all variables and possible combinations, but move the focus away from the extreme values, instead focusing in towards the center, where observations tend to pile up.
 
-We have to think about the low-d projections differently than the full distribution. As $p$ increases the full volume of the parameter space grows exponentially, and we get a low density of points, and in general the center of the distribution will be empty [@doi:10.1111/j.1467-9868.2005.00510.x]. Similarly, sections of the data will typically capture only a very small fraction of the points. When making projections, we are effectively marginalising the distribution over all orthogonal directions, and this averaging often leads to the piling of observations in the center.
+We have to think about the low-d projections differently than the full distribution. As $p$ increases the full volume of the parameter space grows exponentially, and we get a low density of points, and in general the center of the distribution will be empty [@doi:10.1111/j.1467-9868.2005.00510.x].
+
+XXX see also discussion in https://mc-stan.org/users/documentation/case-studies/curse-dims.html on the average length of multivariate normal vector for large $p$, relation to "concentration of measures".
+
+Similarly, sections of the data will typically capture only a very small fraction of the points. However, when making projections, we are effectively marginalising the distribution over all orthogonal directions, and this averaging often leads to the piling of observations in the center.
 
 XXX maybe in real applications we need to do both? Use some form of dimension reduction that can screen some of the noise, followed by zooming in on the center?
 
-# Projecting pD hyperspheres
-## Radial distribution of projected points
-When projecting points that are uniformly sampled inside a $p$ dimensional hypersphere with radius $R$ onto a 2D plane, the cumulative distribution function (CDF) in projected radius $r$ is
-\begin{equation}
-f(r;p,R) = 1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
-\label{eq:cdf}
-\end{equation}
-As $p$ increases, the distribution of points will be more peaked towards low values of $r$.
-This is often unwanted as it makes it difficult to see patterns in the interesting region, and gives large optical weight to the tails of distribution.
+# Projected volume
 
-Under the assumption that points are indeed from this distribution, we can invert the effect using the CDF. This is achieved by transforming $r$ such that the points follow the CDF of $f(r; 2, R)$ instead, i.e. starting from the distribution that arises for points that are uniform in the $p$ sphere, we find the transformation of $r$ that redistributes points such that they are uniform in a 2D disk.
+The seemingly contradicting behaviour between the low density of points near the center in the high-dimensional space, and the piling in low-dimensional projections can be understood by considering the projected volume across the low-dimensional projection. Assuming that the total distance from the center is constrained, we can think of the data being distributed in a hypersphere, which has the additional advantage of being rotation invariant. The radial dependence of the projected volume was described in @Laa:2020wkm via a ratio of the total volume of a $p$ dimensional sphere of radius $R$, $V(R, p)$ and its projected volume within a 2D radius $r$, $V_{2D}(r, R, p)$,
+\begin{equation}
+f_{2D} (r, p, R) = \frac{V_{2D}(r, R, p)}{V(R, p)} = 1 - \left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
+\end{equation}
+This ratio is of particular interest because it gives the 2D radial cumulative distribution function (CDF) of points when assuming a uniform distribution within the $p$ dimensional hypersphere. We can compare the radial CDF $f_{2D} (r, p, R)$ to the radial CDF in the full hypersphere,
+\begin{equation}
+f_{pD} (r, p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p.
+\end{equation}
+We show this comparison for selected values in Fig. \ref{fig:cdf}, demonstrating the opposing behaviour as $p$ increases. While $f_{pD}$ concentrates more and more towards large values of $r/R$, $f_{2D}$ has the opposite behaviour, i.e. the volume projected to two dimensions is concentrated near the center of the disk, since we are integrating the large number of orthogonal directions.
+
+```{r cdf, fig.cap="Comparing the relative volume of a $p$ dimensional hypersphere captured within a radius $r$, either in a 2D projection of the sphere, or in the $p$ dimensional space, for $p=3, 10, 100$. While most of the volume is pushed to large values of $r$ in $p$ dimensions, the projected volume is concentrated near the center as $p$ increases.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
+
+cdf_2 <- function(p){
+  function(r){
+    1 - (1 - r^2)^(p/2)
+  }
+}
+
+cdf_p <- function(p){
+  function(r){
+    r^p
+  }
+}
+
+ggplot(data = data.frame(r = c(0,1)), mapping = aes(x = r)) +
+  stat_function(
+        fun = cdf_2(3),
+        mapping = aes(color = "ca", linetype = "la")) +
+  stat_function(
+        fun = cdf_p(3),
+        mapping = aes(color = "ca", linetype = "lb")) +
+    stat_function(
+        fun = cdf_2(10),
+        mapping = aes(color = "cb",  linetype = "la")) +
+    stat_function(
+        fun = cdf_p(10),
+        mapping = aes(color = "cb",  linetype = "lb")) +
+    stat_function(
+        fun = cdf_2(100),
+        mapping = aes(color = "cc",  linetype = "la")) +
+    stat_function(
+        fun = cdf_p(100),
+        mapping = aes(color = "cc",  linetype = "lb")) +
+  scale_color_manual(name = "p",
+                     values = RColorBrewer::brewer.pal(3, "Dark2"),
+                     labels = c("3", "10", "100")) +
+  scale_linetype_manual(name = "f", values = c(1, 2), labels = c("2D", "pD")) +
+  xlab("r/R") + ylab("CDF") + theme_bw()
+
+```
 
 ## Rescaling the radius
 
-In practice we get projected points in $x, y$ coordinates, and the first step is to calculate polar coordinates $r, \theta$. $\theta$ is uniform for this distribution (by the rotation invariance of the sphere). The radial component is transformed by first calculating the CDF to get a uniform distribution, and then transformed as the inverse of $f(r; 2, R)$ to arrive at the desired radial distribution. Thus we replace $r$ by $r'$ according to
-\begin{equation}
-r'' = f(r; p, R) = 1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}
-\end{equation}
-\begin{equation}
-r' = f^{-1}(r''; 2, R) = R \sqrt{r''} = R \sqrt{1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}}.
-\end{equation}
-Note that for the purpose of fitting the displayed data onto a pre-defined display (e.g. range $[-1,1]$), we can directly scale $r'$, e.g. by a factor $x/R$ where $x$ sets the range on the display, e.g. $x=0.9$ in what follows. We then calculate the new plotting coordinates $x', y'$ from $r', \theta$.
+The high density of points near the center in a projection is often unwanted as it makes it difficult to see patterns in the interesting region, and gives large optical weight to the tails of distribution. We can also think about it in terms of mapping a large part of the total volume to a small region in the projection, making it difficult to resolve the relevant features.
 
-FIXME For the display function currently I calculate $R$ for each projection as the current maximum radius among all points, so this is not fixed across views. What is the preferred approach here?
+Under the assumption that points are from a uniform distribution in a hypersphere, we can invert the effect using the CDF. This is achieved by transforming $r$ such that the points follow the CDF of $f_{2D}(r, R, 2)$ instead, i.e. starting from the distribution that arises for points that are uniform in the $p$ sphere, we find the transformation of $r$ that redistributes points such that they are uniform in a 2D disk.
+
+In practice we work with the 2D polar coordinates $r, \theta$, where $\theta$ is uniform for this distribution (by the rotation invariance of the sphere) and does not need to be transformed. The radial component $r$ is transformed by first calculating the CDF to get a uniform distribution, and then transformed as the inverse of $f_{2D}(r, R, 2)$ to arrive at the desired radial distribution. Thus we replace $r$ by $r'$ according to
+\begin{equation}
+r'' = f_{2D}(r, R, p) = 1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}
+\end{equation}
+\begin{equation}
+r' = f^{-1}_{2D}(r'', R, 2) = R \sqrt{r''} = R \sqrt{1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}}.
+\label{eq:resc}
+\end{equation}
 
 The relation between $r'$ and $r$ depends on the number of dimensions $p$, and is illustrated for selected values in Figure \ref{fig:radii}. We see that the transformation is approximately linear near the center. As $p$ increases it becomes non-linear faster, and e.g. for $p=10$ the points with radius $r>0.5$ will alrady be highly distorted and pushed out towards the last eighth in $r'$.
 
@@ -98,20 +146,20 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
         fun = trans_p(2),
         mapping = aes(color = "ca")) +
   stat_function(
-        fun = trans_p(3),
+        fun = trans_p(4),
         mapping = aes(color = "cb")) +
   stat_function(
-        fun = trans_p(4),
+        fun = trans_p(6),
         mapping = aes(color = "cc")) +
     stat_function(
-        fun = trans_p(6),
-        mapping = aes(color = "cd")) +
-      stat_function(
         fun = trans_p(10),
+        mapping = aes(color = "cd")) +
+    stat_function(
+        fun = trans_p(20),
         mapping = aes(color = "ce")) +
   scale_color_manual(name = "p",
                      values = RColorBrewer::brewer.pal(5, "Dark2"),
-                     labels = c("2 (baseline)","3", "4", "6", "10")) +
+                     labels = c("2 (baseline)", "4", "6", "10", "20")) +
   xlab("r") + ylab("r'") + theme_bw()
 
 ```
@@ -138,84 +186,53 @@ tibble(x = 0, y = 0, r = seq(0.1, 1, length.out = 10)) %>%
 
 ```
 
-## Results
+## Parametrised rescaling
 
-show 2D projections with and without smudging, for p=3, 6, 10?
+Eq. \ref{eq:resc} is fixed for a given value of $p$, but we may wish to tune the rescaling more freely. One way of doing this is to replace the dimensionality $p$ by the tuned $p_{eff} = s p$. When $s<1$ the rescaling will be softer, and $s>1$ results in more aggressive rescaling than suggested by $p$ alone. Note that when $p_{eff} < 2$ we actually invert the behaviour and shift the focus away from the center, in general this is not interesting. This is shown in Fig. \ref{fig:scaled} for $p=10$ and selected values of $s$. XXXX this is basically the same plot as before... is there a better illustration to show here, or maybe I don't need any?
 
-# Parametrised scaling
-
-Here we describe a parametrised scaling that is controlled by a scaling parameter, rather than fixed given $p$.
-
-We assume that the 2D projected distribution is approximately a bivariate normal with spherical shape (equal variance $\sigma$ on both variables, no co-covariance). In this setting the Mahalanobis distance $r_M$ of any point $(x,y)$ can be written as $r_M = \sqrt{x^2 + y^2}/ \sigma = r / \sigma$, using the polar coordinate $r = \sqrt{x^2 + y^2}$. Using the parametrisation in polar coordinates, we can integrate the distribution to derive the radial CDF $g(r; \sigma) = 1 - e^{-r^2 / 2\sigma^2}$. As before we use $r''=g(r;\sigma)$ and derive the rescaled radius as 
-\begin{equation}
-r' = f^{-1}(r''; 2, R=1) = \sqrt{1-e^{-r^2 / 2\sigma^2}}.
-\end{equation}
-Thus we have a rescaling that can be parametrised by $\sigma$, the dependence between $r$ and $r'$ for selected values of $\sigma$ is shown in Figure \ref{fig:radii-normal}.
-
-XXX as $\sigma$ approaches $r/2$ we see that $r'_{max} < r_{max}$, and larger values of $\sigma$ do not make sense. Using $\sigma=r$ gives linear scaling that shrinks the overall scale...
-
-```{r radii-normal, fig.cap="Relation between $r$ and $r'$ for different values of $\\sigma$. The scaling is approximately linear near the center, but leads to distortion at large radii when $p$ is large.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
+```{r scaled, fig.cap="Relation between $r$ and $r'$ for $p=10$ and different values of the scaling $s$. We can tune $s$ to control how strong the rescaling is, with $s<1$ leading to a weaker effect, and large values of $s$ increase the effect.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
+library(tidyverse)
 # define index as function of c
-trans_sig <- function(sig){
+trans_s <- function(s, p){
+  p <- s * p
   function(r){
-    sqrt( 1 - exp(- r^2 / (2* sig^2)))
+    sqrt( 1 - (1-r^2)^(p/2))
   }
 }
   
 # plot dependence for selected values
 ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
     stat_function(
-        fun = trans_sig(0.4),
+        fun = trans_s(0.2, 10),
         mapping = aes(color = "ca")) +
   stat_function(
-        fun = trans_sig(0.3),
+        fun = trans_s(0.5, 10),
         mapping = aes(color = "cb")) +
   stat_function(
-        fun = trans_sig(0.2),
+        fun = trans_s(1, 10),
         mapping = aes(color = "cc")) +
     stat_function(
-        fun = trans_sig(0.1),
+        fun = trans_s(2, 10),
         mapping = aes(color = "cd")) +
-      stat_function(
-        fun = trans_sig(0.05),
+    stat_function(
+        fun = trans_s(5, 10),
         mapping = aes(color = "ce")) +
-  scale_color_manual(name = expression(sigma),
+  scale_color_manual(name = "s",
                      values = RColorBrewer::brewer.pal(5, "Dark2"),
-                     labels = c("0.4", "0.3", "0.2", "0.1", "0.05")) +
+                     labels = c("0.2", "0.5", "1", "2", "5")) +
   xlab("r") + ylab("r'") + theme_bw()
 
 ```
 
-```{r circles-normal, fig.cap="Rescaled equidistant concentric circles."}
-library(ggforce)
 
-lbl <- c("sig=0.3", "sig=0.25", "sig=0.2", "sig=0.15")
-names(lbl) <- c("s03", "s025", "s02", "s015")
+# Implementation
 
-tibble(x = 0, y = 0, r = seq(0.1, 1, length.out = 10)) %>%
-  mutate(s03 = trans_sig(0.3)(r)) %>%
-  mutate(s025 = trans_sig(0.25)(r)) %>%
-  mutate(s02 = trans_sig(0.2)(r)) %>%
-  mutate(s015 = trans_sig(0.15)(r)) %>%
-  mutate(r = as.factor(r)) %>%
-  pivot_longer(cols = starts_with(("s"))) %>%
-  mutate(name = factor(name, levels = c("s03", "s025", "s02", "s015"))) %>%
-  ggplot() +
-  geom_circle(aes(x0=x, y0=y, r=value, color=r)) +
-  coord_fixed() +
-  theme_bw() +
-  facet_wrap(~name, labeller = labeller(name = lbl))
+XXX some practical considerations, in particular how to estimate unknown $R$, how to map to the display
 
-```
+Note that for the purpose of fitting the displayed data onto a pre-defined display (e.g. range $[-1,1]$), we can directly scale $r'$, e.g. by a factor $x/R$ where $x$ sets the range on the display, e.g. $x=0.9$ in what follows. We then calculate the new plotting coordinates $x', y'$ from $r', \theta$.
 
-# Application to known structures
+FIXME For the display function currently I calculate $R$ for each projection as the current maximum radius among all points, so this is not fixed across views. What is the preferred approach here?
 
-To understand how to interpret the rescaled projections, let us look at a few simple examples. 
-
-Things to note here: rescaling is nearly linear near the center of the distribution (that we want to focus on), limited distortion here. "Curling" effect near the maximum radius
-
-- Interesting central distribution, few outlying points (pollen?)
-- Linear distributions in multiple parameters (simulation of points that are linearly dinstributed along different (orthogonal) directions?)
 
 
 # Applications
