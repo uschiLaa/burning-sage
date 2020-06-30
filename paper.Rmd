@@ -53,7 +53,10 @@ A different view on the curse of dimensionality emerges for dimension reduction 
 
 To understand these seemingly contradictory implications, low density of points near the center in the high-dimensional space, and the piling in low-dimensional projections, we need to consider the projected volume across the low-dimensional projection. We can think of the data being distributed in a hypersphere, i.e. we think of a distribution with a maximum distance from the center. Compared to the common assumption of a distribution in a box or hypercube this has the advantage of being rotation invariant, and more accurately captures commonly observed distributions. We can picture the linearly projected volume starting from a 3D sphere. In a 2D projection, a large fraction of the volume will be projected onto a small region near the center of the resulting circle, and will be even further concentrated when projecting onto 1D. The same intuition holds as we increase the number of original dimensions that are projected down to one or two dimensions for visualisation, with increasing fractions of the volume being projected onto a small area around the center. The piling of observaitions then follows directly by assuming that they are uniformly distributed across the volume.
 
-In this work we address this piling in low-dimensional linear projections, which is in particular a barrier for viewing high-dimensional distributions with tour methods [@As85,@BCAH05]. Tours show interpolated sequences of low-dimensional projections of the data. When exploring a dataset with a tour we look at the distribution from different sides and want to discover features that may be visible from a specific viewing angle. However, these features may easily be hidden if most of the observations pile up near the center.  XXX talk about few outliers taking up large part of the plotting space
+In this work we address the piling in low-dimensional linear projections, which is in particular a barrier for viewing high-dimensional distributions with tour methods [@As85,@BCAH05]. Tours show interpolated sequences of low-dimensional projections of the data. When exploring a dataset with a tour we look at the distribution from different sides and want to discover features that may be visible from a specific viewing angle. However, these features may easily be hidden if most of the observations pile up near the center, while a large fraction of the plotting canvas will only show sparse outlying points. Here we suggest to redistribute the projected points such that equal volume in an original hypersphere will be mapped onto equal areas on a 2D projection plane. This redistribution is achieved through a non-linear transformation of the projected radius of the observations, and essentially results in zooming in near the center of the distribution, while pushing points towards the outer radius of the projected circle if they are further out. 
+
+The paper is structured as follows: the radial transformation is described in Section \ref{sec:method}, the implementation as a new display function for the tourr package is described in Section \ref{sec:implementation}, and we show applications in Section \ref{sec:application}. We conclude in Section \ref{sec:concl}.
+
 
 
 XXX see also discussion in https://mc-stan.org/users/documentation/case-studies/curse-dims.html on the average length of multivariate normal vector for large $p$, relation to "concentration of measures".
@@ -61,9 +64,11 @@ XXX see also discussion in https://mc-stan.org/users/documentation/case-studies/
 
 XXX maybe in real applications we need to do both? Use some form of dimension reduction that can screen some of the noise, followed by zooming in on the center?
 
-# Projected volume
+# Radial transformation {#sec:method}
 
-The seemingly contradicting behaviour between the low density of points near the center in the high-dimensional space, and the piling in low-dimensional projections can be understood by considering the projected volume across the low-dimensional projection. Assuming that the total distance from the center is constrained, we can think of the data being distributed in a hypersphere, which has the additional advantage of being rotation invariant. The radial dependence of the projected volume was described in @Laa:2020wkm via a ratio of the total volume of a $p$ dimensional sphere of radius $R$, $V(R, p)$ and its projected volume within a 2D radius $r$, $V_{2D}(r, R, p)$,
+As discussed in the introduction, the aim of the radial transformation is to redistribute the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2D projection. Note that it is straightforward to generalise this for projections onto $d$-dimensional projections in the same way.
+
+The radial dependence of the projected volume was described in @Laa:2020wkm via a ratio of the total volume of a $p$ dimensional sphere of radius $R$, $V(R, p)$ and its projected volume within a 2D radius $r$, $V_{2D}(r, R, p)$,
 \begin{equation}
 f_{2D} (r, p, R) = \frac{V_{2D}(r, R, p)}{V(R, p)} = 1 - \left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
 \end{equation}
@@ -225,7 +230,7 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 ```
 
 
-# Implementation
+# Implementation {#sec:implementation}
 
 By default we calculate $R$ as the maximum $p$ dimensional distance from the center of the distribution. However, this is not robust and might lead to large values because of outlying points. XXX alternatives: percentile based radius? user input radius?
 
@@ -234,7 +239,7 @@ XXX what happens when we reduce dimensionality with PCA? maybe we should use lar
 Note that for the purpose of fitting the displayed data onto a pre-defined display (e.g. range $[-1,1]$), we can directly scale $r'$, e.g. by a factor $x/R$ where $x$ sets the range on the display, e.g. $x=0.9$ in what follows. We then calculate the new plotting coordinates $x', y'$ from $r', \theta$.
 
 
-# Applications
+# Applications {#sec:application}
 
 ## Image classification
 
@@ -268,7 +273,7 @@ render(sk_5, planned_tour(bases), display_xy(axes="bottomleft", col=col), "png",
 
 
 
-# Discussion
+# Discussion {#sec:concl}
 
 Other transformations on the projected data?
 
