@@ -1,12 +1,19 @@
-#' Display tour path with a fisheye scatterplot
+#' Display tour path with a sage scatterplot
 #'
-#' Animate a 2D tour path with a fisheye scatterplot.
+#' Animate a 2D tour path with a sage scatterplot that
+#' uses a radial transformation on the projected points to re-allocate
+#' the volume projected across the 2D plane.
 #'
 #' @param axes position of the axes: center, bottomleft or off
+#' @param half_range half range to use when calculating limits of projected.
+#'   If not set, defaults to maximum distance from origin to each row of data.
 #' @param col color to be plotted.  Defaults to "black"
 #' @param pch marker for points. Defaults to 20.
+#' @param s scaling of the effective dimensionality for rescaling. Defaults to 1.
+#' @param R scale for the radial transformation.
+#'   If not set, defaults to maximum distance from origin to each row of data.
 #' @param ...  other arguments passed on to \code{\link{animate}} and
-#'   \code{\link{display_fisheye}}
+#'   \code{\link{display_sage}}
 #' @export
 #' @examples
 #' # Generate samples on a 3d and 5d hollow sphere using the geozoo package
@@ -20,14 +27,15 @@
 
 
 
-display_fisheye <- function(axes = "center",
-                              col = "black", pch  = 20, s = 1, ...) {
+display_sage <- function(axes = "center", half_range = NULL,
+                              col = "black", pch  = 20, s = 1, R = NULL, ...) {
   
   labels <- NULL
   peff <- NULL
   
   init <- function(data) {
-    half_range <<- tourr:::compute_half_range(NULL, data, TRUE)
+    half_range <<- tourr:::compute_half_range(half_range, data, TRUE)
+    R <<- tourr:::compute_half_range(R, data, TRUE)
     labels <<- abbreviate(colnames(data), 3)
     peff <<- s * ncol(data)
   }
@@ -42,9 +50,7 @@ display_fisheye <- function(axes = "center",
   }
   
   render_data <- function(data, proj, geodesic) {
-    # XXXX need to change this!
-    tourr:::draw_tour_axes(proj, labels, 1, "bottomleft")
-    
+    tourr:::draw_tour_axes(proj, labels, 1, axes)
     
     # Projecte data and center
     x <- data %*% proj
@@ -60,7 +66,8 @@ display_fisheye <- function(axes = "center",
     x[,1] <- rad * cos(ang)
     x[,2] <- rad * sin(ang)
     # scale down maximum radius from 1 to fit drawing range
-    x <- 0.9 * x
+    # also allow to change drawing range with half_range
+    x <- 0.9 * (half_range / R) * x
     points(x, col = col, pch = pch)
     
   }
@@ -79,4 +86,8 @@ display_fisheye <- function(axes = "center",
 # given 2D projection of hypersphere with radius R in p dimensions
 cumulative_radial <- function(r, R, p){
   1 - (1 - (r/R)^2)^(p/2)
+}
+
+animate_sage <- function(data, tour_path = grand_tour(), ...) {
+  animate(data, tour_path, display_sage(...), ...)
 }

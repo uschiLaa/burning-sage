@@ -86,7 +86,11 @@ sk_5 <- sk_pca$x[,1:5] %>%
   as_tibble() %>%
   mutate_all(scale2)
 animate(sk_5,
-        display = display_fisheye(col=col, s=2), rescale = F)
+        display = display_sage(col=col, s=2), rescale = F)
+
+animate(sk_5,
+        display = display_sage(col=col, s=0.5, R=1, half_range = 0.5), rescale = F)
+
 animate_xy(sk_5,
         col=col)
 
