@@ -58,6 +58,7 @@ display_sage <- function(axes = "center", half_range = NULL,
     # Calculate polar coordinates
     rad <- sqrt(x[,1]^2+x[,2]^2)
     ang <- atan2(x[,2], x[,1])
+    rad <- pmin(rad, R)
     # transform with cumulative to get uniform distribution in radius
     rad <- cumulative_radial(rad, half_range, peff)
     # square-root is the inverse of the cumulative of a uniform disk (rescaling to maximum radius = 1)
@@ -89,5 +90,5 @@ cumulative_radial <- function(r, R, p){
 }
 
 animate_sage <- function(data, tour_path = grand_tour(), ...) {
-  animate(data, tour_path, display_sage(...), ...)
+  animate(data, tour_path, display_sage(...))
 }

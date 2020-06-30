@@ -191,7 +191,7 @@ tibble(x = 0, y = 0, r = seq(0.1, 1, length.out = 10)) %>%
 
 ```
 
-## Parametrised rescaling
+## Parametrised rescaling {#sec:params}
 
 Eq. \ref{eq:resc} is fixed for a given input dataset, by evaluating the number of dimensions $p$ and the maximum distance from the center $R$. However, we may wish to tune the rescaling. For example, the dimension of the input might not reflect the intrinsic dimensionality of the dataset. This could be the case when dimension reduction was used prior to visualisation, e.g. displaying only the first few principal components. In this case the effective dimensionality $p_{eff}$ is likely between the original dimensionality and the selected number of principal components, since some directions would be considered pure noise, while others might still carry relevant information.
 
@@ -243,9 +243,25 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 
 # Implementation {#sec:implementation}
 
+The sage display has been implemented in R [@rref] in the `display_slice` method in the `tourr` package [@tourr]. This display has two important new input parameters, the scaling `s` for computing $p_{eff}$, and the overall scale `R`. Both these parameters are described in Section \ref{sec:params} above.
 
+Note that the ratio of the `tourr` parameter `half_range` and the new parameter `R` set the scale for fitting the displayed data on the plotting canvas ranging between $[-1,1]$. With the default settings `half_range` = `R` and we apply a scaling factor $0.9$ to contain the projected points within the display.
 
-Note that for the purpose of fitting the displayed data onto a pre-defined display (e.g. range $[-1,1]$), we can directly scale $r'$, e.g. by a factor $x/R$ where $x$ sets the range on the display, e.g. $x=0.9$ in what follows. We then calculate the new plotting coordinates $x', y'$ from $r', \theta$.
+Below we show example code demonstrates how the new display redistributes the projected points drawn uniformly inside a 5D hypersphere.
+```{r codeExampel, echo=TRUE, eval=FALSE}
+library(tourr)
+# use geozoo to uniformly generate points inside a 5D sphere
+sphere5 <- geozoo::sphere.solid.random(5)$points
+colnames(sphere5) <- c("x1", "x2", "x3", "x4", "x5") # naming variables
+# standard tour animation with default settings
+animate_xy(sphere5)
+# new sage display to redistribute the points based on projected volume
+animate_sage(sphere5)
+# we can use R and s to tune the display
+# for example use R to zoom in near the center
+# we also adjust half_range to fit the display on the plotting canvas
+animate_sage(sphere5, R = 0.1, half_range = 0.1)
+```
 
 
 # Applications {#sec:application}
