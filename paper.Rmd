@@ -40,18 +40,19 @@ keep_tex: true
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 library(tidyverse)
+library(gridExtra)
 ```
 
 \doublespacing
 # Introduction
 
-The notion of a curse of dimensionality was originally introduced in @BellmanRichard1961 to describe the increasing difficulty of optimisation in high dimensions when evaluating the objective function on a grid. More generally, we can think of it as a problem of sampling large parameter spaces. As the number of dimensions increases, the volume of the parameter space grows exponentially, and the density of points decreases. As a result observations will be far from the center of the distribution, on the vertices of a simplex [@doi:10.1111/j.1467-9868.2005.00510.x]. This causes problems in different domains, an important example in statistics is cluster analysis: since the distance between any two points in a distribution becomes approximately constant.
+The notion of a "curse of dimensionality" was originally introduced in @BellmanRichard1961 to describe the exponentially growing difficulty of optimisation over an increasing number of dimensions. More generally, we can think of it as a problem of sampling large parameter spaces. As the number of dimensions increases, the volume of the parameter space grows exponentially, and the density of points decreases. As a result observations will be far from the center of the distribution, and in the extreme case of high-dimension low-sample size date observations are on the vertices of a simplex [@doi:10.1111/j.1467-9868.2005.00510.x]. This causes problems in different domains. An important example in statistics is cluster analysis. Since the distance between any two points in a distribution becomes approximately constant, new methods are needed to cluster points in a high-dimensional space (see e.g. @Steinbach2004).
 
-A more detailed discussion of the curse of dimensionality was presented in @Donoho00, which also highlighted the opposite effect, a blessing of dimensionality. Indeed we can sometimes exploit large parameter spaces to our advantage. One example is the use of regularisation methods for variable selection. These methods penalise model complexity in the optimisation, for example ridge regression and Lasso. The penalty results in shrinking (some of) the parameter estimates towards zero. In ridge regression we obtain a global shrinkage, while Lasso can be thought of as variable selection and will shrink some of the estimates to zero.
+A more detailed discussion of the curse of dimensionality was presented in @Donoho00, which also highlighted the opposite effect, a blessing of dimensionality. Indeed we can sometimes exploit large parameter spaces to our advantage. One example is the use of regularisation methods for variable selection. These methods penalise model complexity in the optimisation, as for example in ridge regression and Lasso. The penalty results in shrinking (some of) the parameter estimates towards zero. In ridge regression we obtain a global shrinkage, while Lasso can be thought of as variable selection and will shrink some of the estimates to zero. XXX mention concentration of measures?
 
-A different view on the curse of dimensionality emerges for dimension reduction and visualisation methods. When working with low-dimensional linear projections from a high-dimensional parameter space, most projections will show approximately Gaussian distributions of the data, and as dimensionality increases, observations start to pile near the center [@diaconis1984]. In the extreme case of high-dimension low-sample size data this results in "data piling", and we can find directions where all observations are in a single point [@10.2307/27639976,@10.1093/biomet/asp084]. These issues also persist with non-linear dimension reduction techniques. This is often referred to as the "crowding problem", which methods like t-Distributed Stochastic Neighbor Embedding (t-SNE) [@tsne] aim to alleviate.
+A different view on the curse of dimensionality emerges for dimension reduction and visualisation methods. When working with low-dimensional linear projections from a high-dimensional parameter space, most projections will show approximately Gaussian distributions of the data, and observations start to pile near the center as dimensionality increases [@diaconis1984]. For high-dimension low-sample size data this results in "data piling", i.e. we can find directions along which all observations are in a single point [@10.2307/27639976,@10.1093/biomet/asp084]. These issues also persist with non-linear dimension reduction techniques. This is often referred to as the "crowding problem", which methods like t-Distributed Stochastic Neighbor Embedding (t-SNE) [@tsne] aim to alleviate.
 
-To understand these seemingly contradictory implications, low density of points near the center in the high-dimensional space, and the piling in low-dimensional projections, we need to consider the projected volume across the low-dimensional projection. We can think of the data being distributed in a hypersphere, i.e. we think of a distribution with a maximum distance from the center. Compared to the common assumption of a distribution in a box or hypercube this has the advantage of being rotation invariant, and more accurately captures commonly observed distributions. We can picture the linearly projected volume starting from a 3D sphere. In a 2D projection, a large fraction of the volume will be projected onto a small region near the center of the resulting circle, and will be even further concentrated when projecting onto 1D. The same intuition holds as we increase the number of original dimensions that are projected down to one or two dimensions for visualisation, with increasing fractions of the volume being projected onto a small area around the center. The piling of observaitions then follows directly by assuming that they are uniformly distributed across the volume.
+To understand these seemingly contradictory implications, low density of points near the center in the high-dimensional space, and the piling in low-dimensional projections, we need to consider the projected volume across the low-dimensional projection. We can think of the data being distributed in a hypersphere, i.e. we think of data points within a specified distance from the center. Compared to the common assumption of a distribution in a box or hypercube this has the advantage of being rotation invariant, and more accurately captures commonly observed distributions. We can picture the linearly projected volume starting from a 3D sphere. In a 2D projection, a large fraction of the volume will be projected onto a small region near the center of the resulting disc, and will be even further concentrated when projecting onto 1D. The same intuition holds as we increase the number of original dimensions that are projected down to one or two dimensions for visualisation, with increasing fractions of the volume being projected onto a small area around the center. The piling of observaitions then follows directly by assuming that they are uniformly distributed across the volume.
 
 In this work we address the piling in low-dimensional linear projections, which is in particular a barrier for viewing high-dimensional distributions with tour methods [@As85,@BCAH05]. Tours show interpolated sequences of low-dimensional projections of the data. When exploring a dataset with a tour we look at the distribution from different sides and want to discover features that may be visible from a specific viewing angle. However, these features may easily be hidden if most of the observations pile up near the center, while a large fraction of the plotting canvas will only show sparse outlying points. Here we suggest to redistribute the projected points such that equal volume in an original hypersphere will be mapped onto equal areas on a 2D projection plane. This redistribution is achieved through a non-linear transformation of the projected radius of the observations, and essentially results in zooming in near the center of the distribution, while pushing points towards the outer radius of the projected circle if they are further out. 
 
@@ -78,7 +79,7 @@ f_{pD} (r, p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p.
 \end{equation}
 We show this comparison for selected values in Fig. \ref{fig:cdf}, demonstrating the opposing behaviour as $p$ increases. While $f_{pD}$ concentrates more and more towards large values of $r/R$, $f_{2D}$ has the opposite behaviour, i.e. the volume projected to two dimensions is concentrated near the center of the disk, since we are integrating the large number of orthogonal directions.
 
-```{r cdf, fig.cap="Comparing the relative volume of a $p$ dimensional hypersphere captured within a radius $r$, either in a 2D projection of the sphere, or in the $p$ dimensional space, for $p=3, 10, 100$. While most of the volume is pushed to large values of $r$ in $p$ dimensions, the projected volume is concentrated near the center as $p$ increases.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
+```{r cdf, fig.cap="Comparing the relative volume of a $p$ dimensional hypersphere captured within a radius $r$, in the $p$ dimensional space (left) and in a 2D projection (right), for $p=3, 10, 100$. While most of the volume is squeezed towards larger values of $r$ as $p$ increases, the projected volume gets concentrated near the center instead.", fig.height=2.2, fig.width=6, out.width = "90%", fig.align = "center"}
 
 cdf_2 <- function(p){
   function(r){
@@ -92,30 +93,42 @@ cdf_p <- function(p){
   }
 }
 
-ggplot(data = data.frame(r = c(0,1)), mapping = aes(x = r)) +
-  stat_function(
-        fun = cdf_2(3),
-        mapping = aes(color = "ca", linetype = "la")) +
+p1 <- ggplot(data = data.frame(r = c(0,1)), mapping = aes(x = r)) +
   stat_function(
         fun = cdf_p(3),
-        mapping = aes(color = "ca", linetype = "lb")) +
-    stat_function(
-        fun = cdf_2(10),
-        mapping = aes(color = "cb",  linetype = "la")) +
-    stat_function(
+        mapping = aes(color = "ca")) +
+  stat_function(
         fun = cdf_p(10),
-        mapping = aes(color = "cb",  linetype = "lb")) +
-    stat_function(
-        fun = cdf_2(100),
-        mapping = aes(color = "cc",  linetype = "la")) +
+        mapping = aes(color = "cb")) +
     stat_function(
         fun = cdf_p(100),
-        mapping = aes(color = "cc",  linetype = "lb")) +
+        mapping = aes(color = "cc")) +
   scale_color_manual(name = "p",
                      values = RColorBrewer::brewer.pal(3, "Dark2"),
                      labels = c("3", "10", "100")) +
-  scale_linetype_manual(name = "f", values = c(1, 2), labels = c("2D", "pD")) +
-  xlab("r/R") + ylab("CDF") + theme_bw()
+  xlab("r/R") + ylab("Relative volume") + theme_bw() +
+  ggtitle("Volume in p dimensions") +
+  theme(legend.position=c(0.2, 0.55))
+  
+  
+p2 <- ggplot(data = data.frame(r = c(0,1)), mapping = aes(x = r)) +
+  stat_function(
+        fun = cdf_2(3),
+        mapping = aes(color = "ca")) +
+  stat_function(
+        fun = cdf_2(10),
+        mapping = aes(color = "cb")) +
+    stat_function(
+        fun = cdf_2(100),
+        mapping = aes(color = "cc")) +
+  scale_color_manual(name = "p",
+                     values = RColorBrewer::brewer.pal(3, "Dark2"),
+                     labels = c("3", "10", "100")) +
+  xlab("r/R") + ylab("Relative volume") + theme_bw() +
+  ggtitle("2D projected volume") +
+  guides(color = FALSE)
+  
+grid.arrange(p1, p2, ncol=2)
 
 ```
 
