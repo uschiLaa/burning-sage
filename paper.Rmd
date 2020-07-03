@@ -67,19 +67,22 @@ XXX maybe in real applications we need to do both? Use some form of dimension re
 
 # Radial transformation {#sec:method}
 
-As discussed in the introduction, the aim of the radial transformation is to redistribute the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2D projection. Note that it is straightforward to generalise this for projections onto $d$-dimensional projections in the same way.
+As discussed in the introduction, the aim of the radial transformation is to redistribute the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2-dimensional projection. Note that it is straightforward to generalise this for $d$-dimensional projections by mapping onto equal $d$-dimensional volume instead.
 
-The radial dependence of the projected volume was described in @Laa:2020wkm via a ratio of the total volume of a $p$ dimensional sphere of radius $R$, $V(R, p)$ and its projected volume within a 2D radius $r$, $V_{2D}(r, R, p)$,
+The radial dependence of the projected volume was described in @Laa:2020wkm through the ratio of the total volume of a $p$-dimensional sphere of radius $R$, $V(R, p)$ and its projected volume within a 2-dimensional radius $r$, $V_{2D}(r, R, p)$,
 \begin{equation}
-f_{2D} (r, p, R) = \frac{V_{2D}(r, R, p)}{V(R, p)} = 1 - \left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
+V^{rel}_{2D} (r, p, R) = \frac{V_{2D}(r, R, p)}{V(R, p)} = 1 - \left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
+\label{eq:cdf}
 \end{equation}
-This ratio is of particular interest because it gives the 2D radial cumulative distribution function (CDF) of points when assuming a uniform distribution within the $p$ dimensional hypersphere. We can compare the radial CDF $f_{2D} (r, p, R)$ to the radial CDF in the full hypersphere,
-\begin{equation}
-f_{pD} (r, p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p.
-\end{equation}
-We show this comparison for selected values in Fig. \ref{fig:cdf}, demonstrating the opposing behaviour as $p$ increases. While $f_{pD}$ concentrates more and more towards large values of $r/R$, $f_{2D}$ has the opposite behaviour, i.e. the volume projected to two dimensions is concentrated near the center of the disk, since we are integrating the large number of orthogonal directions.
+This ratio is of particular interest because it gives the 2-dimensional radial cumulative distribution function (CDF) of points when assuming a uniform distribution within the $p$-dimensional hypersphere.
 
-```{r cdf, fig.cap="Comparing the relative volume of a $p$ dimensional hypersphere captured within a radius $r$, in the $p$ dimensional space (left) and in a 2D projection (right), for $p=3, 10, 100$. While most of the volume is squeezed towards larger values of $r$ as $p$ increases, the projected volume gets concentrated near the center instead.", fig.height=2.2, fig.width=6, out.width = "90%", fig.align = "center"}
+We compare $V^{rel}_{2D} (r, p, R)$ to the relative volume within a radius $r$ in the full hypersphere,
+\begin{equation}
+V^{rel}_{pD} (r, p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p,
+\end{equation}
+to illustrate the opposing effects on their distribution. This comparison is shown in Fig. \ref{fig:cdf}, for $p=3, 10, 100$. The left graph shows $V^{rel}_{pD} (r, p, R)$ and the right graph $V^{rel}_{2D} (r, p, R)$. We clearely see the opposing behaviour of the two functions as $p$ increases. While $V^{rel}_{pD} (r, p, R)$ concentrates more and more towards large values of $r/R$, $V^{rel}_{2D} (r, p, R)$ has the opposite behaviour. This concentration near the center of the disk is the result of integrating over all orthogonal directions when projecting onto the plane, and should be reversed by our radial transformation of the projected points.
+
+```{r cdf, fig.cap="Comparing the relative volume of a $p$ dimensional hypersphere captured within a radius $r$, in the $p$-dimensional space (left) and in a 2-dimensional projection (right), for $p=3, 10, 100$. While most of the volume is squeezed towards larger values of $r$ as $p$ increases, the projected volume gets concentrated near the center instead.", fig.height=2.2, fig.width=6, out.width = "90%", fig.align = "center"}
 
 cdf_2 <- function(p){
   function(r){
@@ -132,22 +135,22 @@ grid.arrange(p1, p2, ncol=2)
 
 ```
 
-## Rescaling the radius
+## Deriving the transformation
 
-The high density of points near the center in a projection is often unwanted as it makes it difficult to see patterns in the interesting region, and gives large optical weight to the tails of distribution. We can also think about it in terms of mapping a large part of the total volume to a small region in the projection, making it difficult to resolve the relevant features.
+Under the assumption that points are from a uniform distribution in a hypersphere, we can invert the piling effect using the CDF, i.e. the relative projected volume described in Eq. \ref{eq:cdf}. Starting from the distribution that arises for points that are uniform in the $p$-dimensional  hypersphere, we find the transformation of the radius in the 2-dimensional plane, $r$, that redistributes points such that they are uniform in a disk.
 
-Under the assumption that points are from a uniform distribution in a hypersphere, we can invert the effect using the CDF. This is achieved by transforming $r$ such that the points follow the CDF of $f_{2D}(r, R, 2)$ instead, i.e. starting from the distribution that arises for points that are uniform in the $p$ sphere, we find the transformation of $r$ that redistributes points such that they are uniform in a 2D disk.
-
-In practice we work with the 2D polar coordinates $r, \theta$, where $\theta$ is uniform for this distribution (by the rotation invariance of the sphere) and does not need to be transformed. The radial component $r$ is transformed by first calculating the CDF to get a uniform distribution, and then transformed as the inverse of $f_{2D}(r, R, 2)$ to arrive at the desired radial distribution. Thus we replace $r$ by $r'$ according to
+In practice we work with polar coordinates in the plane, $r, \theta$. The angular component $\theta$ is uniform for this distribution (by the rotation invariance of the sphere) and does not need to be transformed. The radial component $r$ is transformed by first calculating its CDF value to get a uniform distribution in $r''$,
 \begin{equation}
-r'' = f_{2D}(r, R, p) = 1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}
+r'' = V^{rel}_{2D} (r, p, R) = 1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
 \end{equation}
+We next transform $r''$ using the inverse of $V^{rel}_{2D} (r, 2, R)$ to go from a uniform distribution in radius to a uniform distribution across the area of the disk,
+XXX notation: how to best write inverse here?
 \begin{equation}
-r' = f^{-1}_{2D}(r'', R, 2) = R \sqrt{r''} = R \sqrt{1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}}.
+r' = V^{rel}_{2D} (r'', 2, R)^{-1} = R \sqrt{r''} = R \sqrt{1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}}.
 \label{eq:resc}
 \end{equation}
 
-The relation between $r'$ and $r$ depends on the number of dimensions $p$, and is illustrated for selected values in Figure \ref{fig:radii}. We see that the transformation is approximately linear near the center. As $p$ increases it becomes non-linear faster, and e.g. for $p=10$ the points with radius $r>0.5$ will alrady be highly distorted and pushed out towards the last eighth in $r'$.
+The relation between $r'$ and $r$ depends on the number of dimensions $p$, and is illustrated for selected values in Figure \ref{fig:radii}. We see that the transformation is approximately linear near the center. As $p$ increases it becomes non-linear faster, and e.g. for $p=10$ the points with radius $r>0.5$ will alrady be highly distorted and pushed out towards the last eighth in $r'$. Figure \ref{fig:circles} demonstrates this for different values of $p$ by showing equidistant circles for which the radius has been transformed according to Eq. \ref{eq:resc}.
 
 ```{r radii, fig.cap="Relation between $r$ and $r'$ for different values of $p$. The scaling is approximately linear near the center, but leads to distortion at large radii when $p$ is large.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
 library(tidyverse)
@@ -182,17 +185,17 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 
 ```
 
-```{r circles, fig.cap="Rescaled equidistant concentric circles."}
+```{r circles, fig.cap="Rescaled equidistant concentric circles, for $p=2, 3, 10, 100$. The circles remain equidistant for $p=2$ where no transformation is performed, and get pushed out towards the edge as $p$ increases."}
 library(ggforce)
 
-lbl <- c("p=4", "p=6", "p=10", "p=20")
+lbl <- c("p=2", "p=3", "p=10", "p=100")
 names(lbl) <- c("p4", "p6", "p10", "p20")
 
 tibble(x = 0, y = 0, r = seq(0.1, 1, length.out = 10)) %>%
-  mutate(p4 = trans_p(4)(r)) %>%
-  mutate(p6 = trans_p(6)(r)) %>%
+  mutate(p4 = trans_p(2)(r)) %>%
+  mutate(p6 = trans_p(3)(r)) %>%
   mutate(p10 = trans_p(10)(r)) %>%
-  mutate(p20 = trans_p(20)(r)) %>%
+  mutate(p20 = trans_p(100)(r)) %>%
   mutate(r = as.factor(r)) %>%
   pivot_longer(cols = starts_with(("p"))) %>%
   mutate(name = factor(name, levels = c("p4", "p6", "p10", "p20"))) %>%
@@ -200,18 +203,22 @@ tibble(x = 0, y = 0, r = seq(0.1, 1, length.out = 10)) %>%
   geom_circle(aes(x0=x, y0=y, r=value, color=r)) +
   coord_fixed() +
   theme_bw() +
-  facet_wrap(~name, labeller = labeller(name = lbl))
+  facet_wrap(~name, labeller = labeller(name = lbl)) +
+  guides(color = FALSE) +
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
 
 ```
 
-## Parametrised rescaling {#sec:params}
+## Parametrised transformation {#sec:params}
 
-Eq. \ref{eq:resc} is fixed for a given input dataset, by evaluating the number of dimensions $p$ and the maximum distance from the center $R$. However, we may wish to tune the rescaling. For example, the dimension of the input might not reflect the intrinsic dimensionality of the dataset. This could be the case when dimension reduction was used prior to visualisation, e.g. displaying only the first few principal components. In this case the effective dimensionality $p_{eff}$ is likely between the original dimensionality and the selected number of principal components, since some directions would be considered pure noise, while others might still carry relevant information.
+Eq. \ref{eq:resc} is fixed for a given input dataset, by evaluating the number of dimensions $p$ and the maximum distance from the center $R$. However, in realistic applications we may wish to tune the transformation.
+
+For example, the dimension of the input might not reflect the intrinsic dimensionality of the dataset. This could be the case when dimension reduction was used prior to visualisation, e.g. displaying only the first few principal components. In this case the preferred effective dimensionality $p_{eff}$ is likely between the original numbr of dimensions and the selected number of principal components, since some directions would be considered pure noise, while others might still carry relevant information.
 
 Similarly, the overall scale of the transformation is determined by $R$. In the case of an approximately spherical and uniform distribution the maximum distance from the center works well and ensures the validity of the rescaling in Eq. \ref{eq:resc}. But it is not robust and might result in a much larger scale than desired, especially in the case of outlying observations. Tuning the scale would also allow increased zooming near the center without changing $p_{eff}$.
 XXX When selecting a value $R$ that is smaller than the maximum distance from the center, we need to ensure that the projected radius of points is always smaller than $R$ before rescaling according to Eq. \ref{eq:resc}. We do this by replacing $r_i$ as
 \begin{equation}
-r'_i = \min(r_i, R)
+\tilde{r}_i = \min(r_i, R)
 \end{equation}
 for each observation $i = 1, ..., n$.
 
