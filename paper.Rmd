@@ -46,17 +46,17 @@ library(gridExtra)
 \doublespacing
 # Introduction
 
-The notion of a "curse of dimensionality" was originally introduced in @BellmanRichard1961 to describe the exponential growth in difficulty for optimization as number of dimensions increases. This affects sampling in high-dimensions. The volume of the space grows exponentially, with dimension, and the density of points decreases proportionally (??). The effect is that most points will be far from the sample mean, on the edge of the sample space. @doi:10.1111/j.1467-9868.2005.00510.x have shown that in the extreme case of high-dimension, low-sample size data, observations are on the vertices of a simplex. 
+The notion of a "curse of dimensionality" was originally introduced in @BellmanRichard1961 to describe the exponential growth in difficulty for optimization as number of dimensions increases. This affects sampling in high-dimensions. The volume of the space grows exponentially, with dimension, and since it is not typically feasible to increase the number of samples accordingly, the density of points decreases. The effect is that most points will be far from the sample mean, on the edge of the sample space. @doi:10.1111/j.1467-9868.2005.00510.x have shown that in the extreme case of high-dimension, low-sample size data, observations are on the vertices of a simplex. 
 
 <!-- This causes problems in different domains. An important example in statistics is cluster analysis. Since the distance between any two points in a distribution becomes approximately constant, new methods are needed to cluster points in a high-dimensional space (see e.g. @Steinbach2004).-->
 
 @Donoho00, conversely, considers the curse of dimensionality as a blessing, because the sparsity can be leveraged for computational efficiency. This is used in regularization methods, like lasso, to penalize model complexity. The penalty results in shrinking (some of) the parameter estimates towards zero.<!-- In ridge regression we obtain a global shrinkage, while Lasso can be thought of as variable selection and will shrink some of the estimates to zero. XXX mention concentration of measures?-->
 
-Paradoxically, the curse of dimensionality inverts for dimension reduction, and affects the resulting visualizations. For low-dimensional linear projections of a high-dimensional data, most projections will show approximately Gaussian distributions of the data, with observations concentrating in the center [@diaconis1984]. In projection pursuit, this motivated the development of indexes showing departure from normality. @10.2307/27639976,@10.1093/biomet/asp084 call this "data piling", and in extreme cases of high-dimension low-sample size data, all observations are in a single point. These issues also persist with non-linear dimension reduction techniques. This is often referred to as the "crowding problem", which methods like t-Distributed Stochastic Neighbor Embedding (t-SNE) [@tsne] aim to alleviate.
+Paradoxically, the curse of dimensionality inverts for dimension reduction, and affects the resulting visualizations. For low-dimensional linear projections of high-dimensional data, most projections will show approximately Gaussian distributions of the data, with observations concentrating in the center [@diaconis1984]. In projection pursuit, this motivated the development of indexes showing departure from normality. For high-dimension low-sample size data @10.2307/27639976,@10.1093/biomet/asp084 call this "data piling": all observations are in a single point in certain low-dimensional projections. These issues also persist with non-linear dimension reduction techniques. This is often referred to as the "crowding problem", which methods like t-Distributed Stochastic Neighbor Embedding (t-SNE) [@tsne] aim to alleviate.
 
-To understand these seemingly contradictory implications, low density of points near the center in the high-dimensional space, and the piling in low-dimensional projections, we need to consider the projected volume across the low-dimensional projection. We can think of the data being distributed in a hypersphere, i.e. we think of data points within a specified distance from the center. Compared to the common assumption of a distribution in a box or hypercube this has the advantage of being rotation invariant, and more accurately captures commonly observed distributions. We can picture the linearly projected volume starting from a 3D sphere. In a 2D projection, a large fraction of the volume will be projected onto a small region near the center of the resulting disc, and will be even further concentrated when projecting onto 1D. The same intuition holds as we increase the number of original dimensions that are projected down to one or two dimensions for visualization, with increasing fractions of the volume being projected onto a small area around the center. The piling of observations then follows directly by assuming that they are uniformly distributed across the volume.
+In this work we address the piling in low-dimensional linear projections, which is in particular a barrier for viewing high-dimensional distributions with tour methods [@As85,@BCAH05]. Tours show interpolated sequences of low-dimensional projections of the data. When exploring a dataset with a tour we look at the distribution from different sides and want to discover features that may be visible from a specific viewing angle. However, these features may easily be hidden if most of the observations pile up near the center, while a large fraction of the plotting canvas will only show sparse outlying points.
 
-In this work we address the piling in low-dimensional linear projections, which is in particular a barrier for viewing high-dimensional distributions with tour methods [@As85,@BCAH05]. Tours show interpolated sequences of low-dimensional projections of the data. When exploring a dataset with a tour we look at the distribution from different sides and want to discover features that may be visible from a specific viewing angle. However, these features may easily be hidden if most of the observations pile up near the center, while a large fraction of the plotting canvas will only show sparse outlying points. Here we suggest to redistribute the projected points such that equal volume in an original hypersphere will be mapped onto equal areas on a 2D projection plane. This redistribution is achieved through a non-linear transformation of the projected radius of the observations, and essentially results in zooming in near the center of the distribution, while pushing points towards the outer radius of the projected circle if they are further out. 
+Here we suggest to redistribute projected data points such that equal volume in the original high-dimensional space will approximately be mapped onto equal volume in the low-dimensional projection, focussing on equal area in a 2D projection plane. This redistribution is achieved by assuming spherical distributions, and deriving a non-linear transformation of the projected radius. This essentially results in zooming in near the center of the distribution, where the transformation is approximately linear, while points that are further out in the projection get pushed towards the maximum radius.
 
 The paper is structured as follows: the radial transformation is described in Section \ref{sec:method}, the implementation as a new display function for the tourr package is described in Section \ref{sec:implementation}, and we show applications in Section \ref{sec:application}. We conclude in Section \ref{sec:concl}.
 
@@ -67,9 +67,17 @@ XXX see also discussion in https://mc-stan.org/users/documentation/case-studies/
 
 XXX maybe in real applications we need to do both? Use some form of dimension reduction that can screen some of the noise, followed by zooming in on the center?
 
-# Radial transformation {#sec:method}
+# Burning sage algorithm {#sec:method}
 
-As discussed in the introduction, the aim of the radial transformation is to redistribute the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2-dimensional projection. Note that it is straightforward to generalize this for $d$-dimensional projections by mapping onto equal $d$-dimensional volume instead.
+To better understand the seemingly contradictory low density of points near the center in the high-dimensional space, versus the piling in low-dimensional projections, we consider the projected volume. For this, it is useful to think of the data as being distributed in a hypersphere, i.e. all data points are within a specified distance from the center. Compared to the common assumption of a distribution in a box or hypercube this has the advantage of being rotation invariant, and more accurately captures commonly observed distributions.
+
+We can picture the linearly projected volume starting from a 3D sphere. In any 2D projection a large fraction of the volume will be projected onto a small region near the center of the resulting disc, as a consequence of the shape of the sphere. The volume will be further concentrated when projecting onto 1D instead. The same intuition holds as we increase the number of original dimensions that are projected down to one or two dimensions for visualization, with increasing fractions of the volume being projected onto a small area around the center.
+
+XXX show density contours, similar to Fig. 3
+
+Here we introduce a radial transformation that redistributes the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2-dimensional projection. Note that it is straightforward to generalize this for $d$-dimensional projections by mapping onto equal $d$-dimensional volume instead.
+
+## Relative volume
 
 The radial dependence of the projected volume was described in @Laa:2020wkm through the ratio of the total volume of a $p$-dimensional sphere of radius $R$, $V(R, p)$ and its projected volume within a 2-dimensional radius $r$, $V_{2D}(r, R, p)$,
 \begin{equation}
@@ -137,7 +145,7 @@ grid.arrange(p1, p2, ncol=2)
 
 ```
 
-## Deriving the transformation
+## Radial transformation
 
 Under the assumption that points are from a uniform distribution in a hypersphere, we can invert the piling effect using the CDF, i.e. the relative projected volume described in Eq. \ref{eq:cdf}. Starting from the distribution that arises for points that are uniform in the $p$-dimensional  hypersphere, we find the transformation of the radius in the 2-dimensional plane, $r$, that redistributes points such that they are uniform in a disk.
 
@@ -211,7 +219,9 @@ tibble(x = 0, y = 0, r = seq(0.1, 1, length.out = 10)) %>%
 
 ```
 
-## Parametrised transformation {#sec:params}
+## Trimming and tuning {#sec:params}
+
+XXX split this into two separate subsections?
 
 Eq. \ref{eq:resc} is fixed for a given input dataset, by evaluating the number of dimensions $p$ and the maximum distance from the center $R$. However, in realistic applications we may wish to tune the transformation.
 
@@ -264,6 +274,9 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 
 
 # Implementation {#sec:implementation}
+
+XXX this should explain how the display integrates with the tour, in terms of a data pipeline: p-D data -> projection matrix from the tour -> d-D projected data -> radial transformation -> final display
+XXX include short tour intro here with relevant references
 
 The sage display has been implemented in R [@rref] in the `display_slice` method in the `tourr` package [@tourr]. This display has two important new input parameters, the scaling `s` for computing $p_{eff}$, and the overall scale `R`. Both these parameters are described in Section \ref{sec:params} above.
 
