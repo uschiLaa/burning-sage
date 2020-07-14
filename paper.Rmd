@@ -41,6 +41,8 @@ keep_tex: true
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 library(tidyverse)
 library(gridExtra)
+library(ggforce)
+library(tourr)
 ```
 
 \doublespacing
@@ -54,18 +56,47 @@ The notion of a "curse of dimensionality" was originally introduced in @BellmanR
 
 Paradoxically, the curse of dimensionality inverts for dimension reduction, and affects the resulting visualizations. For low-dimensional linear projections of high-dimensional data, most projections will show approximately Gaussian distributions of the data, with observations concentrating in the center [@diaconis1984]. In projection pursuit, this motivated the development of indexes showing departure from normality. For high-dimension low-sample size data @10.2307/27639976,@10.1093/biomet/asp084 call this "data piling": all observations are in a single point in certain low-dimensional projections. These issues also persist with non-linear dimension reduction techniques. This is often referred to as the "crowding problem", which methods like t-Distributed Stochastic Neighbor Embedding (t-SNE) [@tsne] aim to alleviate.
 
-In this work we address the piling in low-dimensional linear projections, which is in particular a barrier for viewing high-dimensional distributions with tour methods [@As85,@BCAH05]. Tours show interpolated sequences of low-dimensional projections of the data. When exploring a dataset with a tour we look at the distribution from different sides and want to discover features that may be visible from a specific viewing angle. However, these features may easily be hidden if most of the observations pile up near the center, while a large fraction of the plotting canvas will only show sparse outlying points.
+XXX FIX - how can I make the contours better? Maybe get radial density and draw as circles?
+For illustration we show two-dimensional linear projections of points sampled uniformly within hyperspheres in $p=3, 10, 100$ dimensions in Figure \ref{fig:density}. All distributions are uniform within the maximum radius $R=1$, but the projected points start piling near the center as $p$ increases.
 
-Here we suggest to redistribute projected data points such that equal volume in the original high-dimensional space will approximately be mapped onto equal volume in the low-dimensional projection, focussing on equal area in a 2D projection plane. This redistribution is achieved by assuming spherical distributions, and deriving a non-linear transformation of the projected radius. This essentially results in zooming in near the center of the distribution, where the transformation is approximately linear, while points that are further out in the projection get pushed towards the maximum radius.
+```{r density, fig.cap="Two-dimensional projections of 10k points sampled uniformly within a $p$-dimensional hyperspheres, for $p=3, 10, 100$. The density is shown both through transparancy of the projected points, and as contour lines.", out.width="95%", fig.align = "center"}
 
+lbl <- c("p=3", "p=10", "p=100")
+names(lbl) <- c("p3", "p10", "p100")
+
+n <- 10000
+
+# sample points, only keep first two components for 2D projection
+p3 <- geozoo::sphere.solid.random(3, n)$points[, c(1,2)]
+p10 <- geozoo::sphere.solid.random(10, n)$points[, c(1,2)]
+p100 <- geozoo::sphere.solid.random(100, n)$points[, c(1,2)]
+colnames(p3) <- c("x", "y")
+colnames(p10) <- c("x", "y")
+colnames(p100) <- c("x", "y")
+
+proj_points <- as_tibble(rbind(p3, p10, p100)) %>%
+  add_column(p = c(rep(3, n), rep(10, n), rep(100, n)))
+
+
+ggplot(proj_points, aes(x, y)) +
+  geom_point(alpha=0.02) + 
+  geom_density2d(bins = 7, contour_var = "count") +
+  coord_fixed() +
+  theme_bw() +
+  facet_wrap(~p, labeller = labeller(name = lbl)) +
+  guides(color = FALSE) +
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
+
+```
+
+In this work we address the piling in low-dimensional linear projections, which is in particular a barrier for viewing high-dimensional distributions with tour methods [@As85,@BCAH05]. Tours show interpolated sequences of low-dimensional projections of the data. When exploring a dataset with a tour we look at the distribution from different sides and want to discover features that may be visible from a specific viewing angle. However, these features may easily be hidden if most of the observations pile up near the center, while a large fraction of the plotting canvas will only show sparse outlying points. To counteract the effect, we introduce a radial transformation that redistributes data points after projecting them onto a two-dimensional plane, essentially zooming in near the center of the distribution.
+
+XXXX needs to be updated
 The paper is structured as follows: the radial transformation is described in Section \ref{sec:method}, the implementation as a new display function for the tourr package is described in Section \ref{sec:implementation}, and we show applications in Section \ref{sec:application}. We conclude in Section \ref{sec:concl}.
 
+XXX probably remove this, for now keeping it in for reference
+see also discussion in https://mc-stan.org/users/documentation/case-studies/curse-dims.html on the average length of multivariate normal vector for large $p$, relation to "concentration of measures".
 
-
-XXX see also discussion in https://mc-stan.org/users/documentation/case-studies/curse-dims.html on the average length of multivariate normal vector for large $p$, relation to "concentration of measures".
-
-
-XXX maybe in real applications we need to do both? Use some form of dimension reduction that can screen some of the noise, followed by zooming in on the center?
 
 # Burning sage algorithm {#sec:method}
 
@@ -73,7 +104,7 @@ To better understand the seemingly contradictory low density of points near the 
 
 We can picture the linearly projected volume starting from a 3D sphere. In any 2D projection a large fraction of the volume will be projected onto a small region near the center of the resulting disc, as a consequence of the shape of the sphere. The volume will be further concentrated when projecting onto 1D instead. The same intuition holds as we increase the number of original dimensions that are projected down to one or two dimensions for visualization, with increasing fractions of the volume being projected onto a small area around the center.
 
-XXX show density contours, similar to Fig. 3
+XXX show density contours, similar to Fig. 3 - do this as a simulation, move to introduction
 
 Here we introduce a radial transformation that redistributes the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2-dimensional projection. Note that it is straightforward to generalize this for $d$-dimensional projections by mapping onto equal $d$-dimensional volume instead.
 
@@ -163,7 +194,6 @@ r' = V^{rel}_{2D} (r'', 2, R)^{-1} = R \sqrt{r''} = R \sqrt{1-\left(1-\left(\fra
 The relation between $r'$ and $r$ depends on the number of dimensions $p$, and is illustrated for selected values in Figure \ref{fig:radii}. We see that the transformation is approximately linear near the center. As $p$ increases it becomes non-linear faster, and e.g. for $p=10$ the points with radius $r>0.5$ will already be highly distorted and pushed out towards the last eighth in $r'$. Figure \ref{fig:circles} demonstrates this for different values of $p$ by showing equidistant circles for which the radius has been transformed according to Eq. \ref{eq:resc}.
 
 ```{r radii, fig.cap="Relation between $r$ and $r'$ for different values of $p$. The scaling is approximately linear near the center, but leads to distortion at large radii when $p$ is large.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
-library(tidyverse)
 # define index as function of c
 trans_p <- function(p){
   function(r){
@@ -196,7 +226,6 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 ```
 
 ```{r circles, fig.cap="Rescaled equidistant concentric circles, for $p=2, 3, 10, 100$. The circles remain equidistant for $p=2$ where no transformation is performed, and get pushed out towards the edge as $p$ increases."}
-library(ggforce)
 
 lbl <- c("p=2", "p=3", "p=10", "p=100")
 names(lbl) <- c("p4", "p6", "p10", "p20")
@@ -239,7 +268,6 @@ In practice we allow tuning $p_{eff} = s p$ by selecting the scaling parameter $
 On the other hand, $R$ can be directly supplied by the user, and is set to the maximum distance from the center if no value is supplied. XXX it is important to ensure that all variables are on a comparable scale before applying this method!
 
 ```{r scaled, eval=F, fig.cap="Relation between $r$ and $r'$ for $p=10$ and different values of the scaling $s$. We can tune $s$ to control how strong the rescaling is, with $s<1$ leading to a weaker effect, and large values of $s$ increase the effect.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
-library(tidyverse)
 # define index as function of c
 trans_s <- function(s, p){
   p <- s * p
@@ -276,15 +304,17 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 # Implementation {#sec:implementation}
 
 XXX this should explain how the display integrates with the tour, in terms of a data pipeline: p-D data -> projection matrix from the tour -> d-D projected data -> radial transformation -> final display
+
 XXX include short tour intro here with relevant references
 
-The sage display has been implemented in R [@rref] in the `display_slice` method in the `tourr` package [@tourr]. This display has two important new input parameters, the scaling `s` for computing $p_{eff}$, and the overall scale `R`. Both these parameters are described in Section \ref{sec:params} above.
+XXX mention function, but full code should be in documentation
+
+The sage display has been implemented in R [@rref] in the `display_sage` method in the `tourr` package [@tourr]. This display has two important new input parameters, the scaling `s` for computing $p_{eff}$, and the overall scale `R`. Both these parameters are described in Section \ref{sec:params} above.
 
 Note that the ratio of the `tourr` parameter `half_range` and the new parameter `R` set the scale for fitting the displayed data on the plotting canvas ranging between $[-1,1]$. With the default settings `half_range` = `R` and we apply a scaling factor $0.9$ to contain the projected points within the display.
 
 Below we show example code demonstrates how the new display redistributes the projected points drawn uniformly inside a 5D hypersphere.
 ```{r codeExampel, echo=TRUE, eval=FALSE}
-library(tourr)
 # use geozoo to uniformly generate points inside a 5D sphere
 sphere5 <- geozoo::sphere.solid.random(5)$points
 colnames(sphere5) <- c("x1", "x2", "x3", "x4", "x5") # naming variables
