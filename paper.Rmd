@@ -102,9 +102,7 @@ see also discussion in https://mc-stan.org/users/documentation/case-studies/curs
 
 To better understand the seemingly contradictory low density of points near the center in the high-dimensional space, versus the piling in low-dimensional projections, we consider the projected volume. For this, it is useful to think of the data as being distributed in a hypersphere, i.e. all data points are within a specified distance from the center. Compared to the common assumption of a distribution in a box or hypercube this has the advantage of being rotation invariant, and more accurately captures commonly observed distributions.
 
-We can picture the linearly projected volume starting from a 3D sphere. In any 2D projection a large fraction of the volume will be projected onto a small region near the center of the resulting disc, as a consequence of the shape of the sphere. The volume will be further concentrated when projecting onto 1D instead. The same intuition holds as we increase the number of original dimensions that are projected down to one or two dimensions for visualization, with increasing fractions of the volume being projected onto a small area around the center.
-
-XXX show density contours, similar to Fig. 3 - do this as a simulation, move to introduction
+We can picture the linearly projected volume starting from a 3D sphere. In any 2D projection a large fraction of the volume will be projected onto a small region near the center of the resulting disc, as a consequence of the shape of the sphere. The volume will be further concentrated when projecting onto 1D instead. The same intuition holds as we increase the number of original dimensions that are projected down to one or two dimensions for visualization, with increasing fractions of the volume being projected onto a small area around the center, see Figure \ref{fig:density} for illustration.
 
 Here we introduce a radial transformation that redistributes the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2-dimensional projection. Note that it is straightforward to generalize this for $d$-dimensional projections by mapping onto equal $d$-dimensional volume instead.
 
@@ -250,22 +248,21 @@ tibble(x = 0, y = 0, r = seq(0.1, 1, length.out = 10)) %>%
 
 ## Trimming and tuning {#sec:params}
 
-XXX split this into two separate subsections?
+Eq. \ref{eq:resc} is fixed for a given input dataset, by evaluating the number of dimensions $p$ and the maximum distance from the center $R$. However, in realistic applications we may wish to trim the projected data or tune the transformation. In practice, a combination of both adjustments can be used to further zoom in on the center of the distribution, or alternatively, to soften the transformation.
 
-Eq. \ref{eq:resc} is fixed for a given input dataset, by evaluating the number of dimensions $p$ and the maximum distance from the center $R$. However, in realistic applications we may wish to tune the transformation.
+### Trimming
+The overall scale of the transformation is determined by $R$. In the case of an approximately spherical and uniform distribution the maximum distance from the center works well and ensures the validity of the rescaling in Eq. \ref{eq:resc}. But this is not robust and might result in a much larger scale than desired, especially when it is determined by outlying observations.
 
-For example, the dimension of the input might not reflect the intrinsic dimensionality of the dataset. This could be the case when dimension reduction was used prior to visualization, e.g. displaying only the first few principal components. In this case the preferred effective dimensionality $p_{eff}$ is likely between the original number of dimensions and the selected number of principal components, since some directions would be considered pure noise, while others might still carry relevant information.
-
-Similarly, the overall scale of the transformation is determined by $R$. In the case of an approximately spherical and uniform distribution the maximum distance from the center works well and ensures the validity of the rescaling in Eq. \ref{eq:resc}. But it is not robust and might result in a much larger scale than desired, especially in the case of outlying observations. Tuning the scale would also allow increased zooming near the center without changing $p_{eff}$.
-XXX When selecting a value $R$ that is smaller than the maximum distance from the center, we need to ensure that the projected radius of points is always smaller than $R$ before rescaling according to Eq. \ref{eq:resc}. We do this by replacing $r_i$ as
+We therefore allow trimming of the projected observations, using $R$ as a free parameter of the display function. When selecting a value $R$ that is smaller than the maximum distance from the center, we need to ensure that the projected radius of points is always smaller than $R$ before rescaling according to Eq. \ref{eq:resc}. We do this by replacing $r_i$ as
 \begin{equation}
 \tilde{r}_i = \min(r_i, R)
 \end{equation}
 for each observation $i = 1, ..., n$.
 
-In practice we allow tuning $p_{eff} = s p$ by selecting the scaling parameter $s$. By default, $s=1$ and $p_{eff}=p$. When $s<1$ the rescaling will be softer, and $s>1$ results in more aggressive rescaling than suggested by $p$ alone. Note that when $p_{eff} < 2$ we actually invert the behavior and shift the focus away from the center, in general this is not wanted.
+### Tuning
+The dimension of the input might not reflect the intrinsic dimensionality of the dataset. This could be the case when dimension reduction was used prior to visualization, e.g. displaying only the first few principal components. In this case the preferred effective dimensionality $p_{eff}$ is likely between the original number of dimensions and the selected number of principal components, since some directions would be considered pure noise, while others might still carry relevant information.
 
-On the other hand, $R$ can be directly supplied by the user, and is set to the maximum distance from the center if no value is supplied. XXX it is important to ensure that all variables are on a comparable scale before applying this method!
+We allow tuning $p_{eff} = s p$ by selecting the scaling parameter $s$. By default, $s=1$ and $p_{eff}=p$. When $s<1$ the rescaling will be softer, and $s>1$ results in more aggressive rescaling than suggested by $p$ alone. Note that when $p_{eff} < 2$ we actually invert the behavior and shift the focus away from the center, in general this is not wanted.
 
 ```{r scaled, eval=F, fig.cap="Relation between $r$ and $r'$ for $p=10$ and different values of the scaling $s$. We can tune $s$ to control how strong the rescaling is, with $s<1$ leading to a weaker effect, and large values of $s$ increase the effect.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
 # define index as function of c
