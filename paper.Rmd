@@ -314,30 +314,16 @@ These three steps are available in the `tourr` package, which includes different
 1. Center the 2-dimensional matrix $\mathbf{Y}$ and compute its polar coordinate representation $(r, \theta)$.
 2. For each observation, first use Eq. \ref{eq:cutR} to ensure the radius $r$ is within the specified range, and then apply the radial transformation defined in Eq. \ref{eq:resc} to obtain $r'$.
 3. Use the transformed radial coordinate $r'$ to re-compute the mapping onto Euclidean coordinates $(x, y)$.
-4. To fit the final projection onto the plotting canvas ranging between $[-1,1]$, we rescale each observation by $0.9 \cdot \mathrm{half\_range}$.
+4. To fit the final projection onto the plotting canvas ranging between $[-1,1]$, we rescale each observation by $0.9 \mathrm{half\_range}$.
+
+The display can be added when calling the `animate` function in `tourr`, as
 
 
-XXX mention function, but full code should be in documentation
-
- This display has two important new input parameters, the scaling `s` for computing $p_{eff}$, and the overall scale `R`. Both these parameters are described in Section \ref{sec:params} above.
-
-Note that the ratio of the `tourr` parameter `half_range` and the new parameter `R` set the scale for fitting the displayed data on the plotting canvas ranging between $[-1,1]$. With the default settings `half_range` = `R` and we apply a scaling factor $0.9$ to contain the projected points within the display.
-
-Below we show example code demonstrates how the new display redistributes the projected points drawn uniformly inside a 5D hypersphere.
-```{r codeExampel, echo=TRUE, eval=FALSE}
-# use geozoo to uniformly generate points inside a 5D sphere
-sphere5 <- geozoo::sphere.solid.random(5)$points
-colnames(sphere5) <- c("x1", "x2", "x3", "x4", "x5") # naming variables
-# standard tour animation with default settings
-animate_xy(sphere5)
-# new sage display to redistribute the points based on projected volume
-animate_sage(sphere5)
-# we can use R and s to tune the display
-# for example use R to zoom in near the center
-# we also adjust half_range to fit the display on the plotting canvas
-animate_sage(sphere5, R = 0.1, half_range = 0.1)
+```{r codeExample, echo=TRUE, eval=FALSE}
+tourr::animate(data, tour_path, display=display_sage(s, R, half_range))
 ```
 
+and introduces the scaling parameter `s` for computing $p_{eff}$, and the overall scale `R` used for trimming. Both these parameters are described in Section \ref{sec:params} above. The ratio of `half_range` and `R` set the scale for fitting the displayed data on the plotting canvas, by default `half_range` = `R` and we apply the scaling factor $0.9$ to contain the projected points within the display. 
 
 # Applications {#sec:application}
 
