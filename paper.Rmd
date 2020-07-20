@@ -61,6 +61,8 @@ For illustration we show two-dimensional linear projections of points sampled un
 
 ```{r density, fig.cap="Two-dimensional projections of 10k points sampled uniformly within a $p$-dimensional hyperspheres, for $p=3, 10, 100$. The density is shown both through transparancy of the projected points, and as contour lines.", out.width="95%", fig.align = "center"}
 
+set.seed(2020)
+
 lbl <- c("p=3", "p=10", "p=100")
 names(lbl) <- c("p3", "p10", "p100")
 
@@ -80,7 +82,7 @@ proj_points <- as_tibble(rbind(p3, p10, p100)) %>%
 
 ggplot(proj_points, aes(x, y)) +
   geom_point(alpha=0.02) + 
-  geom_density2d(bins = 7, contour_var = "count") +
+  geom_density2d(bins = 7, contour_var = "ndensity") +
   coord_fixed() +
   theme_bw() +
   facet_wrap(~p, labeller = labeller(name = lbl)) +
