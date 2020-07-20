@@ -180,7 +180,7 @@ grid.arrange(p1, p2, ncol=2)
 
 Under the assumption that points are from a uniform distribution in a hypersphere, we can invert the piling effect using the CDF, i.e. the relative projected volume described in Eq. \ref{eq:cdf}. Starting from the distribution that arises for points that are uniform in the $p$-dimensional  hypersphere, we find the transformation of the radius in the 2-dimensional plane, $r$, that redistributes points such that they are uniform in a disk.
 
-In practice we work with polar coordinates in the plane, $r, \theta$. The angular component $\theta$ is uniform for this distribution (by the rotation invariance of the sphere) and does not need to be transformed. The radial component $r$ is transformed by first calculating its CDF value to get a uniform distribution in $r''$,
+We work with polar coordinates in the plane, $r, \theta$. The angular component $\theta$ is uniform for this distribution (by the rotation invariance of the sphere) and does not need to be transformed. The radial component $r$ is transformed by first calculating its CDF value to get a uniform distribution in $r''$,
 \begin{equation}
 r'' = V^{rel}_{2D} (r, p, R) = 1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
 \end{equation}
@@ -263,7 +263,7 @@ We therefore allow trimming of the projected observations, using $R$ as a free p
 for each observation $i = 1, ..., n$.
 
 ### Tuning
-The dimension of the input might not reflect the intrinsic dimensionality of the dataset. This could be the case when dimension reduction was used prior to visualization, e.g. displaying only the first few principal components. In this case the preferred effective dimensionality $p_{eff}$ is likely between the original number of dimensions and the selected number of principal components, since some directions would be considered pure noise, while others might still carry relevant information.
+The dimension of the input might not reflect the intrinsic dimensionality of the dataset. This could be the case when dimension reduction was used prior to visualization, e.g. displaying only the first few principal components. In this case the effective dimensionality $p_{eff}$ is likely between the original number of dimensions and the selected number of principal components. We can think of omitted components as being in the orthogonal space of all considered projections, with some directions being pure noise, while others may still carry relevant information.
 
 We allow tuning $p_{eff} = s p$ by selecting the scaling parameter $s$. By default, $s=1$ and $p_{eff}=p$. When $s<1$ the rescaling will be softer, and $s>1$ results in more aggressive rescaling than suggested by $p$ alone. Note that when $p_{eff} < 2$ we actually invert the behavior and shift the focus away from the center, in general this is not wanted.
 
@@ -303,9 +303,9 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 
 ## Implementation as a dynamic display {#sec:implementation}
 
-While the radial transformation can in general be used with any low-dimensional display that suffers from data piling, it is most useful when combined with a dynamic display showing a sequence of interpolated low-dimensional projections obtained when running a tour. We have implemented it as a new display method in the `display_sage` method in the `tourr` package [@tourr] in R [@rref].
+While the radial transformation can in general be used with any low-dimensional display that suffers from data piling, it is most useful when combined with a dynamic display showing a sequence of interpolated low-dimensional projections obtained when running a tour. We have implemented it as a new display method `display_sage` in the `tourr` package [@tourr] in R [@rref].
 
-We can think of the display functions as part of a data pipline obtained when running a tour. The initial step is pre-processing the data ($\mathbf{X}$, an $n \times p$ matrix), typically this includes centering and scaling using either the overall range or the variance. The tour is then looping over the following steps:
+We can think of the display functions as part of a data pipline obtained when running a tour. The initial step is pre-processing the data, given by $\mathbf{X}$, an $n \times p$ matrix containing $n$ observations in $p$ dimensions. Typically, this includes centering and scaling, using either the overall range or the variance. Ensuring a common scale of all variables, comparable to the selected scale parameter $R$, is especially important with the new display. The tour is then looping over the following steps:
 
 1. Obtain projection matrix $\mathbf{A}$. For $d$-dimensional projections this is an orthonormal $p \times d$ matrix. To ensure the smooth rotation of projections, each new $\mathbf{A}$ is obtained as an interpolated step in the sequence, as explained in @BCAH05.
 2. Project the data by computing $\mathbf{Y} = \mathbf{X}\cdot\mathbf{A}$.
@@ -316,16 +316,20 @@ These three steps are available in the `tourr` package, which includes different
 1. Center the 2-dimensional matrix $\mathbf{Y}$ and compute its polar coordinate representation $(r, \theta)$.
 2. For each observation, first use Eq. \ref{eq:cutR} to ensure the radius $r$ is within the specified range, and then apply the radial transformation defined in Eq. \ref{eq:resc} to obtain $r'$.
 3. Use the transformed radial coordinate $r'$ to re-compute the mapping onto Euclidean coordinates $(x, y)$.
-4. To fit the final projection onto the plotting canvas ranging between $[-1,1]$, we rescale each observation by $0.9 \mathrm{half\_range}$.
+4. To fit the final projection onto the plotting canvas ranging between $[-1,1]$, we rescale each observation by $0.9\cdot \mathrm{half\_range}$.
 
 The display can be added when calling the `animate` function in `tourr`, as
 
 
 ```{r codeExample, echo=TRUE, eval=FALSE}
-tourr::animate(data, tour_path, display=display_sage(s, R, half_range))
+tourr::animate(
+  data,
+  tour_path = tourr::grand_tour(),
+  display = display_sage(s, R, half_range)
+  )
 ```
 
-and introduces the scaling parameter `s` for computing $p_{eff}$, and the overall scale `R` used for trimming. Both these parameters are described in Section \ref{sec:params} above. The ratio of `half_range` and `R` set the scale for fitting the displayed data on the plotting canvas, by default `half_range` = `R` and we apply the scaling factor $0.9$ to contain the projected points within the display. 
+and introduces the scaling parameter `s` for computing $p_{eff}$, and the overall scale `R` used for trimming. Both these parameters are described in Section \ref{sec:params} above. The ratio of `half_range` and `R` sets the scale for fitting the displayed data on the plotting canvas, by default `half_range` = `R` and we apply the scaling factor $0.9$ to contain the projected points within the display. When adjusting `R` the user should take care to adjust the `half_range` parameter accordingly.
 
 # Applications {#sec:application}
 
