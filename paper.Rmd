@@ -61,7 +61,7 @@ For illustration we show two-dimensional linear projections of points sampled un
 
 ```{r density, fig.cap="Two-dimensional projections of 10k points sampled uniformly within a $p$-dimensional hyperspheres, for $p=3, 10, 100$. The density is shown both through transparancy of the projected points, and as contour lines.", out.width="95%", fig.align = "center"}
 
-set.seed(2020)
+set.seed(12345)
 
 lbl <- c("p=3", "p=10", "p=100")
 names(lbl) <- c("p3", "p10", "p100")
@@ -77,17 +77,39 @@ colnames(p10) <- c("x", "y")
 colnames(p100) <- c("x", "y")
 
 proj_points <- as_tibble(rbind(p3, p10, p100)) %>%
-  add_column(p = c(rep(3, n), rep(10, n), rep(100, n)))
+  mutate(p = c(rep(3, n), rep(10, n), rep(100, n)))
 
 
 ggplot(proj_points, aes(x, y)) +
-  geom_point(alpha=0.02) + 
-  geom_density2d(bins = 7, contour_var = "ndensity") +
+  #geom_point(alpha=0.02) + 
+  #geom_density2d(bins = 7, contour_var = "ndensity") +
+  geom_hex(bins = 12, aes(fill=log(..count..))) +
+  #geom_hex(bins = 12) +
+  scale_fill_viridis_c() +
   coord_fixed() +
   theme_bw() +
   facet_wrap(~p, labeller = labeller(name = lbl)) +
-  guides(color = FALSE) +
+  #guides(color = FALSE) +
   theme(axis.title.x=element_blank(), axis.title.y=element_blank())
+
+
+### a radial binning
+n <- 5
+r_breaks <- seq(0, 1, length.out = n+1)
+proj_points_rbin <- proj_points %>%
+  mutate(r = sqrt(x^2 + y^2)) %>%
+  mutate(bin = cut(r, r_breaks)) %>%
+  mutate(bin_up = as.numeric( sub("[^,]*,([^]]*)\\]", "\\1", bin))) %>%
+  group_by(p) %>%
+  count(bin_up) %>%
+  arrange(-bin_up)
+
+ggplot(proj_points_rbin) +
+  geom_circle(aes(x0= 0, y0=0, r = bin_up, fill=log(n))) +
+  scale_fill_viridis_c() +
+  facet_wrap(~p, labeller = labeller(name = lbl)) +
+  coord_fixed() +
+  theme_bw()
 
 ```
 
