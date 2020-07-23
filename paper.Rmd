@@ -113,10 +113,9 @@ ggplot(proj_points_rbin) +
 
 ```
 
-In this work we address the piling in low-dimensional linear projections, which is in particular a barrier for viewing high-dimensional distributions with tour methods [@As85,@BCAH05]. Tours show interpolated sequences of low-dimensional projections of the data. When exploring a dataset with a tour we look at the distribution from different sides and want to discover features that may be visible from a specific viewing angle. However, these features may easily be hidden if most of the observations pile up near the center, while a large fraction of the plotting canvas will only show sparse outlying points. To counteract the effect, we introduce a radial transformation that redistributes data points after projecting them onto a two-dimensional plane, essentially zooming in near the center of the distribution.
+In this work we address the piling in low-dimensional linear projections, which is in particular a barrier for viewing high-dimensional distributions with tour methods [@As85,@BCAH05]. Tours show interpolated sequences of low-dimensional projections of the data. When exploring a dataset with a tour we can discover features that are only visible from specific viewing angles. However, these features may easily be hidden if most of the observations pile up near the center, with a large fraction of the plotting canvas showing only outlying points. To counteract the effect, we introduce a radial transformation that zoomes in near the center of the distribution.
 
-XXXX needs to be updated
-The paper is structured as follows: the radial transformation is described in Section \ref{sec:method}, the implementation as a new display function for the tourr package is described in Section \ref{sec:implementation}, and we show applications in Section \ref{sec:application}. We conclude in Section \ref{sec:concl}.
+The paper is structured as follows: the radial transformation and its implementation is described in Section \ref{sec:method}, we show applications in Section \ref{sec:application} and conclude in Section \ref{sec:concl}.
 
 XXX probably remove this, for now keeping it in for reference
 see also discussion in https://mc-stan.org/users/documentation/case-studies/curse-dims.html on the average length of multivariate normal vector for large $p$, relation to "concentration of measures".
@@ -124,26 +123,26 @@ see also discussion in https://mc-stan.org/users/documentation/case-studies/curs
 
 # Burning sage algorithm {#sec:method}
 
-To better understand the seemingly contradictory low density of points near the center in the high-dimensional space, versus the piling in low-dimensional projections, we consider the projected volume. For this, it is useful to think of the data as being distributed in a hypersphere, i.e. all data points are within a specified distance from the center. Compared to the common assumption of a distribution in a box or hypercube this has the advantage of being rotation invariant, and more accurately captures commonly observed distributions.
+To understand why points tend to be away from the center in the high-dimensional space, but pile near the center in low-dimensional projections, we need to consider the projected volume. It is useful to think of the data as being distributed in a hypersphere, i.e. all data points are within a specified distance from the center. Compared to the common assumption of a distribution in a box or hypercube this has the advantage of being rotation invariant, and more accurately captures commonly observed distributions.
 
-We can picture the linearly projected volume starting from a 3D sphere. In any 2D projection a large fraction of the volume will be projected onto a small region near the center of the resulting disc, as a consequence of the shape of the sphere. The volume will be further concentrated when projecting onto 1D instead. The same intuition holds as we increase the number of original dimensions that are projected down to one or two dimensions for visualization, with increasing fractions of the volume being projected onto a small area around the center, see Figure \ref{fig:density} for illustration.
+We can picture this for a 3D sphere. In any 2D projection a large fraction of the volume will be projected onto a small region near the center of the resulting disk. This is a consequence of the curved shape, which extends further in the orthogonal direction at the center of the disk, since the projection corresponds to an integration over the orthogonal space. The effect will be further enhanced when projecting onto 1D instead. The same intuition holds as we increase the number of original dimensions that are projected down to one or two dimensions for visualization, with increasing fractions of the volume being projected onto a small area around the center, see Figure \ref{fig:density} for illustration.
 
-Here we introduce a radial transformation that redistributes the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2-dimensional projection. Note that it is straightforward to generalize this for $d$-dimensional projections by mapping onto equal $d$-dimensional volume instead.
+To offset this effect, we introduce a radial transformation that redistributes the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2-dimensional projection. Note that it is straightforward to generalize this for $d$-dimensional projections by mapping onto equal $d$-dimensional volume instead.
 
-## Definition of the relative volume
+## Definition of the relative projected volume
 
-To understand how the $p$ dimensional volume is projected onto a $2$ dimensional plane, we study what fraction of the total volume is projected onto the area of a disk depending on its radius. This dependence was desribed in @Laa:2020wkm. We start from a $p$ dimensional hypersphere with radius $R$ and volume $V(R, p)$, and its projected volume onto a $2$ dimensional disk of radius $r$, $V_{2D}(r, R, p)$, where $r$ can be any radius within $[0, R]$. The relative projected volume is then given as the ratio of these two quantities,
+To understand how the $p$ dimensional volume is projected onto a $2$ dimensional plane, we study what fraction of the total volume is projected onto the area of a disk depending on its radius. This dependence was desribed in @Laa:2020wkm. We start from a $p$ dimensional hypersphere with radius $R$ and volume $V(R, p)$, and its projected volume onto a centered $2$-dimensional disk of radius $r$, $V_{2D}(r, R, p)$, where $r$ can be any radius within $[0, R]$. The relative projected volume is then given as the ratio of these two quantities,
 \begin{equation}
 v_{2} (r, p, R) = \frac{V_{2D}(r, R, p)}{V(R, p)} = 1 - \left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
 \label{eq:cdf}
 \end{equation}
 This ratio is of particular interest because it gives the 2-dimensional radial cumulative distribution function (CDF) of points when assuming a uniform distribution within the $p$-dimensional hypersphere.
 
-We can compare $v_{2} (r, p, R)$ to the relative volume within a radius $r$ in the full hypersphere,
+We can compare $v_{2} (r, p, R)$ to the relative volume within a radius $r$ in the original $p$-dimensional hypersphere,
 \begin{equation}
-v_{p} (r, p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p,
+v_{p} (r, p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p.
 \end{equation}
-to illustrate the difference in how these distributions depend on $p$. This comparison is shown in Fig. \ref{fig:cdf}, for $p=3, 10, 100$. The left graph shows $v_{p} (r, p, R)$ and the right graph $v_{2} (r, p, R)$. We clearly see the opposing behavior of the two functions as $p$ increases. While $v_{p} (r, p, R)$ concentrates more and more towards large values of $r/R$, $v_{2} (r, p, R)$ has the inverse behavior. This concentration near the center of the disk is the result of integrating over all orthogonal directions when projecting onto the plane, and should be reversed by our radial transformation of the projected points.
+This comparison is shown in Fig. \ref{fig:cdf}, for $p=3, 10, 100$. The left graph shows $v_{p} (r, p, R)$ and the right graph $v_{2} (r, p, R)$. We clearly see the opposing behavior of the two functions as $p$ increases. While $v_{p} (r, p, R)$ concentrates more and more towards large values of $r/R$, $v_{2} (r, p, R)$ has the inverse behavior.
 
 ```{r cdf, fig.cap="Comparing the relative volume of a $p$ dimensional hypersphere captured within a radius $r$, in the $p$-dimensional space (left) and in a 2-dimensional projection (right), for $p=3, 10, 100$. While most of the volume is squeezed towards larger values of $r$ as $p$ increases, the projected volume gets concentrated near the center instead.", fig.height=2.2, fig.width=6, out.width = "90%", fig.align = "center"}
 
@@ -200,9 +199,9 @@ grid.arrange(p1, p2, ncol=2)
 
 ## Calculating the radial transformation
 
-Under the assumption that points are from a uniform distribution in a hypersphere, we can invert the piling effect using the CDF, i.e. the relative projected volume described in Eq. \ref{eq:cdf}. Starting from the distribution that arises for points that are uniform in the $p$-dimensional  hypersphere, we find the transformation of the radius in the 2-dimensional plane, $r$, that redistributes points such that they are uniform in a disk.
+The aim of the algorithm is to redistribute the projected volume such that equal relative areas on the disk, as given by $v_{2} (r, p=2, R)= v_p(r, p=2, R) = (r/R)^2$, contain equal relative projected volume, given by $v_{2} (r, p, R)$. This is achieved through a transformation of the projected radius that can be defined for any $r\in[0,R]$, and is applied to the projected data points in the plane, $x = (x_1, x_2)$. We work with polar coordinates and represent the data points as $x = (r_x, \theta_x)$. The angular component $\theta_x$ is uniform for this distribution, by the rotation invariance of the sphere, and thus does not need to be transformed. The radial component $r_x$ is transformed in two steps.
 
-The transformation is defined for projected data points in the plane, $x = (x_1, x_2)$, and we work with polar coordinates in the plane, $(r_x, \theta_x)$. The angular component $\theta_x$ is uniform for this distribution, by the rotation invariance of the sphere, and thus does not need to be transformed. The radial component $r_x$ is transformed in two steps. We first transform $r_x$ via the CDF, i.e. we compute $v_{2} (r_x, p, R)$, which is uniformly distributed in radius when the observations $x$ are indeed uniformly distributed in the $p$ dimensional hypersphere of radius $R$. We then transform $v_{2} (r_x, p, R)$ using the inverse of $v_{2} (r_x, 2, R)$, to go from a uniform distribution in radius to a uniform distribution across the area of the disk (notice that we have fixed $p=2$ here). This inverese is defined via
+The first transformation is to replace $r_x$ with $v_{2} (r_x, p, R)$. Since this is the radial CDF of the assumed underlying distribution, we expect that $v_{2} (r_x, p, R)$ is approximately uniformly distributed in radius. We then transform $v_{2} (r_x, p, R)$ using the inverse of $v_{2} (r_x, 2, R)$, to go from a uniform distribution in radius to a uniform distribution in area of the disk. This inverese is defined via
 \begin{equation}
 v_2(v_2^{inv}(r_x, 2, R), 2, R) = \left(\frac{v_2^{inv}(r_x, 2, R)}{R}\right)^2= r_x
 \end{equation}
@@ -211,7 +210,7 @@ and thus
 v_2^{inv}(r_x, 2, R) = R \sqrt{r_x}.
 \end{equation}
 
-The radial transformation to go from a uniform distribution in a $p$ dimensional hypersphere to a uniform distribution in a $2$ dimensional disk is therefore given by 
+The full radial transformation is therefore given by 
 \begin{equation}
 r'_x = v_2^{inv} (v_2(r_x, p, R), 2, R) =  R \sqrt{v_2(r_x, p, R)} = R \sqrt{1-\left(1-\left(\frac{r_x}{R}\right)^2\right)^{p/2}}.
 \label{eq:resc}
@@ -219,7 +218,7 @@ r'_x = v_2^{inv} (v_2(r_x, p, R), 2, R) =  R \sqrt{v_2(r_x, p, R)} = R \sqrt{1-\
 
 The relation between $r'_x$ and $r_x$ depends on the number of dimensions $p$, and is illustrated for selected values in Figure \ref{fig:radii}. We see that the transformation is approximately linear near the center. As $p$ increases it becomes non-linear faster, and e.g. for $p=10$ the points with radius $r_x>0.5$ will already be highly distorted and pushed out towards the last eighth in $r'_x$. Figure \ref{fig:circles} demonstrates this for different values of $p$ by showing equidistant circles for which the radius has been transformed according to Eq. \ref{eq:resc}.
 
-```{r radii, fig.cap="Relation between $r_x$ and $r'_x$ for different values of $p$. The scaling is approximately linear near the center, but leads to distortion at large radii when $p$ is large.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
+```{r radii, fig.cap="Relation between $r_x$ and $r'_x$ for different values of $p$ and assuming $R=1$. The scaling is approximately linear near the center, but leads to distortion at large radii when $p$ is large.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
 # define index as function of c
 trans_p <- function(p){
   function(r){
