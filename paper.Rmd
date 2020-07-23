@@ -281,17 +281,17 @@ Eq. \ref{eq:resc} is fixed for a given input dataset, by evaluating the number o
 ### Trimming
 The overall scale of the transformation is determined by $R$. In the case of an approximately spherical and uniform distribution the maximum distance from the center works well and ensures the validity of the rescaling in Eq. \ref{eq:resc}. But this is not robust and might result in a much larger scale than desired, especially when it is determined by outlying observations.
 
-We therefore allow trimming of the projected observations, using $R$ as a free parameter of the display function. When selecting a value $R$ that is smaller than the maximum distance from the center, we need to ensure that the projected radius of points is always smaller than $R$ before rescaling according to Eq. \ref{eq:resc}. We do this by replacing $r_i$ as
+We therefore allow trimming of the projected observations, using $R$ as a free parameter of the display function. When selecting a value $R$ that is smaller than the maximum distance from the center, we need to ensure that the projected radius of points is always smaller than $R$ before rescaling according to Eq. \ref{eq:resc}. We do this by trimming $r_x$ as
 \begin{equation}
-\tilde{r}_i = \min(r_i, R)
+r_x^{\mathrm{trim}} = \min(r_x, R)
 \label{eq:cutR}
 \end{equation}
 for each observation $i = 1, ..., n$.
 
 ### Tuning
-The dimension of the input might not reflect the intrinsic dimensionality of the dataset. This could be the case when dimension reduction was used prior to visualization, e.g. displaying only the first few principal components. In this case the effective dimensionality $p_{eff}$ is likely between the original number of dimensions and the selected number of principal components. We can think of omitted components as being in the orthogonal space of all considered projections, with some directions being pure noise, while others may still carry relevant information.
+The dimension of the input might not reflect the intrinsic dimensionality of the dataset. This could be the case when dimension reduction was used prior to visualization, e.g. displaying only the first few principal components. In this case the effective dimensionality $p_{\mathrm{eff}}$ is likely between the original number of dimensions and the selected number of principal components. We can think of omitted components as being in the orthogonal space of all considered projections, with some directions being pure noise, while others may still carry relevant information.
 
-We allow tuning $p_{eff} = s p$ by selecting the scaling parameter $s$. By default, $s=1$ and $p_{eff}=p$. When $s<1$ the rescaling will be softer, and $s>1$ results in more aggressive rescaling than suggested by $p$ alone. Note that when $p_{eff} < 2$ we actually invert the behavior and shift the focus away from the center, in general this is not wanted.
+We allow tuning $p_{\mathrm{eff}} = s p$ by selecting the scaling parameter $s$. By default, $s=1$ and $p_{\mathrm{eff}}=p$. When $s<1$ the rescaling will be softer, and $s>1$ results in more aggressive rescaling than suggested by $p$ alone. Note that when $p_{\mathrm{eff}} < 2$ we actually invert the behavior and shift the focus away from the center, in general this is not wanted.
 
 ```{r scaled, eval=F, fig.cap="Relation between $r$ and $r'$ for $p=10$ and different values of the scaling $s$. We can tune $s$ to control how strong the rescaling is, with $s<1$ leading to a weaker effect, and large values of $s$ increase the effect.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
 # define index as function of c
@@ -335,14 +335,11 @@ We can think of the display functions as part of a data pipline obtained when ru
 
 1. Obtain projection matrix $\mathbf{A}$. For $d$-dimensional projections this is an orthonormal $p \times d$ matrix. To ensure the smooth rotation of projections, each new $\mathbf{A}$ is obtained as an interpolated step in the sequence, as explained in @BCAH05.
 2. Project the data by computing $\mathbf{Y} = \mathbf{X}\cdot\mathbf{A}$.
-3. Map $\mathbf{Y}$ to the display to re-draw the projected data. We can think of the mapping as a function $f(\mathbf{Y})$, and for $d=2$ this typically maps the projected points onto a scatter plot display. Note that in general the mapping may also depend on additional information, for example @sliceTour is using the distance from the projection plane to show a slice display.
-
-These three steps are available in the `tourr` package, which includes different options for basis selection, and different display functions. Since the implementation is modular, we can add the sage display as a new function on the projected data, $f(\mathbf{Y})$. This mapping is done in the following steps:
-
-1. Center the 2-dimensional matrix $\mathbf{Y}$ and compute its polar coordinate representation $(r, \theta)$.
-2. For each observation, first use Eq. \ref{eq:cutR} to ensure the radius $r$ is within the specified range, and then apply the radial transformation defined in Eq. \ref{eq:resc} to obtain $r'$.
-3. Use the transformed radial coordinate $r'$ to re-compute the mapping onto Euclidean coordinates $(x, y)$.
-4. To fit the final projection onto the plotting canvas ranging between $[-1,1]$, we rescale each observation by $0.9\cdot \mathrm{half\_range}$.
+3. Map $\mathbf{Y}$ to the display to re-draw the projected data. For $d=2$ this typically maps the projected points onto a scatter plot display. With the new display we first transform $\mathbf{Y}$ as:
+    + Center the 2-dimensional matrix $\mathbf{Y}$ and compute its polar coordinate representation $(r_y, \theta_y)$.
+    + For each observation, first use Eq. \ref{eq:cutR} to get the trimmed radius $r_y^{\mathrm{trim}}$  within the specified range, and then apply the radial transformation defined in Eq. \ref{eq:resc} to obtain $r'_y$.
+    + Use the transformed radial coordinate $r'_y$ to re-compute the mapping onto Euclidean coordinates $(y_1, y_2)$.
+4. To fit the final projection onto the plotting canvas ranging between $[-1,1]$, we rescale each mapped observation $y$ using the `half_range` parameter.
 
 The display can be added when calling the `animate` function in `tourr`, as
 
@@ -355,7 +352,7 @@ tourr::animate(
   )
 ```
 
-and introduces the scaling parameter `s` for computing $p_{eff}$, and the overall scale `R` used for trimming. Both these parameters are described in Section \ref{sec:params} above. The ratio of `half_range` and `R` sets the scale for fitting the displayed data on the plotting canvas, by default `half_range` = `R` and we apply the scaling factor $0.9$ to contain the projected points within the display. When adjusting `R` the user should take care to adjust the `half_range` parameter accordingly.
+and introduces the scaling parameter `s` for computing $p_{\mathrm{eff}}$, and the overall scale `R` used for trimming. Both these parameters are described in Section \ref{sec:params} above. The ratio of `half_range` and `R` sets the scale for fitting the displayed data on the plotting canvas, by default `half_range` = `R` and we apply the scaling factor $0.9$ to contain the projected points within the display. When adjusting `R` the user should take care to adjust the `half_range` parameter accordingly.
 
 # Applications {#sec:application}
 
