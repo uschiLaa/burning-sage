@@ -275,17 +275,17 @@ tibble(x = 0, y = 0, r = seq(0.1, 1, length.out = 10)) %>%
 
 ## Trimming and tuning {#sec:params}
 
-Eq. \ref{eq:resc} is fixed for a given input dataset, by evaluating the number of dimensions $p$ and the maximum distance from the center $R$. However, in realistic applications we may wish to trim the projected data or tune the transformation. In practice, a combination of both adjustments can be used to further zoom in on the center of the distribution, or alternatively, to soften the transformation.
+The transformation in Eq. \ref{eq:resc} is fixed for a given input dataset, by evaluating the number of dimensions $p$ and the maximum distance from the center $R$. However, in realistic applications we may wish to trim the projected data or tune the transformation. In practice, a combination of both adjustments can be used to further zoom in on the center of the distribution, or alternatively, to soften the transformation.
 
 ### Trimming
 The overall scale of the transformation is determined by $R$. In the case of an approximately spherical and uniform distribution the maximum distance from the center works well and ensures the validity of the rescaling in Eq. \ref{eq:resc}. But this is not robust and might result in a much larger scale than desired, especially when it is determined by outlying observations.
 
-We therefore allow trimming of the projected observations, using $R$ as a free parameter of the display function. When selecting a value $R$ that is smaller than the maximum distance from the center, we need to ensure that the projected radius of points is always smaller than $R$ before rescaling according to Eq. \ref{eq:resc}. We do this by trimming $r_x$ as
+We therefore allow trimming of the projected observations, using $R$ as a free parameter of the display function. When selecting a value $R$ that is smaller than the maximum distance from the center, we need to ensure that the projected radius of points is always smaller than $R$, by trimming $r_x$ as
 \begin{equation}
 r_x^{\mathrm{trim}} = \min(r_x, R)
 \label{eq:cutR}
 \end{equation}
-for each observation $i = 1, ..., n$.
+for each observation $x$.
 
 ### Tuning
 The dimension of the input might not reflect the intrinsic dimensionality of the dataset. This could be the case when dimension reduction was used prior to visualization, e.g. displaying only the first few principal components. In this case the effective dimensionality $p_{\mathrm{eff}}$ is likely between the original number of dimensions and the selected number of principal components. We can think of omitted components as being in the orthogonal space of all considered projections, with some directions being pure noise, while others may still carry relevant information.
