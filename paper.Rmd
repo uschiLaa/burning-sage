@@ -130,20 +130,20 @@ We can picture the linearly projected volume starting from a 3D sphere. In any 2
 
 Here we introduce a radial transformation that redistributes the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2-dimensional projection. Note that it is straightforward to generalize this for $d$-dimensional projections by mapping onto equal $d$-dimensional volume instead.
 
-## Relative volume
+## Definition of the relative volume
 
-The radial dependence of the projected volume was described in @Laa:2020wkm through the ratio of the total volume of a $p$-dimensional sphere of radius $R$, $V(R, p)$ and its projected volume within a 2-dimensional radius $r$, $V_{2D}(r, R, p)$,
+To understand how the $p$ dimensional volume is projected onto a $2$ dimensional plane, we study what fraction of the total volume is projected onto the area of a disk depending on its radius. This dependence was desribed in @Laa:2020wkm. We start from a $p$ dimensional hypersphere with radius $R$ and volume $V(R, p)$, and its projected volume onto a $2$ dimensional disk of radius $r$, $V_{2D}(r, R, p)$, where $r$ can be any radius within $[0, R]$. The relative projected volume is then given as the ratio of these two quantities,
 \begin{equation}
-V^{rel}_{2D} (r, p, R) = \frac{V_{2D}(r, R, p)}{V(R, p)} = 1 - \left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
+v_{2} (r, p, R) = \frac{V_{2D}(r, R, p)}{V(R, p)} = 1 - \left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
 \label{eq:cdf}
 \end{equation}
 This ratio is of particular interest because it gives the 2-dimensional radial cumulative distribution function (CDF) of points when assuming a uniform distribution within the $p$-dimensional hypersphere.
 
-We compare $V^{rel}_{2D} (r, p, R)$ to the relative volume within a radius $r$ in the full hypersphere,
+We can compare $v_{2} (r, p, R)$ to the relative volume within a radius $r$ in the full hypersphere,
 \begin{equation}
-V^{rel}_{pD} (r, p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p,
+v_{p} (r, p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p,
 \end{equation}
-to illustrate the opposing effects on their distribution. This comparison is shown in Fig. \ref{fig:cdf}, for $p=3, 10, 100$. The left graph shows $V^{rel}_{pD} (r, p, R)$ and the right graph $V^{rel}_{2D} (r, p, R)$. We clearly see the opposing behavior of the two functions as $p$ increases. While $V^{rel}_{pD} (r, p, R)$ concentrates more and more towards large values of $r/R$, $V^{rel}_{2D} (r, p, R)$ has the opposite behavior. This concentration near the center of the disk is the result of integrating over all orthogonal directions when projecting onto the plane, and should be reversed by our radial transformation of the projected points.
+to illustrate the difference in how these distributions depend on $p$. This comparison is shown in Fig. \ref{fig:cdf}, for $p=3, 10, 100$. The left graph shows $v_{p} (r, p, R)$ and the right graph $v_{2} (r, p, R)$. We clearly see the opposing behavior of the two functions as $p$ increases. While $v_{p} (r, p, R)$ concentrates more and more towards large values of $r/R$, $v_{2} (r, p, R)$ has the inverse behavior. This concentration near the center of the disk is the result of integrating over all orthogonal directions when projecting onto the plane, and should be reversed by our radial transformation of the projected points.
 
 ```{r cdf, fig.cap="Comparing the relative volume of a $p$ dimensional hypersphere captured within a radius $r$, in the $p$-dimensional space (left) and in a 2-dimensional projection (right), for $p=3, 10, 100$. While most of the volume is squeezed towards larger values of $r$ as $p$ increases, the projected volume gets concentrated near the center instead.", fig.height=2.2, fig.width=6, out.width = "90%", fig.align = "center"}
 
@@ -198,24 +198,28 @@ grid.arrange(p1, p2, ncol=2)
 
 ```
 
-## Radial transformation
+## Calculating the radial transformation
 
 Under the assumption that points are from a uniform distribution in a hypersphere, we can invert the piling effect using the CDF, i.e. the relative projected volume described in Eq. \ref{eq:cdf}. Starting from the distribution that arises for points that are uniform in the $p$-dimensional  hypersphere, we find the transformation of the radius in the 2-dimensional plane, $r$, that redistributes points such that they are uniform in a disk.
 
-We work with polar coordinates in the plane, $r, \theta$. The angular component $\theta$ is uniform for this distribution (by the rotation invariance of the sphere) and does not need to be transformed. The radial component $r$ is transformed by first calculating its CDF value to get a uniform distribution in $r''$,
+The transformation is defined for projected data points in the plane, $x = (x_1, x_2)$, and we work with polar coordinates in the plane, $(r_x, \theta_x)$. The angular component $\theta_x$ is uniform for this distribution, by the rotation invariance of the sphere, and thus does not need to be transformed. The radial component $r_x$ is transformed in two steps. We first transform $r_x$ via the CDF, i.e. we compute $v_{2} (r_x, p, R)$, which is uniformly distributed in radius when the observations $x$ are indeed uniformly distributed in the $p$ dimensional hypersphere of radius $R$. We then transform $v_{2} (r_x, p, R)$ using the inverse of $v_{2} (r_x, 2, R)$, to go from a uniform distribution in radius to a uniform distribution across the area of the disk (notice that we have fixed $p=2$ here). This inverese is defined via
 \begin{equation}
-r'' = V^{rel}_{2D} (r, p, R) = 1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
+v_2(v_2^{inv}(r_x, 2, R), 2, R) = \left(\frac{v_2^{inv}(r_x, 2, R)}{R}\right)^2= r_x
 \end{equation}
-We next transform $r''$ using the inverse of $V^{rel}_{2D} (r, 2, R)$ to go from a uniform distribution in radius to a uniform distribution across the area of the disk,
-XXX notation: how to best write inverse here?
+and thus
 \begin{equation}
-r' = V^{rel}_{2D} (r'', 2, R)^{-1} = R \sqrt{r''} = R \sqrt{1-\left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}}.
+v_2^{inv}(r_x, 2, R) = R \sqrt{r_x}.
+\end{equation}
+
+The radial transformation to go from a uniform distribution in a $p$ dimensional hypersphere to a uniform distribution in a $2$ dimensional disk is therefore given by 
+\begin{equation}
+r'_x = v_2^{inv} (v_2(r_x, p, R), 2, R) =  R \sqrt{v_2(r_x, p, R)} = R \sqrt{1-\left(1-\left(\frac{r_x}{R}\right)^2\right)^{p/2}}.
 \label{eq:resc}
 \end{equation}
 
-The relation between $r'$ and $r$ depends on the number of dimensions $p$, and is illustrated for selected values in Figure \ref{fig:radii}. We see that the transformation is approximately linear near the center. As $p$ increases it becomes non-linear faster, and e.g. for $p=10$ the points with radius $r>0.5$ will already be highly distorted and pushed out towards the last eighth in $r'$. Figure \ref{fig:circles} demonstrates this for different values of $p$ by showing equidistant circles for which the radius has been transformed according to Eq. \ref{eq:resc}.
+The relation between $r'_x$ and $r_x$ depends on the number of dimensions $p$, and is illustrated for selected values in Figure \ref{fig:radii}. We see that the transformation is approximately linear near the center. As $p$ increases it becomes non-linear faster, and e.g. for $p=10$ the points with radius $r_x>0.5$ will already be highly distorted and pushed out towards the last eighth in $r'_x$. Figure \ref{fig:circles} demonstrates this for different values of $p$ by showing equidistant circles for which the radius has been transformed according to Eq. \ref{eq:resc}.
 
-```{r radii, fig.cap="Relation between $r$ and $r'$ for different values of $p$. The scaling is approximately linear near the center, but leads to distortion at large radii when $p$ is large.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
+```{r radii, fig.cap="Relation between $r_x$ and $r'_x$ for different values of $p$. The scaling is approximately linear near the center, but leads to distortion at large radii when $p$ is large.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
 # define index as function of c
 trans_p <- function(p){
   function(r){
@@ -243,7 +247,7 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
   scale_color_manual(name = "p",
                      values = RColorBrewer::brewer.pal(5, "Dark2"),
                      labels = c("2 (baseline)", "4", "6", "10", "20")) +
-  xlab("r") + ylab("r'") + theme_bw()
+  xlab(expression(r[x])) + ylab(expression(r[x]*minute)) + theme_bw()
 
 ```
 
