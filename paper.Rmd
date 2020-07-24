@@ -125,6 +125,46 @@ see also discussion in https://mc-stan.org/users/documentation/case-studies/curs
 
 To understand why points tend to be away from the center in the high-dimensional space, but pile near the center in low-dimensional projections, we need to consider the projected volume. It is useful to think of the data as being distributed in a hypersphere, i.e. all data points are within a specified distance from the center. Compared to the common assumption of a distribution in a box or hypercube this has the advantage of being rotation invariant, and more accurately captures commonly observed distributions.
 
+XXX maybe a better picture is going from a 2D circle to a 1D projection?
+
+```{r, out.width="40%", fig.align = "center"}
+
+xp <- 0.1
+n <- 200
+
+x <- seq(-xp, xp,length.out = n)
+yp <- sqrt(1-x^2)
+ym <- -yp
+
+x_outer1 <- c(seq(1-xp, 1, length.out = n/2))
+yp_outer1 <- sqrt(1-x_outer1^2)
+ym_outer1 <- -yp_outer1
+
+x_outer2 <- c(seq(-1, -1+xp, length.out = n/2))
+yp_outer2 <- sqrt(1-x_outer2^2)
+ym_outer2 <- -yp_outer2
+
+ggplot() +
+  geom_circle(aes(x0= 0, y0=0, r = 1)) +
+  geom_area(aes(x=x, y=yp), fill = "red", alpha = 0.5) +
+  geom_area(aes(x=x, y=ym), fill = "red", alpha = 0.5) +
+  geom_area(aes(x=x_outer1, y=yp_outer1), fill = "blue", alpha = 0.5) +
+  geom_area(aes(x=x_outer1, y=ym_outer1), fill = "blue", alpha = 0.5) +
+  geom_area(aes(x=x_outer2, y=yp_outer2), fill = "blue", alpha = 0.5) +
+  geom_area(aes(x=x_outer2, y=ym_outer2), fill = "blue", alpha = 0.5) +
+  geom_area(aes(x=x_outer1-1+xp, y=yp_outer1), fill = "blue", alpha = 0.5) +
+  geom_area(aes(x=x_outer1-1+xp, y=ym_outer1), fill = "blue", alpha = 0.5) +
+  geom_area(aes(x=x_outer2+1-xp, y=yp_outer2), fill = "blue", alpha = 0.5) +
+  geom_area(aes(x=x_outer2+1-xp, y=ym_outer2), fill = "blue", alpha = 0.5) +
+  theme_classic() +
+  xlab("x") + ylab("y") +
+  coord_fixed()
+
+
+```
+
+
+
 We can picture this for a 3D sphere. In any 2D projection a large fraction of the volume will be projected onto a small region near the center of the resulting disk. This is a consequence of the curved shape, which extends further in the orthogonal direction at the center of the disk, since the projection corresponds to an integration over the orthogonal space. The effect will be further enhanced when projecting onto 1D instead. The same intuition holds as we increase the number of original dimensions that are projected down to one or two dimensions for visualization, with increasing fractions of the volume being projected onto a small area around the center, see Figure \ref{fig:density} for illustration.
 
 To offset this effect, we introduce a radial transformation that redistributes the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2-dimensional projection. Note that it is straightforward to generalize this for $d$-dimensional projections by mapping onto equal $d$-dimensional volume instead.
