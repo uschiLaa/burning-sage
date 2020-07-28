@@ -28,7 +28,7 @@
 
 
 display_sage <- function(axes = "center", half_range = NULL,
-                              col = "black", pch  = 20, s = 1, R = NULL, ...) {
+                              col = "black", pch  = 20, gam = 1, R = NULL, ...) {
   
   labels <- NULL
   peff <- NULL
@@ -37,7 +37,7 @@ display_sage <- function(axes = "center", half_range = NULL,
     half_range <<- tourr:::compute_half_range(half_range, data, TRUE)
     R <<- tourr:::compute_half_range(R, data, TRUE)
     labels <<- abbreviate(colnames(data), 3)
-    peff <<- s * ncol(data)
+    peff <<- gam * ncol(data)
   }
   
   

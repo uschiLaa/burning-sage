@@ -147,18 +147,18 @@ To offset this effect, we introduce a radial transformation that redistributes t
 
 ## Definition of the relative projected volume
 
-To understand how the $p$ dimensional volume is projected onto a $2$ dimensional plane, we study what fraction of the total volume is projected onto the area of a disk depending on its radius. This dependence was desribed in @Laa:2020wkm. We start from a $p$ dimensional hypersphere with radius $R$ and volume $V(R, p)$, and its projected volume onto a centered $2$-dimensional disk of radius $r$, $V_{2D}(r, R, p)$, where $r$ can be any radius within $[0, R]$. The relative projected volume is then given as the ratio of these two quantities,
+To understand how the $p$ dimensional volume is projected onto a $2$ dimensional plane, we study what fraction of the total volume is projected onto the area of a disk depending on its radius. This dependence was desribed in @Laa:2020wkm. We start from a $p$ dimensional hypersphere with radius $R$ and volume $V(R, p)$, and its projected volume onto a centered $2$-dimensional disk of radius $r$, $V_{2D}(r; p, R)$, where $r$ can be any radius within $[0, R]$. The relative projected volume is then given as the ratio of these two quantities,
 \begin{equation}
-v_{2} (r, p, R) = \frac{V_{2D}(r, R, p)}{V(R, p)} = 1 - \left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
+v_{2} (r; p, R) = \frac{V_{2D}(r; p, R)}{V(R, p)} = 1 - \left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
 \label{eq:cdf}
 \end{equation}
 This ratio is of particular interest because it gives the 2-dimensional radial cumulative distribution function (CDF) of points when assuming a uniform distribution within the $p$-dimensional hypersphere.
 
-We can compare $v_{2} (r, p, R)$ to the relative volume within a radius $r$ in the original $p$-dimensional hypersphere,
+We can compare $v_{2} (r; p, R)$ to the relative volume within a radius $r$ in the original $p$-dimensional hypersphere,
 \begin{equation}
-v_{p} (r, p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p.
+v_{p} (r; p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p.
 \end{equation}
-This comparison is shown in Fig. \ref{fig:cdf}, for $p=3, 10, 100$. The left graph shows $v_{p} (r, p, R)$ and the right graph $v_{2} (r, p, R)$. We clearly see the opposing behavior of the two functions as $p$ increases. While $v_{p} (r, p, R)$ concentrates more and more towards large values of $r/R$, $v_{2} (r, p, R)$ has the inverse behavior.
+This comparison is shown in Fig. \ref{fig:cdf}, for $p=3, 10, 100$. The left graph shows $v_{p} (r; p, R)$ and the right graph $v_{2} (r; p, R)$. We clearly see the opposing behavior of the two functions as $p$ increases. While $v_{p} (r; p, R)$ concentrates more and more towards large values of $r/R$, $v_{2} (r; p, R)$ has the inverse behavior.
 
 ```{r cdf, fig.cap="Comparing the relative volume of a $p$ dimensional hypersphere captured within a radius $r$, in the $p$-dimensional space (left) and in a 2-dimensional projection (right), for $p=3, 10, 100$. While most of the volume is squeezed towards larger values of $r$ as $p$ increases, the projected volume gets concentrated near the center instead.", fig.height=2.2, fig.width=6, out.width = "90%", fig.align = "center"}
 
@@ -215,26 +215,26 @@ grid.arrange(p1, p2, ncol=2)
 
 ## Calculating the radial transformation
 
-The aim of the algorithm is to redistribute the projected volume such that equal relative areas on the disk, as given by $v_{2} (r, p=2, R)= v_p(r, p=2, R) = (r/R)^2$, contain equal relative projected volume, given by $v_{2} (r, p, R)$. This is achieved through a transformation of the projected radius that can be defined for any $r\in[0,R]$, and is applied to the projected data points in the plane, $x = (x_1, x_2)$. We work with polar coordinates and represent the data points as $x = (r_x, \theta_x)$. The angular component $\theta_x$ is uniform for this distribution, by the rotation invariance of the sphere, and thus does not need to be transformed. The radial component $r_x$ is transformed in two steps.
+The aim of the algorithm is to redistribute the projected volume such that equal relative areas on the disk, as given by $v_{2} (r; p=2, R)= v_p(r; p=2, R) = (r/R)^2$, contain equal relative projected volume, given by $v_{2} (r; p, R)$. This is achieved through a transformation of the projected radius that can be defined for any $r\in[0,R]$, and is applied to the projected data points in the plane, $y = (y_1, y_2)$. We work with polar coordinates and represent the data points as $y = (r_y, \theta_y)$. The angular component $\theta_y$ is uniform for this distribution, by the rotation invariance of the sphere, and thus does not need to be transformed. The radial component $r_y$ is transformed in two steps.
 
-The first transformation is to replace $r_x$ with $v_{2} (r_x, p, R)$. Since this is the radial CDF of the assumed underlying distribution, we expect that $v_{2} (r_x, p, R)$ is approximately uniformly distributed in radius. We then transform $v_{2} (r_x, p, R)$ using the inverse of $v_{2} (r_x, 2, R)$, to go from a uniform distribution in radius to a uniform distribution in area of the disk. This inverese is defined via
+The first transformation is to replace $r_y$ with $v_{2} (r_y; p, R)$. Since this is the radial CDF of the assumed underlying distribution, we expect that $v_{2} (r_y; p, R)$ is approximately uniformly distributed in radius. We then transform $v_{2} (r_y; p, R)$ using the inverse of $v_{2} (r_y; 2, R)$, to go from a uniform distribution in radius to a uniform distribution in area of the disk. This inverese is defined via
 \begin{equation}
-v_2(v_2^{inv}(r_x, 2, R), 2, R) = \left(\frac{v_2^{inv}(r_x, 2, R)}{R}\right)^2= r_x
+v_2^{-1}(v_2(r_y; 2, R); 2, R) = v_2(v_2^{-1}(r_y; 2, R); 2, R) = r_y
 \end{equation}
 and thus
 \begin{equation}
-v_2^{inv}(r_x, 2, R) = R \sqrt{r_x}.
+v_2^{inv}(r_y; 2, R) = R \sqrt{r_y}.
 \end{equation}
 
 The full radial transformation is therefore given by 
 \begin{equation}
-r'_x = v_2^{inv} (v_2(r_x, p, R), 2, R) =  R \sqrt{v_2(r_x, p, R)} = R \sqrt{1-\left(1-\left(\frac{r_x}{R}\right)^2\right)^{p/2}}.
+r'_y = v_2^{inv} (v_2(r_y; p, R); 2, R) =  R \sqrt{v_2(r_y; p, R)} = R \sqrt{1-\left(1-\left(\frac{r_y}{R}\right)^2\right)^{p/2}}.
 \label{eq:resc}
 \end{equation}
 
-The relation between $r'_x$ and $r_x$ depends on the number of dimensions $p$, and is illustrated for selected values in Figure \ref{fig:radii}. We see that the transformation is approximately linear near the center. As $p$ increases it becomes non-linear faster, and e.g. for $p=10$ the points with radius $r_x>0.5$ will already be highly distorted and pushed out towards the last eighth in $r'_x$. Figure \ref{fig:circles} demonstrates this for different values of $p$ by showing equidistant circles for which the radius has been transformed according to Eq. \ref{eq:resc}.
+The relation between $r'_y$ and $r_y$ depends on the number of dimensions $p$, and is illustrated for selected values in Figure \ref{fig:radii}. We see that the transformation is approximately linear near the center. As $p$ increases it becomes non-linear faster, and e.g. for $p=10$ the points with radius $r_x>0.5$ will already be highly distorted and pushed out towards the last eighth in $r'_x$. Figure \ref{fig:circles} demonstrates this for different values of $p$ by showing equidistant circles for which the radius has been transformed according to Eq. \ref{eq:resc}.
 
-```{r radii, fig.cap="Relation between $r_x$ and $r'_x$ for different values of $p$ and assuming $R=1$. The scaling is approximately linear near the center, but leads to distortion at large radii when $p$ is large.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
+```{r radii, fig.cap="Relation between $r_y$ and $r'_y$ for different values of $p$ and assuming $R=1$. The scaling is approximately linear near the center, but leads to distortion at large radii when $p$ is large.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
 # define index as function of c
 trans_p <- function(p){
   function(r){
@@ -262,7 +262,7 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
   scale_color_manual(name = "p",
                      values = RColorBrewer::brewer.pal(5, "Dark2"),
                      labels = c("2 (baseline)", "4", "6", "10", "20")) +
-  xlab(expression(r[x])) + ylab(expression(r[x]*minute)) + theme_bw()
+  xlab(expression(r[y])) + ylab(expression(r[y]*minute)) + theme_bw()
 
 ```
 
@@ -296,9 +296,9 @@ The transformation in Eq. \ref{eq:resc} is fixed for a given input dataset, by e
 ### Trimming
 The overall scale of the transformation is determined by $R$. In the case of an approximately spherical and uniform distribution the maximum distance from the center works well and ensures the validity of the rescaling in Eq. \ref{eq:resc}. But this is not robust and might result in a much larger scale than desired, especially when it is determined by outlying observations.
 
-We therefore allow trimming of the projected observations, using $R$ as a free parameter of the display function. When selecting a value $R$ that is smaller than the maximum distance from the center, we need to ensure that the projected radius of points is always smaller than $R$, by trimming $r_x$ as
+We therefore allow trimming of the projected observations, using $R$ as a free parameter of the display function. When selecting a value $R$ that is smaller than the maximum distance from the center, we need to ensure that the projected radius of points is always smaller than $R$, by trimming $r_y$ as
 \begin{equation}
-r_x^{\mathrm{trim}} = \min(r_x, R)
+r_y^{\mathrm{trim}} = \min(r_y, R)
 \label{eq:cutR}
 \end{equation}
 for each observation $x$.
@@ -306,40 +306,7 @@ for each observation $x$.
 ### Tuning
 The dimension of the input might not reflect the intrinsic dimensionality of the dataset. This could be the case when dimension reduction was used prior to visualization, e.g. displaying only the first few principal components. In this case the effective dimensionality $p_{\mathrm{eff}}$ is likely between the original number of dimensions and the selected number of principal components. We can think of omitted components as being in the orthogonal space of all considered projections, with some directions being pure noise, while others may still carry relevant information.
 
-We allow tuning $p_{\mathrm{eff}} = s p$ by selecting the scaling parameter $s$. By default, $s=1$ and $p_{\mathrm{eff}}=p$. When $s<1$ the rescaling will be softer, and $s>1$ results in more aggressive rescaling than suggested by $p$ alone. Note that when $p_{\mathrm{eff}} < 2$ we actually invert the behavior and shift the focus away from the center, in general this is not wanted.
-
-```{r scaled, eval=F, fig.cap="Relation between $r$ and $r'$ for $p=10$ and different values of the scaling $s$. We can tune $s$ to control how strong the rescaling is, with $s<1$ leading to a weaker effect, and large values of $s$ increase the effect.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
-# define index as function of c
-trans_s <- function(s, p){
-  p <- s * p
-  function(r){
-    sqrt( 1 - (1-r^2)^(p/2))
-  }
-}
-  
-# plot dependence for selected values
-ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
-    stat_function(
-        fun = trans_s(0.2, 10),
-        mapping = aes(color = "ca")) +
-  stat_function(
-        fun = trans_s(0.5, 10),
-        mapping = aes(color = "cb")) +
-  stat_function(
-        fun = trans_s(1, 10),
-        mapping = aes(color = "cc")) +
-    stat_function(
-        fun = trans_s(2, 10),
-        mapping = aes(color = "cd")) +
-    stat_function(
-        fun = trans_s(5, 10),
-        mapping = aes(color = "ce")) +
-  scale_color_manual(name = "s",
-                     values = RColorBrewer::brewer.pal(5, "Dark2"),
-                     labels = c("0.2", "0.5", "1", "2", "5")) +
-  xlab("r") + ylab("r'") + theme_bw()
-
-```
+We allow tuning $p_{\mathrm{eff}} = \gamma p$ by selecting the scaling parameter $\gamma$. By default, $\gamma=1$ and $p_{\mathrm{eff}}=p$. When $\gamma<1$ the rescaling will be softer, and $\gamma>1$ results in more aggressive rescaling than suggested by $p$ alone. Note that when $p_{\mathrm{eff}} < 2$ we actually invert the behavior and shift the focus away from the center, in general this is not wanted.
 
 
 ## Implementation as a dynamic display {#sec:implementation}
@@ -354,7 +321,7 @@ We can think of the display functions as part of a data pipline obtained when ru
     + Center the 2-dimensional matrix $\mathbf{Y}$ and compute its polar coordinate representation $(r_y, \theta_y)$.
     + For each observation, first use Eq. \ref{eq:cutR} to get the trimmed radius $r_y^{\mathrm{trim}}$  within the specified range, and then apply the radial transformation defined in Eq. \ref{eq:resc} to obtain $r'_y$.
     + Use the transformed radial coordinate $r'_y$ to re-compute the mapping onto Euclidean coordinates $(y_1, y_2)$.
-4. To fit the final projection onto the plotting canvas ranging between $[-1,1]$, we rescale each mapped observation $y$ using the `half_range` parameter.
+4. To fit the final projection onto the plotting canvas ranging between $[-1,1]$, we rescale each mapped observation $y$ using a scaling parameter $s$.
 
 The display can be added when calling the `animate` function in `tourr`, as
 
@@ -363,11 +330,11 @@ The display can be added when calling the `animate` function in `tourr`, as
 tourr::animate(
   data,
   tour_path = tourr::grand_tour(),
-  display = display_sage(s, R, half_range)
+  display = display_sage(gam, R, half_range)
   )
 ```
 
-and introduces the scaling parameter `s` for computing $p_{\mathrm{eff}}$, and the overall scale `R` used for trimming. Both these parameters are described in Section \ref{sec:params} above. The ratio of `half_range` and `R` sets the scale for fitting the displayed data on the plotting canvas, by default `half_range` = `R` and we apply the scaling factor $0.9$ to contain the projected points within the display. When adjusting `R` the user should take care to adjust the `half_range` parameter accordingly.
+and uses `gam` to set the $\gamma$ parameter for computing $p_{\mathrm{eff}}$, and the overall range `R` used for trimming. Both these parameters are described in Section \ref{sec:params} above. Finally, `half_range` sets the scale parameter $s$ to adjust the scale to the drawing canvas. The ratio $R/s$ sets the scale for fitting the displayed data on the plotting canvas, by default $s = R$ and we apply the scaling factor $0.9$ to contain the projected points within the display. When adjusting $R$ the user should take care to adjust $s$ accordingly.
 
 # Applications {#sec:application}
 
