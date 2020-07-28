@@ -56,15 +56,12 @@ The notion of a "curse of dimensionality" was originally introduced in @BellmanR
 
 Paradoxically, the curse of dimensionality inverts for dimension reduction, and affects the resulting visualizations. For low-dimensional linear projections of high-dimensional data, most projections will show approximately Gaussian distributions of the data, with observations concentrating in the center [@diaconis1984]. In projection pursuit, this motivated the development of indexes showing departure from normality. For high-dimension low-sample size data @10.2307/27639976,@10.1093/biomet/asp084 call this "data piling": all observations are in a single point in certain low-dimensional projections. These issues also persist with non-linear dimension reduction techniques. This is often referred to as the "crowding problem", which methods like t-Distributed Stochastic Neighbor Embedding (t-SNE) [@tsne] aim to alleviate.
 
-XXX FIX - how can I make the contours better? Maybe get radial density and draw as circles?
-For illustration we show two-dimensional linear projections of points sampled uniformly within hyperspheres in $p=3, 10, 100$ dimensions in Figure \ref{fig:density}. All distributions are uniform within the maximum radius $R=1$, but the projected points start piling near the center as $p$ increases.
+For illustration we show histograms of two-dimensional linear projections of points sampled uniformly within hyperspheres in $p=3, 10, 100$ dimensions in Figure \ref{fig:density}. All distributions are uniform within the maximum radius $R=1$, but the projected points start piling near the center as $p$ increases.
 
-```{r density, fig.cap="Two-dimensional projections of 10k points sampled uniformly within a $p$-dimensional hyperspheres, for $p=3, 10, 100$. The density is shown both through transparancy of the projected points, and as contour lines.", out.width="95%", fig.align = "center"}
+```{r density, fig.cap="Histogram of two-dimensional projections of 10k points sampled uniformly within a $p$-dimensional hyperspheres, for $p=3, 10, 100$. The fill color shows the logarithm of the bin count, with the highest counts shown in yellow. As $p$ increases the samples concentrate near the center.", out.width="95%", fig.align = "center"}
 
 set.seed(12345)
 
-lbl <- c("p=3", "p=10", "p=100")
-names(lbl) <- c("p3", "p10", "p100")
 
 n <- 10000
 
@@ -77,39 +74,18 @@ colnames(p10) <- c("x", "y")
 colnames(p100) <- c("x", "y")
 
 proj_points <- as_tibble(rbind(p3, p10, p100)) %>%
-  mutate(p = c(rep(3, n), rep(10, n), rep(100, n)))
+  mutate(p = factor(c(rep("p = 3", n), rep("p = 10", n), rep("p = 100", n)), levels = c("p = 3", "p = 10", "p = 100")))
 
 
 ggplot(proj_points, aes(x, y)) +
-  #geom_point(alpha=0.02) + 
-  #geom_density2d(bins = 7, contour_var = "ndensity") +
-  geom_hex(bins = 12, aes(fill=log(..count..))) +
-  #geom_hex(bins = 12) +
+  geom_hex(bins = 20, aes(fill=log(..count..))) +
   scale_fill_viridis_c() +
-  coord_fixed() +
   theme_bw() +
-  facet_wrap(~p, labeller = labeller(name = lbl)) +
-  #guides(color = FALSE) +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
+  facet_wrap(~p, scales = "free") +
+  guides(fill = FALSE) +
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), aspect.ratio = 1)
 
 
-### a radial binning
-n <- 5
-r_breaks <- seq(0, 1, length.out = n+1)
-proj_points_rbin <- proj_points %>%
-  mutate(r = sqrt(x^2 + y^2)) %>%
-  mutate(bin = cut(r, r_breaks)) %>%
-  mutate(bin_up = as.numeric( sub("[^,]*,([^]]*)\\]", "\\1", bin))) %>%
-  group_by(p) %>%
-  count(bin_up) %>%
-  arrange(-bin_up)
-
-ggplot(proj_points_rbin) +
-  geom_circle(aes(x0= 0, y0=0, r = bin_up, fill=log(n))) +
-  scale_fill_viridis_c() +
-  facet_wrap(~p, labeller = labeller(name = lbl)) +
-  coord_fixed() +
-  theme_bw()
 
 ```
 
