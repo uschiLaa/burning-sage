@@ -81,12 +81,14 @@ proj_points <- as_tibble(rbind(p3, p10, p100)) %>%
 ggplot(proj_points, aes(x, y)) +
   geom_hex(bins = 20, aes(fill=log(..count..))) +
   scale_fill_viridis_c() +
-  theme_bw() +
   facet_wrap(~p, scales = "free") +
   guides(fill = FALSE) +
-  theme_void() + 
-  theme(#axis.title.x=element_blank(), 
-        #axis.title.y=element_blank(), 
+  theme_bw() +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text = element_blank(),
         aspect.ratio = 1)
 
 
