@@ -127,7 +127,7 @@ ym_outer2 <- -yp_outer2
 p1 <- ggplot() +
   geom_ellipse(aes(x0 = 0, y0 = 0, a = 1, b = 0.2, angle = 0), fill = "grey") +
   geom_circle(aes(x0= 0, y0=0, r = 1)) +
-  geom_circle(aes(x0= 0, y0=0, r = xp), color="red", fill = "blue", alpha=0.5) +
+  geom_circle(aes(x0= 0, y0=0, r = xp), color="blue", fill = "blue", alpha=0.5) +
   geom_ellipse(aes(x0 = 0, y0 = 0, a = xp, b = xp/10, angle = 0), color="red") +
   geom_ellipse(aes(x0 = 0, y0 = sqrt(1 - (2*xp)^2/4)-xp/100, a = xp, b = xp/10, angle = 0), color="red") +
   geom_ellipse(aes(x0 = 0, y0 = -sqrt(1 - (2*xp)^2/4)+xp/100, a = xp, b = xp/10, angle = 0), color="red") +
@@ -139,9 +139,9 @@ p1 <- ggplot() +
   geom_segment(aes(x = 0, y = 0, xend = 0, yend = xp),
                size = 0.5, arrow = arrow(length = unit(0.1, "inches"))) +
   annotate("text", x = -0.05, y = xp/2, label="r") +
-  annotate("text", x = 0, y = 0.75, label=TeX("$V_{2D}(r; p, R)$")) + 
-  annotate("text", x = 0, y = -xp * 0.75, label=TeX("$V(r; p, R)$")) + 
-  annotate("text", x = 0.65, y = 0.5, label="V(R,p)") +
+  annotate("text", x = 0, y = 0.75, label=TeX("\\textit{V}$_{2D}$\\textit{(r;p,R)}")) + 
+  annotate("text", x = 0, y = -xp * 0.75, label=TeX("\\textit{V(r;p,R)}")) + 
+  annotate("text", x = 0.65, y = 0.5, label=TeX("\\textit{V(R,p)}")) +
   theme_void() +
   coord_fixed()
 
