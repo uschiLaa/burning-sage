@@ -85,6 +85,12 @@ scale2 <- function(x, na.rm = FALSE) (x - mean(x, na.rm = na.rm)) / sd(x, na.rm)
 sk_5 <- sk_pca$x[,1:5] %>%
   as_tibble() %>%
   mutate_all(scale2)
+
+render_gif(
+  sk_5,
+  display = display_sage(col=col, s=2),
+  rescale = FALSE
+)
 animate(sk_5,
         display = display_sage(col=col, s=2), rescale = F)
 

@@ -92,3 +92,13 @@ In the case of linear relations and higher number of dimensions the fisheye disp
 <img src="pdfsense_xy.gif" width="450"/><img src="pdfsense_fe.gif" width="450"/>
 
 
+The mouse example
+
+<img src="mouse-grand.gif" width="450"/><img src="mouse-sage.gif" width="450"/>
+
+The sketches
+
+<img src="sketches-grand.gif" width="450"/><img src="sketches-sage.gif" width="450"/>
+
+
+
