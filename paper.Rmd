@@ -49,6 +49,8 @@ library(latex2exp)
 \doublespacing
 # Introduction
 
+<!-- Reverse, redistribute, counteract, offset, rescale, radial transformation -->
+
 The notion of a "curse of dimensionality" was originally introduced in @BellmanRichard1961 to describe the exponential growth in difficulty for optimization as number of dimensions increases. This affects sampling in high-dimensions. The volume of the space grows exponentially, with dimension, and since it is not typically feasible to increase the number of samples accordingly, the density of points decreases. The effect is that most points will be far from the sample mean, on the edge of the sample space. @doi:10.1111/j.1467-9868.2005.00510.x have shown that in the extreme case of high-dimension, low-sample size data, observations are on the vertices of a simplex. 
 
 <!-- This causes problems in different domains. An important example in statistics is cluster analysis. Since the distance between any two points in a distribution becomes approximately constant, new methods are needed to cluster points in a high-dimensional space (see e.g. @Steinbach2004).-->
@@ -95,7 +97,7 @@ ggplot(proj_points, aes(x, y)) +
 
 ```
 
-In this work we address the piling in low-dimensional linear projections, which is in particular a barrier for viewing high-dimensional distributions with tour methods [@As85,@BCAH05]. Tours show interpolated sequences of low-dimensional projections of the data. When exploring a dataset with a tour we can discover features that are only visible from specific viewing angles. However, these features may easily be hidden if most of the observations pile up near the center, with a large fraction of the plotting canvas showing only outlying points. To counteract the effect, we introduce a radial transformation that zoomes in near the center of the distribution.
+In this work we address the piling in low-dimensional linear projections, which is in particular a barrier for viewing high-dimensional distributions with tour methods [@As85,@BCAH05]. Tours show interpolated sequences of low-dimensional projections of the data. When exploring a dataset with a tour we can discover features that are only visible from specific viewing angles. However, these features may easily be hidden if most of the observations pile up near the center, with a large fraction of the plotting canvas showing only outlying points. To reverse the effect, we introduce a radial transformation that zoomes in near the center of the distribution.
 
 The paper is structured as follows: the radial transformation and its implementation is described in Section \ref{sec:method}, we show applications in Section \ref{sec:application} and conclude in Section \ref{sec:concl}.
 
@@ -165,7 +167,7 @@ grid.arrange(p1, p2, nrow=1)
 
 We can picture this for a 3D sphere. In any 2D projection a large fraction of the volume will be projected onto a small region near the center of the resulting disk. This is a consequence of the curved shape, which extends further in the orthogonal direction at the center of the disk, since the projection corresponds to an integration over the orthogonal space. The effect will be further enhanced when projecting onto 1D instead. The same intuition holds as we increase the number of original dimensions that are projected down to one or two dimensions for visualization, with increasing fractions of the volume being projected onto a small area around the center, see Figure \ref{fig:density} for illustration.
 
-To offset this effect, we introduce a radial transformation that redistributes the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2-dimensional projection. Note that it is straightforward to generalize this for $d$-dimensional projections by mapping onto equal $d$-dimensional volume instead.
+To reverse this effect, we introduce a radial transformation that redistributes the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2-dimensional projection. Note that it is straightforward to generalize this for $d$-dimensional projections by mapping onto equal $d$-dimensional volume instead.
 
 ## Definition of the relative projected volume
 
@@ -288,7 +290,7 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 
 ```
 
-```{r circles, fig.cap="Rescaled equidistant concentric circles, for $p=2, 3, 10, 100$. The circles remain equidistant for $p=2$ where no transformation is performed, and get pushed out towards the edge as $p$ increases.", out.width="75%", fig.align = "center"}
+```{r circles, fig.cap="Equidistant concentric circles, for $p=2, 3, 10, 100$, illustrating the radial transformation. The circles remain equidistant for $p=2$ where no transformation is performed, and get pushed out towards the edge as $p$ increases.", out.width="75%", fig.align = "center"}
 
 lbl <- c("p=2", "p=3", "p=10", "p=100")
 names(lbl) <- c("p4", "p6", "p10", "p20")
@@ -360,7 +362,17 @@ and uses `gam` to set the $\gamma$ parameter for computing $p_{\mathrm{eff}}$, a
 
 # Applications {#sec:application}
 
-## Image classification
+Four applications of the sage tour are shown here, which illustrate the benefit of using the reverse transformation for examining data using a tour: single cell RNA-seq, classifying hand-sketched images, comparing physics experiments, and the classical pollen data which is used to illustrate the effect of parameter choices. 
+
+## scRNA
+
+- *Analysis purpose*:
+
+Something about usual analysis methods too, and how this helps to complement these.
+- *Summary of data pre-processing*:
+- *What is learned from the sage tour that is hidden in a regular tour*:
+
+## Classifying hand-sketches
 
 We can use the new display to look at different distribution of images from Google quickdraw (XXX REFERENCE). These are $28\times28=784$ pixel grey scale data, large dataset publicly available, here use small subset of three types of sketches (banana, cactus, crab) and observations (1000 sketches from each class) and see if we can separate the classes in the high-dimensional parameter space. We first reduce dimensionality using PCA and look at the first five PCs.
 
@@ -389,6 +401,12 @@ render(sk_5, planned_tour(bases), display_fisheye(axes="bottomleft", col=col, s=
 render(sk_5, planned_tour(bases), display_xy(axes="bottomleft", col=col), "png", "pngs/sketches3-%02d.png", apf=0.1, frames = d[3], rescale = FALSE)
 
 ```
+
+## Comparing physics experiments: PDFSense
+
+
+
+## Tuning the parameters: Pollen
 
 
 
