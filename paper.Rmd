@@ -408,6 +408,7 @@ render(sk_5, planned_tour(bases), display_xy(axes="bottomleft", col=col), "png",
 
 ## Tuning the parameters: Pollen
 
+The classical pollen data allows us to better demonstrate the use of the trimming and tuning parameters. The five dimensional data set was simulated by David Coleman of RCA Labs, for the Joint Statistics Meetings 1986 Data Expo [@pollen], and is an example of a hidden structure near the centre of a distribution. The data are standardised by centering and scaling such that the standard deviation of each variable is equal to one. Different displays of the same view found along a grand tour path are shown in Figure XXX. We see that the standard scatter display and the default sage display do not reveal the structure, but we can use either $\gamma$ or $R$ to zoom in further near the center and get a clear view of the word "EUREKA" hidden in the distribution. Note that we can also combine trimming and tuning to get this result.
 
 
 # Discussion {#sec:concl}
