@@ -372,37 +372,35 @@ Something about usual analysis methods too, and how this helps to complement the
 - *Summary of data pre-processing*:
 - *What is learned from the sage tour that is hidden in a regular tour*:
 
+find one group that is clumped then focus on that for the sage tour
+
 ## Classifying hand-sketches
 
-We can use the new display to look at different distribution of images from Google quickdraw (XXX REFERENCE). These are $28\times28=784$ pixel grey scale data, large dataset publicly available, here use small subset of three types of sketches (banana, cactus, crab) and observations (1000 sketches from each class) and see if we can separate the classes in the high-dimensional parameter space. We first reduce dimensionality using PCA and look at the first five PCs.
+We can use the new display to look at different distribution of images from Google QuickDraw (XXX REFERENCE). These are $28\times28=784$ pixel grey scale data that are available publicly. In this example large dataset we use a small subset of three types of sketches (banana, cactus, crab) and observations (1000 sketches from each class) and see if we can separate the classes in the high-dimensional parameter space. 
 
-XXX is this a good example? can see that the fisheye display is using the space better, but I don't think we learn much more compared to what we see with the standard projected display...
+We reduce the dimensionality from 784 variables to the five first PCs, which captures approximately 20 per cent of the variation of the data. Before applying the tour we rescale each component to have mean zero and unit variance. 
 
-```{r sketches, eval=F}
-load("sketches_train.rda")
-source("display-fisheye.R")
-sk_small <- dplyr::filter(sketches, word %in% c("banana", "cactus", "crab")) %>%
-  mutate(word = factor(word, levels = c("banana", "cactus", "crab")))
-pal <- RColorBrewer::brewer.pal(3, "Dark2")
-col <- pal[as.numeric(as.factor(sk_small$word))]
-sk_pca <- prcomp(select(sk_small, -word, -id))
-scale2 <- function(x, na.rm = FALSE) (x - mean(x, na.rm = na.rm)) / sd(x, na.rm)
-sk_5 <- sk_pca$x[,1:5] %>%
-  as_tibble() %>%
-  mutate_all(scale2)
+Figure xxx shows the grand tour on the PCs, where green points correspond to the banana class, orange points represent the cactcus class and purple points are the crab class. 
+(frame 1 for grand tour, frame 36 for sage tour)
 
-set.seed(1006)
-bases <- save_history(sk_5, max = 5)
-tour_path <- interpolate(bases, 0.1)
-d <- dim(tour_path)
+- both displays the orange points are more near the center, while in the grand tour display points from other classes overlap the orange points, while they are more seperated in the sage tour
 
-render(sk_5, planned_tour(bases), display_fisheye(axes="bottomleft", col=col, s=1), "png", "pngs/sketches1-%02d.png", apf=0.1, frames = d[3], rescale = FALSE)
-render(sk_5, planned_tour(bases), display_fisheye(axes="bottomleft", col=col, s=2), "png", "pngs/sketches2-%02d.png", apf=0.1, frames = d[3], rescale = FALSE)
-render(sk_5, planned_tour(bases), display_xy(axes="bottomleft", col=col), "png", "pngs/sketches3-%02d.png", apf=0.1, frames = d[3], rescale = FALSE)
+- it is easier to see in the sage tour that the centers of each cluster are separated
 
-```
+- it is easier to see in the sage tour that the banana class has two sub groupings 
+
+- in this particular case it helps with overplotting
+
+
 
 ## Comparing physics experiments: PDFSense
+
+Data were obtained from CT14HERA2 parton distribution function fits as used in Laa et al., 2018. There are 28 directions in the parameter
+space of parton distribution function fit, each point in the variables labelled X1-X56 indicate moving +- 1 standard devation from the 'best'
+(maximum likelihood estimate) fit of the function. Each observation has all predictions of the corresponding measurement from an experiment. Each point
+is colored according to different underlying processes in the experiment.
+
+- more detail by blowing out the center of the distribution
 
 
 
