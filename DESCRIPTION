@@ -1,0 +1,42 @@
+Package: burningsage
+Title: Remove the Curse
+Version: 0.99.1
+Authors@R:
+    c(
+    person(given = "Ursula",
+           family = "Laa",
+           role = c("aut", "cre"),
+           email = "ursula.laa@monash.edu"),
+    person(given = "Di",
+           family = "Cook",
+           role = c("aut", "ctb"),
+           email = "dicook@monash.edu"),
+    person(given = "Stuart",
+           family = "Lee",
+           role = c("aut", "ctb"),
+           email = "stuart.lee@monash.edu")
+    )
+Description: Materials to reproduce the Burning Sage Paper.
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports: 
+    tourr,
+    geozoo,
+    graphics
+Suggests:
+    scater,
+    scran,
+    scRNAseq,
+    AnnotationHub,
+    ensembldb,
+    igraph,
+    here,
+    gifski,
+    animation,
+    ggplot2,
+    dplyr
+Depends: 
+    R (>= 4.0)
+License: MIT + file LICENSE

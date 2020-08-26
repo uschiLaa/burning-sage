@@ -1,0 +1,11 @@
+\.bib$
+\.bst$
+^scripts$
+^pngs$
+^gifs$
+\.Rproj$
+\.cls$
+^LICENSE\.md$
+^\.here$
+\.html$
+\.Rmd$
