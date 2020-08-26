@@ -5,7 +5,7 @@ suppressPackageStartupMessages(library(scater))
 suppressPackageStartupMessages(library(scran))
 library(ggplot2)
 library(tourr)
-source(here::here("display-sage.R"))
+library(burningsage)
 
 sce <- scRNAseq::MacoskoRetinaData(ensembl = FALSE)
 # annotation ensembl database

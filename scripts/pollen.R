@@ -1,10 +1,10 @@
 library(tourr)
 library(animation)
-library(magrittr)
-source("display-sage.R")
+library(burningsage)
+library(here)
 
 data(pollen)
-pollen <- as.matrix(pollen) %>% scale()
+pollen <- scale(as.matrix(pollen)) 
 
 s <- 26082020
 
@@ -14,7 +14,7 @@ render_gif(data = pollen,
            display = display_xy(axes="bottomleft"),
            frames = 100,
            rescale = F,
-           gif_file = "pollen_xy.gif"
+           gif_file = here("gifs", "pollen_xy.gif")
 )
 set.seed(s)
 render_gif(data = pollen,
@@ -22,7 +22,7 @@ render_gif(data = pollen,
            display = display_sage(axes="bottomleft"),
            frames = 100,
            rescale = F,
-           gif_file = "pollen_sage.gif"
+           gif_file = here("gifs", "pollen_sage.gif")
 )
 set.seed(s)
 render_gif(data = pollen,
@@ -30,7 +30,7 @@ render_gif(data = pollen,
            display = display_sage(axes="bottomleft", gam = 5),
            frames = 100,
            rescale = F,
-           gif_file = "pollen_sage_gam5.gif"
+           gif_file = here("gifs", "pollen_sage_gam5.gif")
 )
 set.seed(s)
 render_gif(data = pollen,
@@ -38,7 +38,7 @@ render_gif(data = pollen,
            display = display_sage(axes="bottomleft", gam = 20),
            frames = 100,
            rescale = F,
-           gif_file = "pollen_sage_gam20.gif"
+           gif_file = here("gifs", "pollen_sage_gam20.gif")
 )
 set.seed(s)
 render_gif(data = pollen,
@@ -46,7 +46,7 @@ render_gif(data = pollen,
            display = display_sage(axes="bottomleft", R = 3, half_range = 3),
            frames = 100,
            rescale = F,
-           gif_file = "pollen_sage_R3.gif"
+           gif_file = here("gifs", "pollen_sage_R3.gif")
 )
 set.seed(s)
 render_gif(data = pollen,
@@ -54,7 +54,7 @@ render_gif(data = pollen,
            display = display_sage(axes="bottomleft", R = 1, half_range = 1),
            frames = 100,
            rescale = F,
-           gif_file = "pollen_sage_R1.gif"
+           gif_file = here("gifs", "pollen_sage_R1.gif")
 )
 set.seed(s)
 render_gif(data = pollen,
@@ -62,7 +62,7 @@ render_gif(data = pollen,
            display = display_sage(axes="bottomleft", gam = 5, R = 3, half_range = 3),
            frames = 100,
            rescale = F,
-           gif_file = "pollen_sage_gam5_R3.gif"
+           gif_file = here("gifs", "pollen_sage_gam5_R3.gif")
 )
 
 

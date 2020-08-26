@@ -9,3 +9,4 @@
 ^\.here$
 \.html$
 \.Rmd$
+^\.Rproj\.user$
