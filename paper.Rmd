@@ -406,8 +406,24 @@ is colored according to different underlying processes in the experiment.
 
 ## Tuning the parameters: Pollen
 
-The classical pollen data allows us to better demonstrate the use of the trimming and tuning parameters. The five dimensional data set was simulated by David Coleman of RCA Labs, for the Joint Statistics Meetings 1986 Data Expo [@pollen], and is an example of a hidden structure near the centre of a distribution. The data are standardised by centering and scaling such that the standard deviation of each variable is equal to one. Different displays of the same view found along a grand tour path are shown in Figure XXX. We see that the standard scatter display and the default sage display do not reveal the structure, but we can use either $\gamma$ or $R$ to zoom in further near the center and get a clear view of the word "EUREKA" hidden in the distribution. Note that we can also combine trimming and tuning to get this result.
+The classical pollen data allows us to better demonstrate the use of the trimming and tuning parameters. The five dimensional data set was simulated by David Coleman of RCA Labs, for the Joint Statistics Meetings 1986 Data Expo [@pollen], and is an example of a hidden structure near the centre of a distribution. The data are standardised by centering and scaling such that the standard deviation of each variable is equal to one. The standard scatter display and the sage display with default settings are shown in Figure \ref{fig:pollen}, for a view found along a grand tour path. We see that neither display can reveal the structure. We next use either $\gamma$, $R$ or a combination of the two to zoom in further near the center, see Figure \ref{fig:pollen-tuned}. There is approximate equivalence between the results obtained using either tuning or trimming, and each of the views clearly reveals the word "EUREKA" hidden in the distribution. After scaling the maximum radius from the center (i.e. the true or default $R$ parameter) is $R=6.6$, and the settings used in Figure \ref{fig:pollen-tuned} are: $(R=6.6,\gamma=20)$ (left), $(R=1, \gamma=1)$ (middle), $(R=3, \gamma=5)$ (right).
 
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{png/pollen_xy-88.png}
+\includegraphics[width=0.4\textwidth]{png/pollen_sage-88.png}
+\caption{Selected view of the pollen data in the standard xy-scatter display (left) and new sage display with default parameters (right). The structure is only visible near the center and cannot be seen in either display.}
+\label{fig:pollen}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.3\textwidth]{png/pollen_sage_gam20-88.png}
+\includegraphics[width=0.3\textwidth]{png/pollen_sage_R1-88.png}
+\includegraphics[width=0.3\textwidth]{png/pollen_sage_gam5_R3-88.png}
+\caption{Selected view of the pollen data in the new sage display setting $\gamma=20$ (left), $R=1$ (middle) or $(\gamma=5, R=3)$ (right). We can tune either $\gamma$, $R$ or a combination of the two to reveal the word "EUREKA" near the center of the distribution.}
+\label{fig:pollen-tuned}
+\end{figure}
 
 # Discussion {#sec:concl}
 
