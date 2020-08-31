@@ -247,12 +247,12 @@ v_2^{-1}(v_2(r_y; 2, R); 2, R) = v_2(v_2^{-1}(r_y; 2, R); 2, R) = r_y
 \end{equation}
 and thus
 \begin{equation}
-v_2^{inv}(r_y; 2, R) = R \sqrt{r_y}.
+v_2^{-1}(r_y; 2, R) = R \sqrt{r_y}.
 \end{equation}
 
 The full radial transformation is therefore given by 
 \begin{equation}
-r'_y = v_2^{inv} (v_2(r_y; p, R); 2, R) =  R \sqrt{v_2(r_y; p, R)} = R \sqrt{1-\left(1-\left(\frac{r_y}{R}\right)^2\right)^{p/2}}.
+r'_y = v_2^{-1} (v_2(r_y; p, R); 2, R) =  R \sqrt{v_2(r_y; p, R)} = R \sqrt{1-\left(1-\left(\frac{r_y}{R}\right)^2\right)^{p/2}}.
 \label{eq:resc}
 \end{equation}
 
