@@ -51,7 +51,7 @@ library(latex2exp)
 
 <!-- Reverse, redistribute, counteract, offset, rescale, radial transformation -->
 
-The notion of a "curse of dimensionality" was originally introduced in @BellmanRichard1961 to describe the exponential growth in difficulty for optimization as number of dimensions increases. This affects sampling in high-dimensions. The volume of the space grows exponentially, with dimension, and since it is not typically feasible to increase the number of samples accordingly, the density of points decreases. The effect is that most points will be far from the sample mean, on the edge of the sample space. @doi:10.1111/j.1467-9868.2005.00510.x have shown that in the extreme case of high-dimension, low-sample size data, observations are on the vertices of a simplex. 
+The term "curse of dimensionality" was originally introduced by @BellmanRichard1961, to express the difficulty of doing optimization in high dimensions because of the exponential growth in space as dimension increases. A way to think about it is that the volume of the space grows exponentially with dimension, which makes it infeasible to sample *enough* points -- any sample will be less densely covering the space as dimension increases. The effect is that most points will be far from the sample mean, on the edge of the sample space. @doi:10.1111/j.1467-9868.2005.00510.x have shown that in the extreme case of high-dimension, low-sample size data, observations are on the vertices of a simplex. This affects many aspects of data analysis: minimizing the error during model fitting relies on effective optimisation techniques, non-parametric modeling requires finding nearest neighbors which may be far away and sampling from high-dimensional distributions is likely to have points far from the population mean. 
 
 <!-- This causes problems in different domains. An important example in statistics is cluster analysis. Since the distance between any two points in a distribution becomes approximately constant, new methods are needed to cluster points in a high-dimensional space (see e.g. @Steinbach2004).-->
 
@@ -421,5 +421,13 @@ Neither the standard scatter display nor the sage display with default settings 
 
 # Discussion {#sec:concl}
 
-Other transformations on the projected data?
+What other transformations on the projected data make sense?
+
+Relationship with slice tour?
+
+How this would be applied in practice: clustering, classification?
+
+Relationship with nonlinear transformations such as tSNE?
+
+
 
