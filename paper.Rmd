@@ -427,5 +427,13 @@ The classical pollen data allows us to better demonstrate the use of the trimmin
 
 # Discussion {#sec:concl}
 
-Other transformations on the projected data?
+What other transformations on the projected data make sense?
+
+Relationship with slice tour?
+
+How this would be applied in practice: clustering, classification?
+
+Relationship with nonlinear transformations such as tSNE?
+
+
 
