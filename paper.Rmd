@@ -364,15 +364,39 @@ and uses `gam` to set the $\gamma$ parameter for computing $p_{\mathrm{eff}}$, a
 
 Four applications of the sage tour are shown here, which illustrate the benefit of using the reverse transformation for examining data using a tour: single cell RNA-seq, classifying hand-sketched images, comparing physics experiments, and the classical pollen data which is used to illustrate the effect of parameter choices. 
 
-## scRNA
+## Clustering single-cell RNA-seq data sets
 
-- *Analysis purpose*:
 
-Something about usual analysis methods too, and how this helps to complement these.
-- *Summary of data pre-processing*:
-- *What is learned from the sage tour that is hidden in a regular tour*:
+In the analysis of single cell RNA-seq data, cluster analysis is performed to
+detect cell types and find expression of genes that define those cell types, and the relative orientation of the cell types  to each other (trajectory analysis). Generally, for cluster verification, analysts use embedding methods
+like t-SNE to verify the placement and meaning of clusters from a clustering algorithm. 
 
-find one group that is clumped then focus on that for the sage tour
+Here we compare the sage display and regular tour display on mouse retinal single cell RNA-seq data from
+@Macosko2015-ot. The raw data consists of a 49,300  cells and was downloaded
+using the using the **scRNAseq** Bioconductor package [@scRNAseq-d]. We
+use a standard workflow for pre-processing and normalizing this data 
+(described by @Amezquita2020-at): we performed QC using the **scater** package
+and we log-transformed and normalised the expression 
+values and selected highly variable genes (HVGs) using **scran** 
+[@McCarthy2017; @Lun2016]. The top ten percent of HVGs were used to subset
+the normalised expression matrix and compute PCA using the first 25 components.
+Using the PCs we built a shared nearest neighbours graph (with $k = 10$) and 
+used Louvain clustering which generates 11 clusters [@Blondel2008-bx]. 
+
+We tour the first five PCs (approximately 20% of the variance in expression),
+on a weighted subsample of cells based on their cluster membership - 4,590 cells. When running the sage display, we set $\gamma = 3$ as the effective dimensionality of the data. 
+
+
+Using the default tour display, the highlighted cluster in dark green is obscured by points in nearby clusters as shown in figure \ref{fig:mouse} (left). Using the sage display, expands the center of projection, so the dark green cluster becomes more visible; the outlier cell that is far away from the rest of the clustered points is more apparent.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{png/mouse_grand-38.png}
+\includegraphics[width=0.45\textwidth]{png/mouse_sage_gam03-38.png}
+\caption{Selected views of the same frame using a tour of the mouse data in the default tour display (left), and using the sage display setting $\gamma=3$ (right).}
+\label{fig:mouse}
+\end{figure}
+
 
 ## Classifying hand-sketches
 
