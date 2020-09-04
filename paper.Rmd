@@ -25,7 +25,7 @@ affiliation:
 bibliography: biblio.bib
 geometry: margin=2.5cm
 abstract: |
-  In high-dimensional data analysis the curse of dimensionality observes that points tend to be far away the center of the distribution on the edge of high-dimensional space. However, if the data is projected onto a lower dimensional subspace the inverse happens; projected points tend to clump at the center obscuring any resulting visualisations. We propose to reverse the curse using radial transformations of the projections obtained using the grand tour, called the burning sage algorithm. We apply our algorithm in several case studies that show how our sage visualisations enhance exploratory clustering and classification workflows.
+  In high-dimensional data analysis the curse of dimensionality observes that points tend to be far away from the center of the distribution and on the edge of high-dimensional space. However, if the data is projected onto a lower dimensional subspace the inverse happens; projected points tend to clump at the center obscuring any resulting visualisations. We propose to reverse the curse using radial transformations of the projections obtained using the grand tour, called the burning sage algorithm. We apply our algorithm in several case studies that show how our sage visualisations enhance exploratory clustering and classification workflows.
 keywords: |
   data visualisation; grand tour; statistical computing; statistical graphics; multivariate data; dynamic graphics
 header-includes: |
@@ -389,6 +389,10 @@ on a weighted subsample of cells based on their cluster membership - 4,590 cells
 
 Using the default tour display, the highlighted cluster in dark green is obscured by points in nearby clusters as shown in figure \ref{fig:mouse} (left). Using the sage display, expands the center of projection, so the dark green cluster becomes more visible; the outlier cell that is far away from the rest of the clustered points is more apparent.
 
+- better idea of size of cluster cause not bunching 
+- rescale = FALSE
+
+
 \begin{figure}
 \centering
 \includegraphics[width=0.45\textwidth]{png/mouse_grand-38.png}
@@ -449,11 +453,18 @@ Neither the standard scatter display nor the sage display with default settings 
 
 # Discussion {#sec:concl}
 
+* short summary of what you've done; introduced the sage display to 'reverse' the curse and applied it to several datasets in natural sciences and machine learning...
+
+* pros of the proposed technique: alleviates overplotting issues,  better seperation of clusters and size of clusters; linear up to a point, point to pollen example; very quick to compute and still interpretable; point to examples here
+How this would be applied in practice: clustering, classification?
+
+
+* limitations of the proposed technique: finding appropriate parameters for data; acknowledge bunching but we are not able to capture what is happening - ignoring information in the high-d if you didn't rely on linear projections; possible introduces distortions point back that is also a problem for NLDR techniques but we see where it is happening 
+
+* further work or investigation: 
 What other transformations on the projected data make sense?
 
 Relationship with slice tour?
-
-How this would be applied in practice: clustering, classification?
 
 Relationship with nonlinear transformations such as tSNE?
 
