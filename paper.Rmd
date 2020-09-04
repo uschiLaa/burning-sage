@@ -400,32 +400,36 @@ Using the default tour display, the highlighted cluster in dark green is obscure
 
 ## Classifying hand-sketches
 
-We can use the new display to look at different distribution of images from Google QuickDraw (XXX REFERENCE). These are $28\times28=784$ pixel grey scale data that are available publicly. In this example large dataset we use a small subset of three types of sketches (banana, cactus, crab) and observations (1000 sketches from each class) and see if we can separate the classes in the high-dimensional parameter space. 
+We can use the new display to look at different distributions of images from Google QuickDraw collection [@quickdraw-paper]. These are $28\times28=784$ pixel grey scale data that are available publicly. In this example, we sample 1000 images from three types of sketches (banana, cactus, crab) and observations  and see if we can separate the classes in the high-dimensional parameter space. 
 
-We reduce the dimensionality from 784 variables to the five first PCs, which captures approximately 20 per cent of the variation of the data. Before applying the tour we rescale each component to have mean zero and unit variance. 
+We reduce the dimensionality from 784 variables to the first 5 PCs, which captures approximately 20 per cent of the variation of the data. Before applying the tour we rescale each component to have mean zero and unit variance. 
 
-Figure xxx shows the grand tour on the PCs, where green points correspond to the banana class, orange points represent the cactcus class and purple points are the crab class. 
-(frame 1 for grand tour, frame 36 for sage tour)
+Figure \ref{fig:sketches} shows the grand tour on the PCs, where green points correspond to the banana class, orange points represent the cactcus class and purple points are the crab class. In both displays points belonging to the cactus class are concentrated in the center, however on the default display (figure \ref{fig:sketches}, left) there is overplotting: points from other classes overlap those in the cactus class. The sage display (figure \ref{fig:sketches}, right) helps reduce overplotting, it is easier to see that the centers of class are separated and that there is substructure in the banana class, which further collapses into two subgroups.
 
-- both displays the orange points are more near the center, while in the grand tour display points from other classes overlap the orange points, while they are more seperated in the sage tour
-
-- it is easier to see in the sage tour that the centers of each cluster are separated
-
-- it is easier to see in the sage tour that the banana class has two sub groupings 
-
-- in this particular case it helps with overplotting
-
-
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{png/sketches_grand-01.png}
+\includegraphics[width=0.45\textwidth]{png/sketches_sage-36.png}
+\caption{Selected views of the tour run on the sketches data using the default tour display (left), and using the default sage display (right).}
+\label{fig:sketches}
+\end{figure}
 
 ## Comparing physics experiments: PDFSense
 
-Data were obtained from CT14HERA2 parton distribution function fits as used in Laa et al., 2018. There are 28 directions in the parameter
-space of parton distribution function fit, each point in the variables labelled X1-X56 indicate moving +- 1 standard devation from the 'best'
-(maximum likelihood estimate) fit of the function. Each observation has all predictions of the corresponding measurement from an experiment. Each point
-is colored according to different underlying processes in the experiment.
+Data were obtained from CT14HERA2 parton distribution function fits as used in [reference]. There are 28 directions in the parameter
+space of parton distribution function fit, each point in the variables labelled X1-X56 indicate moving 1 standard devation from the 'best'
+(maximum likelihood estimate) fit of the function in either positive or negative direction. Each observation has all predictions of the corresponding measurement from an experiment. Each point
+is colored according to different underlying processes in the experiment. The goal of the analysis is to identify the trajectory of the experiments along the parameter space corresponding to a given process.
 
-- more detail by blowing out the center of the distribution
+Following the processing described in [@ ursula's paper ], we tour the first 6 principal components, rescaled to have zero mean and unit variance. In figure \ref{fig:pdfsense} we see that using the sage display with $R = 10$ (figure \ref{fig:pdfsense}, right), expands the center of the distribution compared to the regular tour display  (figure \ref{fig:pdfsense}, left), while maintaining the global structure of the data (different physical process are orthogonal in the paramater space). Here using the sage display allows us to see more detail at the center, and identifies parameters that are at intersection of all three physical processes.  
 
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{png/pdfsense_grand-01.png}
+\includegraphics[width=0.45\textwidth]{png/pdfsense_sage_R10-51.png}
+\caption{Selected views of the tour run on the pdfsense data using the default tour display (left), and using the sage display with $R=10$ (right).}
+\label{fig:pdfsense}
+\end{figure}
 
 
 ## Tuning the parameters: Pollen
