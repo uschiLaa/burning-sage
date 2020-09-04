@@ -25,7 +25,7 @@ affiliation:
 bibliography: biblio.bib
 geometry: margin=2.5cm
 abstract: |
-  XXX
+  In high-dimensional data analysis the curse of dimensionality observes that points tend to be far away the center of the distribution on the edge of high-dimensional space. However, if the data is projected onto a lower dimensional subspace the inverse happens; projected points tend to clump at the center obscuring any resulting visualisations. We propose to reverse the curse using radial transformations of the projections obtained using the grand tour, called the burning sage algorithm. We apply our algorithm in several case studies that show how our sage visualisations enhance exploratory clustering and classification workflows.
 keywords: |
   data visualisation; grand tour; statistical computing; statistical graphics; multivariate data; dynamic graphics
 header-includes: |
