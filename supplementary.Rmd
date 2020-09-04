@@ -1,0 +1,46 @@
+---
+title: "Supplementary Materials"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, 
+  message = FALSE, 
+  warning = FALSE,
+  error = FALSE)
+```
+
+# Intro 
+
+Here we provide side by side view of animations provided in the case studies of our paper:
+
+>  Burning sage: Reversing the curse of dimensionality in the visualisation of high-dimensional data
+
+The left hand side is always the grand tour, and the right is the sage tour.
+
+##  Single cell RNA-seq data from mouse retina
+
+Setting sage with $\gamma = 3$
+
+<img src="gifs/mouse_grand.gif" width="450"/> <img src="gifs/mouse_sage_gam3.gif" width="450"/>
+
+## QuickDraw Sketches
+
+<img src="gifs/sketches_grand.gif" width="450"/> <img src="gifs/sketches_sage.gif" width="450"/>
+
+
+## pdfsense
+
+Setting sage tour with $R = 10$.
+
+<img src="gifs/pdfsense_grand.gif" width="450"/> <img src="gifs/pdfsense_sage_r10.gif" width="450"/>
+
+
+## pollen: parameter tuning
+
+All sage displays: left is default, middle is $R=1$, and right is $\gamma=20$.
+
+<img src="gifs/pollen_sage.gif" width="300"/> <img src="gifs/pollen_sage_R1.gif" width="300"/> <img src="gifs/pollen_sage_gam20.gif" width="300"/> 
+
