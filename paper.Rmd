@@ -453,6 +453,12 @@ Neither the standard scatter display nor the sage display with default settings 
 
 # Discussion {#sec:concl}
 
+In this paper we have introduced the sage display, as a visualisation technique for reversing
+the curse of dimensionality in high dimensional projections, and have shown its utility in applications to analysis tasks found in the natural sciences and machine learning. Our case studies highlight that sage display can reduce the effects of overplotting - in the sketches example our new display decreases the number of overlapping points between classes and provides
+better visual separation between classes compared to the regular tour. Furthermore, unlike some
+non-linear dimension reduction techniques like t-SNE, the sage display still gives the viewer an accurate assessment of the size of a cluster, as we saw in our single cell example. Our parameter tuning example highlights that the sage display is linear up to a given effective dimension. As a result, the sage dispaly provides interpretable visualisations while preserving global structure in the high dimensional space, as highlighted in the particle physics example.
+
+
 * short summary of what you've done; introduced the sage display to 'reverse' the curse and applied it to several datasets in natural sciences and machine learning...
 
 * pros of the proposed technique: alleviates overplotting issues,  better seperation of clusters and size of clusters; linear up to a point, point to pollen example; very quick to compute and still interpretable; point to examples here
