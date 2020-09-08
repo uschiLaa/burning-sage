@@ -458,6 +458,9 @@ the curse of dimensionality in high dimensional projections, and have shown its 
 better visual separation between classes compared to the regular tour. Furthermore, unlike some
 non-linear dimension reduction techniques like t-SNE, the sage display still gives the viewer an accurate assessment of the size of a cluster, as we saw in our single cell example. Our parameter tuning example highlights that the sage display is linear up to a given effective dimension. As a result, the sage dispaly provides interpretable visualisations while preserving global structure in the high dimensional space, as highlighted in the particle physics example.
 
+Although the sage display is quick to compute, some effort is required to tune parameters for a given dataset.
+
+
 
 * short summary of what you've done; introduced the sage display to 'reverse' the curse and applied it to several datasets in natural sciences and machine learning...
 
