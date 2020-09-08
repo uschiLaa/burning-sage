@@ -75,8 +75,8 @@ ggplot(pc_df, aes(x = PC1, y = PC2, color = cluster_membership)) +
                                                                                                                              "#e45756", "#ff9d98", "#79706e", "#bab0ac", "#d67195",
                                                                                                                              "#fcbfd2", "#b279a2", "#d6a5c9", "#9e765f", "#d8b5a5")) 
 
-# --- tour a subset of the data, focus on cluster 9, which is kind of obscured
-# by everything else
+# --- tour a subset of the data, focus on two clusters that are concentrated towards the center, 
+# which is kind of obscured by everything else
 library(dplyr)
 set.seed(119460)
 tour_data <- pc_df %>% 

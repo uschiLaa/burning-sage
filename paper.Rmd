@@ -364,6 +364,9 @@ and uses `gam` to set the $\gamma$ parameter for computing $p_{\mathrm{eff}}$, a
 
 Four applications of the sage tour are shown here, which illustrate the benefit of using the reverse transformation for examining data using a tour: single cell RNA-seq, classifying hand-sketched images, comparing physics experiments, and the classical pollen data which is used to illustrate the effect of parameter choices. 
 
+- use four panel set up for grand tour and sage
+- render pngs in addition to the gifs
+
 ## Clustering single-cell RNA-seq data sets
 
 
@@ -390,7 +393,8 @@ on a weighted subsample of cells based on their cluster membership - 4,590 cells
 Using the default tour display, the highlighted cluster in dark green is obscured by points in nearby clusters as shown in figure \ref{fig:mouse} (left). Using the sage display, expands the center of projection, so the dark green cluster becomes more visible; the outlier cell that is far away from the rest of the clustered points is more apparent.
 
 - better idea of size of cluster cause not bunching 
-- rescale = FALSE
+- rescale = FALSE, use principal components
+- try multiple overlapping cluster example
 
 
 \begin{figure}
@@ -456,11 +460,11 @@ Neither the standard scatter display nor the sage display with default settings 
 In this paper we have introduced the sage display, as a visualisation technique for reversing
 the curse of dimensionality in high dimensional projections, and have shown its utility in applications to analysis tasks found in the natural sciences and machine learning. Our case studies highlight that sage display can reduce the effects of overplotting - in the sketches example our new display decreases the number of overlapping points between classes and provides
 better visual separation between classes compared to the regular tour. Furthermore, unlike some
-non-linear dimension reduction techniques like t-SNE, the sage display still gives the viewer an accurate assessment of the size of a cluster, as we saw in our single cell example. Our parameter tuning example highlights that the sage display is linear up to a given effective dimension. As a result, the sage dispaly provides interpretable visualisations while preserving global structure in the high dimensional space, as highlighted in the particle physics example.
+non-linear dimension reduction (NLDR) techniques like t-SNE, the sage display still gives the viewer an accurate assessment of the size of a cluster, as we saw in our single cell example. Our parameter tuning example highlights that the sage display is linear up to a given effective dimension. As a result, the sage dispaly provides interpretable visualisations while preserving global structure in the high dimensional space, as highlighted in the particle physics example.
 
-Although the sage display is quick to compute, some effort is required to tune parameters for a given dataset.
+For the sage display tuning is often required to avoid bunching points in the visualisation, especially if the projection is dense in the center of the distribution. However, given that the display is quick to compute, it is easy to try out different parameter combinations. Expanding around the center too aggresively can also introduce distortions in the display, which is also a problem for NLDR methods.
 
-
+Currently, the sage display is naive information in high dimensional space that is not captured by linear projections. Further work is required to investigate other transformations of the projections that can capture non-linear structure or that are locally linear, like the transformations performed by t-SNE. 
 
 * short summary of what you've done; introduced the sage display to 'reverse' the curse and applied it to several datasets in natural sciences and machine learning...
 
