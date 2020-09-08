@@ -476,6 +476,8 @@ How this would be applied in practice: clustering, classification?
 What other transformations on the projected data make sense?
 
 Relationship with slice tour?
+The recently introduced slice tour [@sliceTour] is essentially addressing the same issue, i.e. the overplotting of points from the large orthogonal space, but follows a different philosophy. Instead of mapping orthogonal volume to projected volume, we cut through the orthogonal space and only select a small portion of the volume for plotting. This is done by defining a slice via a cutoff on the orthogonal distance of points. The approach would be preferred in the case of large number of points, or for concave structure in the distribution, while the sage display works better in the case of limited sample size.
+
 
 Relationship with nonlinear transformations such as tSNE?
 
