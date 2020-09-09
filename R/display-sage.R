@@ -16,13 +16,14 @@
 #'   \code{\link{display_sage}}
 #' @export
 #' @examples
-#' # Generate samples on a 3d and 5d hollow sphere using the geozoo package
-#' sphere3 <- geozoo::sphere.hollow(3)$points
-#' sphere5 <- geozoo::sphere.hollow(5)$points
-#'
+#' # Generate uniform samples in a 10d sphere using the geozoo package
+#' sphere10 <- geozoo::sphere.solid.random(10)$points
 #' # Columns need to be named before launching the tour
-#' colnames(sphere3) <- c("x1", "x2", "x3")
-#' colnames(sphere5) <- c("x1", "x2", "x3", "x4", "x5")
+#' colnames(sphere10) <- paste0("x",1:10)
+#' # Standard grand tour display, points cluster near center
+#' animate_xy(sphere10)
+#' # Sage display, points are uniformly distributed across the disk
+#' animate_sage(sphere10)
 #'
 #' @import graphics
 #' @import tourr
@@ -84,13 +85,24 @@ display_sage <- function(axes = "center", half_range = NULL,
   )
 }
 
-# cumulative distribution, fraction of points within radius r
-# given 2D projection of hypersphere with radius R in p dimensions
+
+#' Calculate radial cumulative distribtuion
+#'
+#' Calculate fraction of volume of a pD sphere with radius R projected
+#' within the projected radius r.
+#'
+#' @param r projected radius
+#' @param R radius of pD sphere
+#' @param p input dimension
+#' @return fraction of volume
+#' @export
 cumulative_radial <- function(r, R, p){
   1 - (1 - (r/R)^2)^(p/2)
 }
 
-
+#' @rdname display_sage
+#' @inheritParams animate
+#' @export
 animate_sage <- function(data, tour_path = tourr::grand_tour(), ...) {
   animate(data, tour_path, display_sage(...))
 }

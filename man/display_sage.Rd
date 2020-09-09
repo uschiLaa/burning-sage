@@ -2,6 +2,7 @@
 % Please edit documentation in R/display-sage.R
 \name{display_sage}
 \alias{display_sage}
+\alias{animate_sage}
 \title{Display tour path with a sage scatterplot}
 \usage{
 display_sage(
@@ -13,6 +14,8 @@ display_sage(
   R = NULL,
   ...
 )
+
+animate_sage(data, tour_path = tourr::grand_tour(), ...)
 }
 \arguments{
 \item{axes}{position of the axes: center, bottomleft or off}
@@ -38,12 +41,13 @@ uses a radial transformation on the projected points to re-allocate
 the volume projected across the 2D plane.
 }
 \examples{
-# Generate samples on a 3d and 5d hollow sphere using the geozoo package
-sphere3 <- geozoo::sphere.hollow(3)$points
-sphere5 <- geozoo::sphere.hollow(5)$points
-
+# Generate uniform samples in a 10d sphere using the geozoo package
+sphere10 <- geozoo::sphere.solid.random(10)$points
 # Columns need to be named before launching the tour
-colnames(sphere3) <- c("x1", "x2", "x3")
-colnames(sphere5) <- c("x1", "x2", "x3", "x4", "x5")
+colnames(sphere10) <- paste0("x",1:10)
+# Standard grand tour display, points cluster near center
+animate_xy(sphere10)
+# Sage display, points are uniformly distributed across the disk
+animate_sage(sphere10)
 
 }
