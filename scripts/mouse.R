@@ -55,9 +55,14 @@ colData(sce)$cluster_membership <- factor(labels$membership)
 
 # extract PCs to tour and perform tSNE on, keep cluster labels too
 pc_df <- reducedDim(sce, "PCA")
-pc_df <- dplyr::as_tibble(pc_df)
-pc_df$cluster_membership <- colData(sce)$cluster_membership
-pc_df$inx <- seq_len(nrow(pc_df))
+# rescale principal components to have unit mean 
+mu <- colMeans(pc_df)
+sig <- apply(pc_df, 2, sd)
+rs_pc_df <- sweep(pc_df, MARGIN = 2, mu)
+rs_pc_df <- sweep(rs_pc_df, MARGIN = 2, sig, FUN = "/")
+rs_pc_df <- dplyr::as_tibble(rs_pc_df)
+rs_pc_df$cluster_membership <- colData(sce)$cluster_membership
+rs_pc_df$inx <- seq_len(nrow(pc_df))
 
 # look at groups
 table(colData(sce)$cluster_membership)
@@ -75,7 +80,11 @@ ggplot(pc_df, aes(x = PC1, y = PC2, color = cluster_membership)) +
                                                                                                                              "#e45756", "#ff9d98", "#79706e", "#bab0ac", "#d67195",
                                                                                                                              "#fcbfd2", "#b279a2", "#d6a5c9", "#9e765f", "#d8b5a5")) 
 
-# --- tour a subset of the data, focus on two clusters that are concentrated towards the center, 
+## ----tour--------------------------------------------------------
+
+# tour a subset of the data,
+# focus on two clusters that are concentrated towards the center
+# first look at cluster 9 solo, then cluster 9 + 
 # which is kind of obscured by everything else
 library(dplyr)
 set.seed(119460)
@@ -94,8 +103,8 @@ render_gif(
   tour_path = grand_tour(),
   display = display_xy(col = col, axes = "bottomleft"),
   frames = 100,
-  gif_file = here("gifs", "mouse_grand.gif")
-  
+  gif_file = here("gifs", "mouse_grand.gif"),
+  rescale = FALSE
 )
 
 # default
@@ -104,7 +113,8 @@ render_gif(data = dplyr::select(tour_data, PC1:PC5, -cluster_membership),
            tour_path = grand_tour(),
            display = display_sage(axes = "bottomleft", col = col),
            frames = 100,
-           gif_file = here("gifs", "mouse_sage_default.gif")
+           gif_file = here("gifs", "mouse_sage_default.gif"), 
+           rescale = FALSE
 )
 
 
@@ -113,5 +123,6 @@ render_gif(data = dplyr::select(tour_data, PC1:PC5, -cluster_membership),
            tour_path = grand_tour(),
            display = display_sage(axes = "bottomleft", col = col, gam = 3),
            frames = 100,
-           gif_file = here("gifs", "mouse_sage_gam3.gif")
+           gif_file = here("gifs", "mouse_sage_gam3.gif"),
+           rescale = FALSE
 )
