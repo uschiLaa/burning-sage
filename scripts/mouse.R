@@ -72,7 +72,7 @@ pal <- c("#4c78a8", "#9ecae9", "#f58518", "#ffbf79", "#54a24b",
          "#e45756", "#ff9d98", "#79706e", "#bab0ac", "#d67195",
          "#fcbfd2", "#b279a2", "#d6a5c9", "#9e765f", "#d8b5a5")
 
-ggplot(pc_df, aes(x = PC1, y = PC2, color = cluster_membership)) + 
+ggplot(rs_pc_df, aes(x = PC1, y = PC2, color = cluster_membership)) + 
   geom_point() + 
   scale_color_manual(values = pal) +
   theme_bw() 
