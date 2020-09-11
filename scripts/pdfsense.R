@@ -31,6 +31,18 @@ render_gif(
 )
 
 set.seed(2020)
+render(
+  pdfsense_rs,
+  tour_path = grand_tour(),
+  dev = "png",
+  display = display_xy(col=col, axes = "bottomleft"),
+  rescale = FALSE,
+  frames = 100,
+  here::here("pngs", "pdfsense_grand-%03d.png")
+)
+
+
+set.seed(2020)
 render_gif(
   pdfsense_rs, 
   tour_path = grand_tour(),
@@ -40,6 +52,9 @@ render_gif(
   rescale = FALSE
 )
 
+
+
+
 set.seed(2020)
 render_gif(
   pdfsense_rs, 
@@ -48,6 +63,17 @@ render_gif(
   display = display_sage(col=col, axes = "bottomleft", R = 10),
   frames = 100,
   rescale = FALSE
+)
+
+set.seed(2020)
+render(
+  pdfsense_rs,
+  tour_path = grand_tour(),
+  dev = "png",
+  display = display_sage(col=col, axes = "bottomleft", R = 10),
+  rescale = FALSE,
+  frames = 100,
+  here::here("pngs", "pdfsense_sage_r10-%03d.png")
 )
 
 
