@@ -27,6 +27,18 @@ render_gif(
 )
 
 set.seed(1000)
+render(
+  sk_5,
+  tour_path = grand_tour(),
+  dev = "png",
+  display = display_xy(col=col, axes = "bottomleft"),
+  rescale = FALSE,
+  frames = 100,
+  here::here("pngs", "sketches_grand-%03d.png")
+)
+
+
+set.seed(1000)
 render_gif(
   sk_5,
   tour_path = grand_tour(),
@@ -37,13 +49,14 @@ render_gif(
 )
 
 
-# interactive use
-animate(sk_5,
-        display = display_sage(col=col, s=2), rescale = F)
-
-animate(sk_5,
-        display = display_sage(col=col, s=0.5, R=1, half_range = 0.5), 
-        rescale = F)
-
-animate_xy(sk_5, col=col)
+set.seed(1000)
+render(
+  sk_5,
+  tour_path = grand_tour(),
+  dev = "png",
+  display = display_sage(col=col, gam=2, axes = "bottomleft"),
+  rescale = FALSE,
+  frames = 100,
+  here::here("pngs", "sketches_sage-%03d.png")
+)
 
