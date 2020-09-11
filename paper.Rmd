@@ -468,20 +468,6 @@ For the sage display tuning is often required to avoid bunching points in the vi
 
 Currently, the sage display is naive to information in high dimensional space that is not captured by linear projections. Further work is required to investigate other transformations of the projections that can capture non-linear structure or that are locally linear, like the transformations performed by t-SNE. 
 
-* short summary of what you've done; introduced the sage display to 'reverse' the curse and applied it to several datasets in natural sciences and machine learning...
-
-* pros of the proposed technique: alleviates overplotting issues,  better seperation of clusters and size of clusters; linear up to a point, point to pollen example; very quick to compute and still interpretable; point to examples here
-How this would be applied in practice: clustering, classification?
-
-* limitations of the proposed technique: finding appropriate parameters for data; acknowledge bunching but we are not able to capture what is happening - ignoring information in the high-d if you didn't rely on linear projections; possible introduces distortions point back that is also a problem for NLDR techniques but we see where it is happening 
-
-* further work or investigation: 
-What other transformations on the projected data make sense?
-
-Relationship with slice tour?
-
-
-Relationship with nonlinear transformations such as tSNE?
 
 
 
