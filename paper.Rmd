@@ -387,14 +387,10 @@ Using the PCs we built a shared nearest neighbours graph (with $k = 10$) and
 used Louvain clustering which generates 11 clusters [@Blondel2008-bx]. 
 
 We tour the first five PCs (approximately 20% of the variance in expression),
-on a weighted subsample of cells based on their cluster membership - 4,590 cells. When running the sage display, we set $\gamma = 3$ as the effective dimensionality of the data. 
+on a weighted subsample of cells based on their cluster membership - 4,590 cells. When running the sage display, we set $\gamma = 3$ as the effective dimensionality of the data. For the displays we have rescaled the PCs so they each have zero mean and unit variance.
 
 
-Using the default tour display, the highlighted cluster in dark green is obscured by points in nearby clusters as shown in figure \ref{fig:mouse} (left). Using the sage display, expands the center of projection, so the dark green cluster becomes more visible; the outlier cell that is far away from the rest of the clustered points is more apparent.
-
-- better idea of size of cluster cause not bunching 
-- rescale = FALSE, use principal components
-- try multiple overlapping cluster example
+Using the default tour display, the highlighted cluster in dark green is obscured by points in nearby clusters as shown in figure \ref{fig:mouse} (top). Using the sage display, expands the center of projection, so the dark green cluster becomes more visible; the outlier cell that is far away from the rest of the clustered points is more apparent. 
 
 
 \begin{figure}
@@ -404,6 +400,9 @@ Using the default tour display, the highlighted cluster in dark green is obscure
 \caption{Selected views of the same frame using a tour of the mouse data in the default tour display (left), and using the sage display setting $\gamma=3$ (right).}
 \label{fig:mouse}
 \end{figure}
+
+However, often we also want
+to know clusters relative positions and cluster sizes. In the next example we colour points with two additional cluster labels that completly overlap in an ordinary principal components scatter plot. 
 
 
 ## Classifying hand-sketches

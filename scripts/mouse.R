@@ -88,14 +88,13 @@ ggplot(rs_pc_df, aes(x = PC1, y = PC2, color = cluster_membership)) +
 # which is kind of obscured by everything else
 library(dplyr)
 set.seed(119460)
-tour_data <- pc_df %>% 
+tour_data <- rs_pc_df %>% 
   group_by(cluster_membership) %>% 
   sample_frac(size = 0.1) %>% 
   ungroup()
 
-col <- ifelse(as.integer(tour_data$cluster_membership) == 9, 
-              pal[9], 
-              "grey90")
+# palette if cluster = 9, set color otherwise use grey
+col <- ifelse(as.integer(tour_data$cluster_membership) == 9,  pal[9], "grey90")
 
 set.seed(1990)
 render_gif(
@@ -106,6 +105,18 @@ render_gif(
   gif_file = here("gifs", "mouse_grand.gif"),
   rescale = FALSE
 )
+
+set.seed(1990)
+render(
+  dplyr::select(tour_data, PC1:PC5, -cluster_membership),
+  tour_path = grand_tour(),
+  dev = "png",
+  display = display_xy(col=col, axes = "bottomleft"),
+  rescale = FALSE,
+  frames = 100,
+  here::here("pngs", "mouse_grand-%03d.png")
+)
+
 
 # default
 set.seed(1990)
@@ -118,6 +129,7 @@ render_gif(data = dplyr::select(tour_data, PC1:PC5, -cluster_membership),
 )
 
 
+# gamma = 3
 set.seed(1990)
 render_gif(data = dplyr::select(tour_data, PC1:PC5, -cluster_membership),
            tour_path = grand_tour(),
@@ -125,4 +137,68 @@ render_gif(data = dplyr::select(tour_data, PC1:PC5, -cluster_membership),
            frames = 100,
            gif_file = here("gifs", "mouse_sage_gam3.gif"),
            rescale = FALSE
+)
+
+
+set.seed(1990)
+render(
+  dplyr::select(tour_data, PC1:PC5, -cluster_membership),
+  tour_path = grand_tour(),
+  dev = "png",
+  display = display_sage(axes = "bottomleft", col = col, gam = 3),
+  rescale = FALSE,
+  frames = 100,
+  here::here("pngs", "mouse_sage_gam3-%03d.png")
+)
+
+## ----tour-ex2-------------------------------------------------------
+# using second overlapping cluster
+
+# three overlapping clusters, 1, 8, 9
+col <- ifelse(as.integer(tour_data$cluster_membership) == 9,  pal[9], "grey90")
+col <-  ifelse(as.integer(tour_data$cluster_membership) == 1,  pal[1], col)
+col <-  ifelse(as.integer(tour_data$cluster_membership) == 8,  pal[8], col)
+
+
+
+set.seed(1990)
+render_gif(
+  data = dplyr::select(tour_data, PC1:PC5, -cluster_membership),
+  tour_path = grand_tour(),
+  display = display_xy(col = col, axes = "bottomleft"),
+  frames = 100,
+  gif_file = here("gifs", "mouse_grand_2c.gif"),
+  rescale = FALSE
+)
+
+set.seed(1990)
+render(
+  dplyr::select(tour_data, PC1:PC5, -cluster_membership),
+  tour_path = grand_tour(),
+  dev = "png",
+  display = display_xy(col=col, axes = "bottomleft"),
+  rescale = FALSE,
+  frames = 100,
+  here::here("pngs", "mouse_grand_2c-%03d.png")
+)
+
+set.seed(1990)
+render_gif(data = dplyr::select(tour_data, PC1:PC5, -cluster_membership),
+           tour_path = grand_tour(),
+           display = display_sage(axes = "bottomleft", col = col, gam = 3),
+           frames = 100,
+           gif_file = here("gifs", "mouse_sage_2c_gam3.gif"),
+           rescale = FALSE
+)
+
+
+set.seed(1990)
+render(
+  dplyr::select(tour_data, PC1:PC5, -cluster_membership),
+  tour_path = grand_tour(),
+  dev = "png",
+  display = display_sage(axes = "bottomleft", col = col, gam = 3),
+  rescale = FALSE,
+  frames = 100,
+  here::here("pngs", "mouse_sage_2c_gam3-%03d.png")
 )
