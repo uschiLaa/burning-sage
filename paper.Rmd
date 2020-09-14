@@ -365,7 +365,6 @@ and uses `gam` to set the $\gamma$ parameter for computing $p_{\mathrm{eff}}$, a
 Four applications of the sage tour are shown here, which illustrate the benefit of using the reverse transformation for examining data using a tour: single cell RNA-seq, classifying hand-sketched images, comparing physics experiments, and the classical pollen data which is used to illustrate the effect of parameter choices. 
 
 - use four panel set up for grand tour and sage
-- render pngs in addition to the gifs
 
 ## Clustering single-cell RNA-seq data sets
 
