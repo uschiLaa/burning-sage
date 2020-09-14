@@ -390,21 +390,30 @@ on a weighted subsample of cells based on their cluster membership - 4,590 cells
 Using the default tour display (figure \ref{fig:mouse-cluster}, top), the three clusters (dark green, blue, and yellow) are obscured by points in other clusters as we move through the frames of the animation. The points in dark green cluster are overlapping those found in the yellow and blue clusterss; and it is difficult to see if there is any separation between the blue and yellow clusters.
 
 ```{r mouse-cluster, fig.cap = "Selected frames from using a tour of the mouse data with the default tour display (top), and the sage display with $\\gamma=3$ (bottom)"}
-library(cowplot)
 library(magick)
 dir <- "pngs/"
 frames <- c("001", "016", "038", "074")
-draw_panel <- function(png) ggdraw() + 
-  draw_image(png) + 
-  theme(plot.margin = unit(c(0, 0, 0, 0), "cm"))
+draw_frames <- function(pngs) {
+  res <- lapply(pngs, image_read)
+  res <- do.call("c", res)
+  image_append(res)
+}
+ 
+draw_panel <- function(a, b) {
+  whitespace <- image_blank(image_info(a)$width, 25, color = "white")
+  img <- c(a, whitespace, b)
+  image_scale(
+    image_append(img, stack = TRUE),
+    "800"
+  )
+}
+mouse_grand <- paste0(dir, "mouse_grand_2c-", frames, ".png")
+mouse_grand_panel <- draw_frames(mex_grand)
+mouse_sage <- paste0(dir, "mouse_sage_2c_gam3-", frames, ".png")
+mouse_sage_panel <- draw_frames(mex_sage)
 
-mex_grand <- paste0(dir, "mouse_grand_2c-", frames, ".png")
-mex_grand_panel <- plot_grid(plotlist = lapply(mex_grand, draw_panel), nrow = 1)
-mex_sage <- paste0(dir, "mouse_sage_2c_gam3-", frames, ".png")
-
-mex_sage_panel <- plot_grid(plotlist = lapply(mex_sage, draw_panel), nrow = 1)
-
-plot_grid(mex_grand_panel, mex_sage_panel, nrow = 2)
+mouse <- draw_panel(mouse_grand_panel, mouse_sage_panel)
+print(mouse)
 ```
 
 
@@ -426,12 +435,12 @@ Figure \ref{fig:sketches} shows the grand tour on the PCs, where green points co
 frames <- c("001", "036", "077", "092")
 
 sketches_grand <- paste0(dir, "sketches_grand-", frames, ".png")
-sketches_grand_panel <- plot_grid(plotlist = lapply(sketches_grand, draw_panel), nrow = 1)
+sketches_grand_panel <- draw_frames(sketches_grand)
 sketches_sage <- paste0(dir, "sketches_sage-", frames, ".png")
+sketches_sage_panel <- draw_frames(sketches_sage)
 
-sketches_sage_panel <- plot_grid(plotlist = lapply(sketches_sage, draw_panel), nrow = 1)
-
-plot_grid(sketches_grand_panel, sketches_sage_panel, nrow = 2)
+sketches <- draw_panel(sketches_grand_panel, sketches_sage_panel)
+print(sketches)
 ```
 
 ## Comparing physics experiments: PDFSense
@@ -445,12 +454,12 @@ Following the processing described there, we tour the first 6 principal componen
 frames <- c("001", "051", "078", "092")
 
 pdfsense_grand <- paste0(dir, "pdfsense_grand-", frames, ".png")
-pdfsense_grand_panel <- plot_grid(plotlist = lapply(pdfsense_grand, draw_panel), nrow = 1)
+pdfsense_grand_panel <- draw_frames(pdfsense_grand)
 pdfsense_sage <- paste0(dir, "pdfsense_sage_r10-", frames, ".png")
+pdfsense_sage_panel <- draw_frames(pdfsense_sage)
 
-pdfsense_sage_panel <- plot_grid(plotlist = lapply(pdfsense_sage, draw_panel), nrow = 1)
-
-plot_grid(pdfsense_grand_panel, pdfsense_sage_panel, nrow = 2)
+pdfsense <- draw_panel(pdfsense_grand_panel, pdfsense_sage_panel)
+print(pdfsense)
 ```
 
 
