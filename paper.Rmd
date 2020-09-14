@@ -391,6 +391,7 @@ Using the default tour display (figure \ref{fig:mouse-cluster}, top), the three 
 
 ```{r mouse-cluster, fig.cap = "Selected frames from using a tour of the mouse data with the default tour display (top), and the sage display with $\gamma=3$ (bottom)", fig.width="0.9\\textwidth"}
 library(cowplot)
+library(magick)
 dir <- "pngs/"
 frames <- c("001", "016", "038", "074")
 draw_panel <- function(png) ggdraw() + 
