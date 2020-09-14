@@ -413,7 +413,7 @@ mouse_sage <- paste0(dir, "mouse_sage_2c_gam3-", frames, ".png")
 mouse_sage_panel <- draw_frames(mex_sage)
 
 mouse <- draw_panel(mouse_grand_panel, mouse_sage_panel)
-print(mouse)
+mouse
 ```
 
 
@@ -440,7 +440,7 @@ sketches_sage <- paste0(dir, "sketches_sage-", frames, ".png")
 sketches_sage_panel <- draw_frames(sketches_sage)
 
 sketches <- draw_panel(sketches_grand_panel, sketches_sage_panel)
-print(sketches)
+sketches
 ```
 
 ## Comparing physics experiments: PDFSense
@@ -459,7 +459,7 @@ pdfsense_sage <- paste0(dir, "pdfsense_sage_r10-", frames, ".png")
 pdfsense_sage_panel <- draw_frames(pdfsense_sage)
 
 pdfsense <- draw_panel(pdfsense_grand_panel, pdfsense_sage_panel)
-print(pdfsense)
+pdfsense
 ```
 
 
