@@ -437,7 +437,7 @@ sketches <- draw_panel(sketches_grand_panel, sketches_sage_panel)
 sketches
 ```
 
-Figure \ref{fig:sketches} shows the grand tour on the PCs, where green points correspond to the banana class, orange points represent the cactcus class and purple points are the crab class. In both displays points belonging to the cactus class are concentrated in the center, however on the default display (figure \ref{fig:sketches}, top) there is overplotting: points from other classes overlap those in the cactus class. The sage display (figure \ref{fig:sketches}, right) helps reduce overplotting, it is easier to see that the centers of class are separated and that there is substructure in the banana class, which further collapses into two subgroups.
+Figure \ref{fig:sketches} shows the grand tour on the PCs, where green points correspond to the banana class, orange points represent the cactcus class and purple points are the crab class. In both displays points belonging to the cactus class are concentrated in the center, however on the default display (figure \ref{fig:sketches}, top) there is overplotting: points from other classes overlap those in the cactus class. The sage display (figure \ref{fig:sketches}, bottom) helps reduce overplotting, it is easier to see that the centers of class are separated and that there is substructure in the banana class, which further collapses into two subgroups.
 
 
 
