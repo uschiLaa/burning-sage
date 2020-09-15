@@ -288,7 +288,7 @@ ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
 
 ```
 
-```{r circles, fig.cap="Equidistant concentric circles, for $p=2, 3, 10, 100$, illustrating the radial transformation. The circles remain equidistant for $p=2$ where no transformation is performed, and get pushed out towards the edge as $p$ increases.", out.width="75%", fig.align = "center"}
+```{r circles, fig.cap="Equidistant concentric circles, for $p=2, 3, 10, 100$, illustrating the radial transformation. The circles remain equidistant for $p=2$ where no transformation is performed, and get pushed out towards the edge as $p$ increases.", out.width="100%", fig.align = "center", fig.height=2}
 
 lbl <- c("p=2", "p=3", "p=10", "p=100")
 names(lbl) <- c("p4", "p6", "p10", "p20")
@@ -305,7 +305,7 @@ tibble(x = 0, y = 0, r = seq(0.1, 1, length.out = 10)) %>%
   geom_circle(aes(x0=x, y0=y, r=value, color=r)) +
   coord_fixed() +
   theme_bw() +
-  facet_wrap(~name, labeller = labeller(name = lbl)) +
+  facet_wrap(~name, labeller = labeller(name = lbl), ncol=4) +
   guides(color = FALSE) +
   theme(axis.title.x=element_blank(), axis.title.y=element_blank())
 
@@ -356,7 +356,7 @@ tourr::animate(
   )
 ```
 
-and uses `gam` to set the $\gamma$ parameter for computing $p_{\mathrm{eff}}$, and the overall range `R` used for trimming. Both these parameters are described in Section \ref{sec:params} above. Finally, `half_range` sets the scale parameter $s$ to adjust the scale to the drawing canvas. The ratio $R/s$ sets the scale for fitting the displayed data on the plotting canvas, by default $s = R$ and we apply the scaling factor $0.9$ to contain the projected points within the display. When adjusting $R$ the user should take care to adjust $s$ accordingly.
+\noindent and uses `gam` to set the $\gamma$ parameter for computing $p_{\mathrm{eff}}$, and the overall range `R` used for trimming. Both these parameters are described in Section \ref{sec:params} above. Finally, `half_range` sets the scale parameter $s$ to adjust the scale to the drawing canvas. The ratio $R/s$ sets the scale for fitting the displayed data on the plotting canvas, by default $s = R$ and we apply the scaling factor $0.9$ to contain the projected points within the display. When adjusting $R$ the user should take care to adjust $s$ accordingly.
 
 # Applications {#sec:application}
 
