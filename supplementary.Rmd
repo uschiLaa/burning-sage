@@ -24,7 +24,7 @@ The left hand side is always the grand tour, and the right is the sage tour.
 
 Setting sage with $\gamma = 3$
 
-<img src="gifs/mouse_grand.gif" width="450"/> <img src="gifs/mouse_sage_gam3.gif" width="450"/>
+<img src="gifs/mouse_grand_2c.gif" width="450"/> <img src="gifs/mouse_sage_2c_gam3.gif" width="450"/>
 
 ## QuickDraw Sketches
 
