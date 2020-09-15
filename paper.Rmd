@@ -101,8 +101,8 @@ In this work we address the piling in low-dimensional linear projections, which 
 
 The paper is structured as follows: the radial transformation and its implementation is described in Section \ref{sec:method}, we show applications in Section \ref{sec:application} and conclude in Section \ref{sec:concl}.
 
-XXX probably remove this, for now keeping it in for reference
-see also discussion in https://mc-stan.org/users/documentation/case-studies/curse-dims.html on the average length of multivariate normal vector for large $p$, relation to "concentration of measures".
+<!-- XXX probably remove this, for now keeping it in for reference
+see also discussion in https://mc-stan.org/users/documentation/case-studies/curse-dims.html on the average length of multivariate normal vector for large $p$, relation to "concentration of measures".-->
 
 
 # Burning sage algorithm {#sec:method}
@@ -411,8 +411,6 @@ mouse
 ```
 
 Using the default tour display (figure \ref{fig:mouse-cluster}, top), the three clusters (dark green, blue, and yellow) are obscured by points in other clusters as we move through the frames of the animation. The points in dark green cluster are overlapping those found in the yellow and blue clusters; and it is difficult to see if there is any separation between the blue and yellow clusters.
-
-
 
 On the other hand using the sage display (figure \ref{fig:mouse-cluster}, bottom), expands the center of projection, and results in the
 three clusters appearing more separable than the default display. The dark green cluster becomes more visible; the outlier cell that is far away from the rest of the clustered points is more apparent. Moreover, the relative positions of the yellow and blue clusters centers are easier to see, those clusters are distinct from the dark green cluster, yet in most frames they appear to overlap and jumble together, indicating that perhaps those clusters should be merged together.  
