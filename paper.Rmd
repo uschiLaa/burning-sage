@@ -490,6 +490,10 @@ For the sage display tuning is often required to avoid bunching points in the vi
 
 Currently, the sage display is naive to information in high dimensional space that is not captured by linear projections. Further work is required to investigate other transformations of the projections that can capture non-linear structure or that are locally linear, like the transformations performed by t-SNE. 
 
+# Acknowledgements {-}
 
+The authors gratefully acknowledge the support of the Australian Research Council. The paper was written in `rmarkdown` [@rmarkdown] using `knitr` [@knitr].
 
+# Supplementary material {-}
 
+The source material for this paper is available at \url{https://github.com/uschiLaa/burning-sage} XXX rename repo!!!!. The animated gifs for all applications are also included in html files in the supplementary material.
