@@ -410,11 +410,11 @@ mouse <- draw_panel(mouse_grand_panel, mouse_sage_panel)
 mouse
 ```
 
-Using the default tour display (figure \ref{fig:mouse-cluster}, top), the three clusters (dark green, blue, and yellow) are obscured by points in other clusters as we move through the frames of the animation. The points in dark green cluster are overlapping those found in the yellow and blue clusterss; and it is difficult to see if there is any separation between the blue and yellow clusters.
+Using the default tour display (Figure \ref{fig:mouse-cluster}, top), the three clusters (dark green, blue, and yellow) are obscured by points in other clusters as we move through the frames of the animation. The points in dark green cluster are overlapping those found in the yellow and blue clusterss; and it is difficult to see if there is any separation between the blue and yellow clusters.
 
 
 
-On the other hand using the sage display (figure \ref{fig:mouse-cluster}, bottom), expands the center of projection, and results in the
+On the other hand using the sage display (Figure \ref{fig:mouse-cluster}, bottom), expands the center of projection, and results in the
 three clusters appearing more sepearable than the default display. The dark green cluster becomes more visible; the outlier cell that is far away from the rest of the clustered points is more apparent. Moreover, the relative positions of the yellow and blue clusters centers are easier to see, those clusters are distinct from the dark green cluster, yet in most frames they appear to overlap and jumble together, indicating that perhaps those clusters should be merged together.  
 
 
@@ -437,7 +437,7 @@ sketches <- draw_panel(sketches_grand_panel, sketches_sage_panel)
 sketches
 ```
 
-Figure \ref{fig:sketches} shows the grand tour on the PCs, where green points correspond to the banana class, orange points represent the cactcus class and purple points are the crab class. In both displays points belonging to the cactus class are concentrated in the center, however on the default display (figure \ref{fig:sketches}, top) there is overplotting: points from other classes overlap those in the cactus class. The sage display (figure \ref{fig:sketches}, bottom) helps reduce overplotting, it is easier to see that the centers of class are separated and that there is substructure in the banana class, which further collapses into two subgroups.
+Figure \ref{fig:sketches} shows the grand tour on the PCs, where green points correspond to the banana class, orange points represent the cactcus class and purple points are the crab class. In both displays points belonging to the cactus class are concentrated in the center, however on the default display (Figure \ref{fig:sketches}, top) there is overplotting: points from other classes overlap those in the cactus class. The sage display (Figure \ref{fig:sketches}, bottom) helps reduce overplotting, it is easier to see that the centers of class are separated and that there is substructure in the banana class, which further collapses into two subgroups.
 
 
 
@@ -457,7 +457,7 @@ pdfsense <- draw_panel(pdfsense_grand_panel, pdfsense_sage_panel)
 pdfsense
 ```
 
-Following the processing described there, we tour the first 6 principal components, rescaled to have zero mean and unit variance. In figure \ref{fig:pdfsense} we see that using the default tour display (figure \ref{fig:pdfsense}, top) and the sage display with $R = 10$ (figure \ref{fig:pdfsense}, bottom), maintains the overall shape of the data (different physical process are orthogonal in the paramater space). The particular structure of this distribution, with some clusters extending linearly away from the center and a set of outlying points, results in poor use of the plotting space, and high level of clustering near the center. For example, focussing on the blue cluster, we can see that it extends out along different directions, but it can be challenging to observe how the point move under the tour rotation, as overplotting becomes an issue when points move through the center. Here, the new display has a clear advantage, as illustrated with the selected views in figure \ref{fig:pdfsense} (bottom).
+Following the processing described there, we tour the first 6 principal components, rescaled to have zero mean and unit variance. In Figure \ref{fig:pdfsense} we see that using the default tour display (Figure \ref{fig:pdfsense}, top) and the sage display with $R = 10$ (Figure \ref{fig:pdfsense}, bottom), maintains the overall shape of the data (different physical process are orthogonal in the paramater space). The particular structure of this distribution, with some clusters extending linearly away from the center and a set of outlying points, results in poor use of the plotting space, and high level of clustering near the center. For example, focussing on the blue cluster, we can see that it extends out along different directions, but it can be challenging to observe how the point move under the tour rotation, as overplotting becomes an issue when points move through the center. Here, the new display has a clear advantage, as illustrated with the selected views in Figure \ref{fig:pdfsense} (bottom).
 
 
 
