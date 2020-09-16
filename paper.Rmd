@@ -416,12 +416,12 @@ three clusters appearing more separable than the default display. The dark green
 
 ## Classifying hand-sketches
 
-We can use the new display to look at different distributions of images from Google QuickDraw collection [@quickdraw-paper]. These are $28\times28=784$ pixel grey scale data that are available publicly. In this example, we sample 1000 images from three types of sketches (banana, cactus, crab) and see if we can separate the classes in the high-dimensional parameter space. 
+We next use the new display to look at different distributions of images from the Google QuickDraw collection [@quickdraw-paper]. These are $28\times28=784$ pixel grey scale data that are available publicly. In this example, we sample 1000 images from three types of sketches (banana, cactus, crab) and see if we can separate the classes in the high-dimensional parameter space. 
 
-We reduce the dimensionality from 784 variables to the first 5 PCs, which captures approximately 20 per cent of the variation of the data. Before applying the tour we rescale each component to have mean zero and unit variance. 
+We reduce the dimensionality from 784 variables to the first 5 PCs, which captures approximately 20 per cent of the variation of the data. Before applying the tour we rescale each component to have mean zero and unit variance. To account for the dimension reduction before visualisation we set $\gamma=2$ for the sage display.
 
 
-```{r sketches, fig.cap = "Selected frames  of the tour run on the sketches data using the default tour display (top), and using the default sage display (bottom).", out.width="0.9\\textwidth", fig.align="center"}
+```{r sketches, fig.cap = "Selected frames  of the tour run on the sketches data using the default tour display (top), and using the default sage display with $\\gamma=2$ (bottom). Three types of sketches are indicated by color: banana (green), cactus (orange) and crab (purple). Overplotting of points is a problem for the grand tour display, while the sage display reveals low density near the center.", out.width="0.9\\textwidth", fig.align="center"}
 frames <- c("001", "036", "077", "092")
 
 sketches_grand <- paste0(dir, "sketches_grand-", frames, ".png")
@@ -433,7 +433,9 @@ sketches <- draw_panel(sketches_grand_panel, sketches_sage_panel)
 sketches
 ```
 
-Figure \ref{fig:sketches} shows the grand tour on the PCs, where green points correspond to the banana class, orange points represent the cactus class and purple points are the crab class. In both displays points belonging to the cactus class are concentrated in the center, however on the default display (figure \ref{fig:sketches}, top) there is overplotting: points from other classes overlap those in the cactus class. The sage display (figure \ref{fig:sketches}, bottom) helps reduce overplotting, it is easier to see that the centers of class are separated and that there is substructure in the banana class, which further collapses into two subgroups.
+Figure \ref{fig:sketches} shows the grand tour on the PCs, where green points correspond to the banana class, orange points represent the cactus class and purple points are the crab class. In the selected frames of both displays points belonging to the cactus class are concentrated near the center, however on the default display (Figure \ref{fig:sketches}, top) there is overplotting: points from other classes overlap those in the cactus class. The sage display (Figure \ref{fig:sketches}, bottom) helps reduce overplotting, it is easier to see that the centers of class are separated and that there is substructure in the banana class, which further collapses into two subgroups.
+
+The animated sage tour available in the supplementary material further reveals a low density of points near the center of the distribution: observing the movement of points when rotating the viewing angle shows that even the cactus class is clustering away from the mean.
 
 ## Comparing physics experiments: PDFSense
 
