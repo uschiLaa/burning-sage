@@ -1,0 +1,23 @@
+---
+from: Ursula Laa
+fromqualifications: PhD
+fromtitle: Research fellow
+fromemail: ursula.laa@monash.edu
+fromWWW: uschilaa.github.io
+fromphone: +61 4 78 001 984
+fromsignature: signature.pdf
+toname: Editor
+toaddress: Journal of Computational and Graphical Statistics
+opening: Dear Dr McCormick,
+closing: Sincerely
+spacing: 1.4
+output: MonashEBSTemplates::letter
+---
+
+Please consider our manuscript "Burning sage: Reversing the curse of dimensionality in the visualization of high-dimensional data" for publication in the Journal of Computational and Graphical Statistics.
+
+The paper discusses the clumping of high-dimensional data points near the center of low-dimensional projections, and proposes a new algorithm to reverse the effect. We introduce a radial transformation for data points projected onto a 2D plane that is informed by the relative projected volume. The resulting display is useful for exploratory analysis in clustering or classification tasks, or to reveal features hidden near the center of a distribution, as demonstrated in the applications. It is especially beneficial in a dynamic display as obtained with tour methods, and the new visualization is available in the "tourr" package.
+
+We believe that it is a good fit for the Journal of Computational and Graphical Statistics. It introduces a new visualization tool for high-dimensional problems that provides an interpretable alternative to displays based on non-linear dimension reduction techniques.
+
+Thank you for the consideration of this manuscript.
