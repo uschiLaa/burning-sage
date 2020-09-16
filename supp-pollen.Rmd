@@ -1,0 +1,20 @@
+---
+title: "Supplementary Materials - Needle in a haystack, the pollen dataset"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, 
+  message = FALSE, 
+  warning = FALSE,
+  error = FALSE)
+```
+
+## pollen: parameter tuning
+
+All sage displays: left is default, middle is $R=1$, and right is $\gamma=20$.
+
+<img src="gifs/pollen_sage.gif" width="300"/> <img src="gifs/pollen_sage_R1.gif" width="300"/> <img src="gifs/pollen_sage_gam20.gif" width="300"/> 
+
