@@ -362,20 +362,20 @@ Four applications of the sage tour are shown here, which illustrate the benefit 
 
 
 In the analysis of single cell RNA-seq data, cluster analysis is performed to
-detect cell types and find expression of genes that define those cell types, and the relative orientation of the cell types  to each other (trajectory analysis). Generally, for cluster verification, analysts use embedding methods
+detect cell types and find expression of genes that define those cell types, and the relative orientation of the cell types  to each other (trajectory analysis) [@Amezquita2020-at]. Generally, for cluster verification, analysts use embedding methods
 like t-SNE to verify the placement and meaning of clusters from a clustering algorithm. 
 
 Here we compare the sage display and regular tour display on mouse retinal single cell RNA-seq data from
 @Macosko2015-ot. The raw data consists of a 49,300  cells and was downloaded
 using the using the **scRNAseq** Bioconductor package [@scRNAseq-d]. We
 use a standard workflow for pre-processing and normalizing this data 
-(described by @Amezquita2020-at): we performed QC using the **scater** package
+(described by @Amezquita2020-at): we performed quality control using the **scater** package [@McCarthy2017]
 and we log-transformed and normalised the expression 
 values and selected highly variable genes (HVGs) using **scran** 
-[@McCarthy2017; @Lun2016]. The top ten percent of HVGs were used to subset
-the normalised expression matrix and compute PCA using the first 25 components.
-Using the PCs we built a shared nearest neighbours graph (with $k = 10$) and 
-used Louvain clustering which generates 11 clusters [@Blondel2008-bx]. 
+[@Lun2016]. The top ten percent of most HVGs were used as features to subset
+the normalised expression matrix and compute principal components.
+Using the first 25 PCs we built a shared nearest neighbours graph (with $k = 10$) and 
+clustered this graph using Louvain clustering, resulting in 11 clusters being formed [@Blondel2008-bx]. 
 
 We tour the first five PCs (approximately 20% of the variance in expression),
 on a weighted subsample of cells based on their cluster membership - 4,590 cells. When running the sage display, we set $\gamma = 3$, fixing the effective dimensionality of the data to $p_{\mathrm{eff}} = 15$. For the displays we have rescaled the PCs so they each have zero mean and unit variance. Here we are interested in mitigating the effects of overplotting by focusing on three clusters that were identified by graph based clustering but appear to overlap on PC plots.  
@@ -473,7 +473,7 @@ Neither the standard scatter display nor the sage display with default settings 
 # Discussion {#sec:concl}
 
 In this paper we have introduced the sage display, as a visualisation technique for reversing
-the curse of dimensionality in high dimensional projections, and have shown its utility in applications to analysis tasks found in the natural sciences and machine learning. Our case studies highlight that sage display can reduce the effects of overplotting - in the sketches example our new display decreases the number of overlapping points between classes and provides
+the curse of dimensionality in high dimensional projections, and have shown its utility in applications to analysis tasks found in the natural sciences and machine learning. Our case studies highlight that sage display can reduce the effects of data piling. We showed in the sketches example, that our new display decreases the number of overlapping points between classes and provides
 better visual separation between classes compared to the regular tour. Furthermore, unlike some
 non-linear dimension reduction (NLDR) techniques like t-SNE, the sage display still gives the viewer an accurate assessment of the size of a cluster, as we saw in our single cell example. Our parameter tuning example highlights that the sage display is linear up to a given effective dimension. As a result, the sage display provides interpretable visualisations while preserving global structure in the high dimensional space, as highlighted in the particle physics example.
 
