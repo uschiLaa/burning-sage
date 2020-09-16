@@ -378,9 +378,9 @@ Using the PCs we built a shared nearest neighbours graph (with $k = 10$) and
 used Louvain clustering which generates 11 clusters [@Blondel2008-bx]. 
 
 We tour the first five PCs (approximately 20% of the variance in expression),
-on a weighted subsample of cells based on their cluster membership - 4,590 cells. When running the sage display, we set $\gamma = 3$ as the effective dimensionality of the data. For the displays we have rescaled the PCs so they each have zero mean and unit variance. Here we are interested in mitigating the effects of overplotting by focusing on three clusters that were identified by graph based clustering but appear to overlap on PC plots.  
+on a weighted subsample of cells based on their cluster membership - 4,590 cells. When running the sage display, we set $\gamma = 3$, fixing the effective dimensionality of the data to $p_{\mathrm{eff}} = 15$. For the displays we have rescaled the PCs so they each have zero mean and unit variance. Here we are interested in mitigating the effects of overplotting by focusing on three clusters that were identified by graph based clustering but appear to overlap on PC plots.  
 
-```{r mouse-cluster, fig.cap = "Selected frames from using a tour of the mouse data with the default tour display (top), and the sage display with $\\gamma=3$ (bottom)", out.width="0.9\\textwidth", fig.align="center"}
+```{r mouse-cluster, fig.cap = "Selected frames from using a tour of the mouse data with the default tour display (top), and the sage display with $\\gamma=3$ (bottom). Three selected clusters are highlighted in color, all other points are shown in grey. Using the sage display mitigates overplotting and provides a better understanding of cluster separation.", out.width="0.9\\textwidth", fig.align="center"}
 library(magick)
 dir <- "pngs/"
 frames <- c("001", "016", "038", "074")
@@ -404,10 +404,14 @@ mouse <- draw_panel(mouse_grand_panel, mouse_sage_panel)
 mouse
 ```
 
-Using the default tour display (figure \ref{fig:mouse-cluster}, top), the three clusters (dark green, blue, and yellow) are obscured by points in other clusters as we move through the frames of the animation. The points in dark green cluster are overlapping those found in the yellow and blue clusters; and it is difficult to see if there is any separation between the blue and yellow clusters.
+Figure \ref{fig:mouse-cluster} shows selected frames from the animations available in the supplementary material. The still views serve to illustrate the main points, but we encourage the reader to look at the tour animations to fully appreciate the advantage of the sage display.
 
-On the other hand using the sage display (figure \ref{fig:mouse-cluster}, bottom), expands the center of projection, and results in the
-three clusters appearing more separable than the default display. The dark green cluster becomes more visible; the outlier cell that is far away from the rest of the clustered points is more apparent. Moreover, the relative positions of the yellow and blue clusters centers are easier to see, those clusters are distinct from the dark green cluster, yet in most frames they appear to overlap and jumble together, indicating that perhaps those clusters should be merged together.  
+Using the default tour display (Figure \ref{fig:mouse-cluster}, top), the three clusters (dark green, blue, and yellow) are obscured by points in other clusters as we move through the frames of the animation. The points in the dark green cluster are overlapping those found in the yellow and blue clusters; and it is difficult to see if there is any separation between the blue and yellow clusters.
+
+On the other hand using the sage display (Figure \ref{fig:mouse-cluster}, bottom), expands the center of projection, and results in the
+three clusters appearing more separable than the default display. The dark green cluster becomes more visible; the outlier cell that is far away from the rest of the clustered points is more apparent. Moreover, the relative positions of the yellow and blue clusters centers are easier to see, those clusters are distinct from the dark green cluster, yet in most frames they appear to overlap and jumble together, indicating that perhaps those clusters should be merged together.
+
+
 
 
 ## Classifying hand-sketches
