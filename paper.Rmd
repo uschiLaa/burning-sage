@@ -362,7 +362,7 @@ Four applications of the sage tour are shown here, which illustrate the benefit 
 
 
 In the analysis of single cell RNA-seq data, cluster analysis is performed to
-detect cell types and find expression of genes that define those cell types, and the relative orientation of the cell types  to each other (trajectory analysis) . Generally, for cluster verification, analysts use embedding methods
+detect cell types and find expression of genes that define those cell types, and the relative orientation of the cell types  to each other (trajectory analysis) [@Amezquita2020-at]. Generally, for cluster verification, analysts use embedding methods
 like t-SNE to verify the placement and meaning of clusters from a clustering algorithm. 
 
 Here we compare the sage display and regular tour display on mouse retinal single cell RNA-seq data from
@@ -372,10 +372,10 @@ use a standard workflow for pre-processing and normalizing this data
 (described by @Amezquita2020-at): we performed quality control using the **scater** package [@McCarthy2017]
 and we log-transformed and normalised the expression 
 values and selected highly variable genes (HVGs) using **scran** 
-[@Lun2016]. The top ten percent of HVGs were used to subset
-the normalised expression matrix and compute PCA using the first 25 components.
-Using the PCs we built a shared nearest neighbours graph (with $k = 10$) and 
-used Louvain clustering which generates 11 clusters [@Blondel2008-bx]. 
+[@Lun2016]. The top ten percent of most HVGs were used as features to subset
+the normalised expression matrix and compute principal components.
+Using the first 25 PCs we built a shared nearest neighbours graph (with $k = 10$) and 
+clustered this graph using Louvain clustering, resulting in 11 clusters being formed [@Blondel2008-bx]. 
 
 We tour the first five PCs (approximately 20% of the variance in expression),
 on a weighted subsample of cells based on their cluster membership - 4,590 cells. When running the sage display, we set $\gamma = 3$, fixing the effective dimensionality of the data to $p_{\mathrm{eff}} = 15$. For the displays we have rescaled the PCs so they each have zero mean and unit variance. Here we are interested in mitigating the effects of overplotting by focusing on three clusters that were identified by graph based clustering but appear to overlap on PC plots.  
