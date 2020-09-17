@@ -476,12 +476,17 @@ In this paper we have introduced the sage display, as a visualisation technique 
 the curse of dimensionality in high dimensional projections, and have shown its utility in applications in the natural sciences and machine learning. Our case studies highlight that the radial transformation can reduce the effects of data piling, and in combination with the grand tour our new sage display provides interpretable visualisation, while preserving global structure in high dimensional space. 
 
 
-The sage display can be directly used in exploratory high dimensional data analysis
-tasks.
-We showed in the sketches example, that sage display decreases the number of overlapping points between classes and provides
-better visual separation between classes compared to the regular tour. Furthermore, unlike some
-non-linear dimension reduction (NLDR) techniques like t-SNE, the sage display still gives the viewer an accurate assessment of the size of a cluster, and their relative orientation.
-The single cell RNA-seq case study uncovered clusters that were originally obscured by data piling but that are close in high dimensional space; 
+The sage display is easily incorporated into exploratory high dimensional data analysis
+tasks: classification, clustering, and search. For classification tasks,
+as shown in the sketches example, the sage display decreases the number of 
+overlapping points between classes and provides better visual separation between
+classes compared to the regular tour.  For clustering tasks, as shown in the 
+single cell RNA-seq example, the sage display uncovered clusters that were 
+originally obscured by data piling. Furthermore, unlike some
+non-linear dimension reduction (NLDR) techniques like t-SNE, the sage display 
+still gives the viewer an accurate assessment of the size of a cluster, 
+and their relative orientation. We learned that the highlighted 
+The single cell RNA-seq case study uncovered clusters that were originally obscured by data piling; 
 
 as we saw in our single cell example. Our parameter tuning example highlights that the sage display is linear up to a given effective dimension. As a result, the sage display provides interpretable visualisations while preserving global structure in the high dimensional space, as highlighted in the particle physics example.
 
