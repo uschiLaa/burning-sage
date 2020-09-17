@@ -471,9 +471,17 @@ Neither the standard scatter display nor the sage display with default settings 
 # Discussion {#sec:concl}
 
 In this paper we have introduced the sage display, as a visualisation technique for reversing
-the curse of dimensionality in high dimensional projections, and have shown its utility in applications to analysis tasks found in the natural sciences and machine learning. Our case studies highlight that sage display can reduce the effects of data piling. We showed in the sketches example, that our new display decreases the number of overlapping points between classes and provides
+the curse of dimensionality in high dimensional projections, and have shown its utility in applications in the natural sciences and machine learning. Our case studies highlight that the radial transformation can reduce the effects of data piling, and in combination with the grand tour our new sage display provides interpretable visualisation, while preserving global structure in high dimensional space. 
+
+
+The sage display can be directly used in exploratory high dimensional data analysis
+tasks.
+We showed in the sketches example, that sage display decreases the number of overlapping points between classes and provides
 better visual separation between classes compared to the regular tour. Furthermore, unlike some
-non-linear dimension reduction (NLDR) techniques like t-SNE, the sage display still gives the viewer an accurate assessment of the size of a cluster, as we saw in our single cell example. Our parameter tuning example highlights that the sage display is linear up to a given effective dimension. As a result, the sage display provides interpretable visualisations while preserving global structure in the high dimensional space, as highlighted in the particle physics example.
+non-linear dimension reduction (NLDR) techniques like t-SNE, the sage display still gives the viewer an accurate assessment of the size of a cluster, and their relative orientation.
+The single cell RNA-seq case study uncovered clusters that were originally obscured by data piling but that are close in high dimensional space; 
+
+as we saw in our single cell example. Our parameter tuning example highlights that the sage display is linear up to a given effective dimension. As a result, the sage display provides interpretable visualisations while preserving global structure in the high dimensional space, as highlighted in the particle physics example.
 
 
 The recently introduced slice tour [@sliceTour] is essentially addressing the same issue, i.e. the overplotting of points from the large orthogonal space, but follows a different philosophy. Instead of mapping orthogonal volume to projected volume, we cut through the orthogonal space and only select a small portion of the volume for plotting. This is done by defining a slice via a cutoff on the orthogonal distance of points. The approach would be preferred in the case of large number of points, or for concave structure in the distribution, while the sage display works better in the case of limited sample size.
@@ -482,7 +490,7 @@ For the sage display tuning is often required to avoid bunching points in the vi
 
 Currently, the sage display is naive to information in high dimensional space that is not captured by linear projections. Further work is required to investigate other transformations of the projections that can capture non-linear structure or that are locally linear, like the transformations performed by t-SNE. 
 
-Add note on interactivity to tuning paragraph. Add a paragraph on applications
+Add note on interactivity to tuning paragraph. Add a paragraph on applications, correlation
 
 # Acknowledgements {-}
 
