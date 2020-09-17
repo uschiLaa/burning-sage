@@ -36,7 +36,8 @@ Suggests:
     gifski,
     animation,
     ggplot2,
-    dplyr
+    dplyr,
+    magick
 Depends: 
     R (>= 4.0)
 License: MIT + file LICENSE
