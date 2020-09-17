@@ -7,13 +7,21 @@ In high-dimensional data analysis the curse of dimensionality reasons that point
 
 ## Install Dependencies
 
-You can install the dependencies to run the examples in scripts using
-the `BiocManager` package from [CRAN](https://CRAN.R-project.org) with:
+You can install the dependencies to run the examples using
+the `devtools` package from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-install.packages("BiocManager")
-BiocManager::install("uschilaa/burningsage")
+install.packages("devtools")
+devtools::install("uschilaa/burningsage")
 library(burningsage)
+```
+
+If you want to run the analysis in `scripts/mouse.R` additional dependencies
+from Bioconductor need to be installed with the `BiocManager` package.
+
+```r
+install.packages("BiocManager")
+BiocManager::install(c("scran", "scater", "scRNAseq", "AnnotationHub", "ensembldb", "igraph"))
 ```
 
 ## Repo Structure
