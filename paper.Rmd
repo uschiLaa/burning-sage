@@ -476,10 +476,8 @@ While the still views look very similar, comparing the tour animations (availabl
 
 # Discussion {#sec:concl}
 
-In this paper we have introduced the sage display, as a visualisation technique for reversing
-the curse of dimensionality in high dimensional projections, and have shown its utility in applications in the natural sciences and machine learning. Our case studies highlight that the radial transformation can reduce the effects of data piling, and in combination with the grand tour our new sage display provides interpretable visualisation, while preserving global structure in high dimensional space. 
-
-The recently introduced slice tour [@sliceTour] is essentially addressing the same issue, i.e. the overplotting of points from the large orthogonal space, but follows a different philosophy. Instead of mapping orthogonal volume to projected volume, we cut through the orthogonal space and only select a small portion of the volume for plotting. This is done by defining a slice via a cutoff on the orthogonal distance of points. The approach would be preferred in the case of large number of points, or for concave structure in the distribution, while the sage display works better in the case of limited sample size.
+In this paper we have introduced the sage display, a visualisation technique for reversing
+the curse of dimensionality in low dimensional projections of high dimensional data, and have shown its utility in applications in the natural sciences and machine learning. Our case studies highlight that the radial transformation can reduce the effects of data piling, and in combination with the grand tour our new sage display provides interpretable visualisation, while preserving global structure in high dimensional space. 
 
 The sage display is easily incorporated into exploratory high dimensional data analysis
 tasks: classification, clustering, and search. For classification tasks,
@@ -498,22 +496,34 @@ the center of the projection. In the pdfsense example, by zooming in on the
 points in the blue cluster we saw how they were present in all directions of the
 parameter space, which was difficult to see with the regular tour.
 
-For the sage display tuning is often required to avoid bunching points in the 
-visualisation, especially if the projection is dense in the center of the 
+The applications also highlight that tuning is often required,
+especially if the projection is dense in the center of the 
 distribution. Expanding around the center aggressively can introduce distortions
 in the display, a well known problem for other NLDR methods as well.
 However, unlike those methods, the parameters in the sage display are 
 interpretable; we know the effect of altering $\gamma$ and $R$ on the resulting 
-visualisation. Our parameter tuning example highlights this: the sage display is 
+visualisation. Recall that the radial transformation is approximately linear near
+the center, thus preserving structures such as those seen in the pdfsense and
+pollen applications. On the other hand, the tuning example showed how points away
+from the projected center get moved to the edge of the hypersphere as $\gamma$
+is increased or $R$ is decreased. 
+<!--
+Our parameter tuning example highlights this: the sage display is 
 linear up to a  given effective dimension; the default sage display, preserves 
 the correlation between the variables which is broken once points get moved
-to the edge of the hypersphere as $\gamma$ and $R$ are changed. Given
+to the edge of the hypersphere as $\gamma$ and $R$ are changed.
+-->
+Given
 that the display is quick to compute, being able to modify these parameters in 
-real time with an interactive interface would be beneficial.  Currently, the 
+real time with an interactive interface would be beneficial.
+
+Currently, the 
 sage display is naive to information in high dimensional space that is not 
 captured by linear projections. Like t-SNE, it would be interesting to explore
 transformations of projections where points in the high dimensional space are 
 locally dense instead of expanding from the center of the distribution. 
+
+The recently introduced slice tour [@sliceTour] is essentially addressing the same issue, i.e. the overplotting of points from the large orthogonal space, but follows a different philosophy. Instead of mapping orthogonal volume to projected volume, we cut through the orthogonal space and only select a small portion of the volume for plotting. This is done by defining a slice via a cutoff on the orthogonal distance of points. The approach would be preferred in the case of large number of points, or for concave structure in the distribution, while the sage display works better in the case of limited sample size.
 
 # Acknowledgements {-}
 
