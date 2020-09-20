@@ -358,7 +358,7 @@ tourr::animate(
 
 Four applications of the sage tour are shown here, which illustrate the benefit of using the reverse transformation for examining data using a tour: single cell RNA-seq, classifying hand-sketched images, comparing physics experiments, and the classical pollen data which is used to illustrate the effect of parameter choices. 
 
-## Clustering single-cell RNA-seq data sets
+## Clustering single-cell RNA-seq data sets {#sec:appl1}
 
 
 In the analysis of single cell RNA-seq data, cluster analysis is performed to
@@ -414,7 +414,7 @@ three clusters appearing more separable than the default display. The dark green
 
 
 
-## Classifying hand-sketches
+## Classifying hand-sketches {#sec:appl2}
 
 We next use the new display to look at different distributions of images from the Google QuickDraw collection [@quickdraw-paper]. These are $28\times28=784$ pixel grey scale data that are available publicly. In this example, we sample 1000 images from three types of sketches (banana, cactus, crab) and see if we can separate the classes in the high-dimensional parameter space. 
 
@@ -437,7 +437,7 @@ Figure \ref{fig:sketches} shows the grand tour on the PCs, where green points co
 
 The animated sage tour available in the supplementary material further reveals a low density of points near the center of the distribution: observing the movement of points when rotating the viewing angle shows that even the cactus class is clustering away from the mean.
 
-## Comparing physics experiments: PDFSense
+## Comparing physics experiments: PDFSense {#sec:appl3}
 
 Data were obtained from CT14HERA2 parton distribution function fits and describe the sensitivity of fit parameters to experimental measurements [@Wang:2018heo]. There are 28 parameters, and varying one at a time to move $\pm 1 \sigma$ away from the 'best fit point' (maximum likelihood estimate) provides our input variables, labelled X1-X56. Each of the 2808 observations corresponds to a physical observable and measures how the fit prediction changes along the 56 directions in parameter space. Points are grouped based on the underlying process in the experiment, which is mapped to color in the following. With the analysis of the distribution along these variables X1-X56 we can understand to what extent each experimental measurement provides new information for the global fit. For example, orthogonality between groups marks complementary constraints, and outlying points are considered as important for future fits, see discussion in @Cook:2018mvr.
 
@@ -457,7 +457,7 @@ Following the processing described there, we tour the first 6 principal componen
 
 The particular structure of this distribution, with some clusters extending linearly away from the center and a set of outlying points, results in poor use of the plotting space, and high level of clustering near the center. For example, focussing on the blue cluster, we can see that it extends out along different directions, but it can be challenging to observe how the point move under the tour rotation, as overplotting becomes an issue when points move through the center. Here, the new display has a clear advantage, as illustrated with the selected views in Figure \ref{fig:pdfsense} (bottom).
 
-## Tuning the parameters: Pollen
+## Tuning the parameters: Pollen {#sec:appl4}
 
 The classical pollen data allows us to better demonstrate the use of the trimming and tuning parameters. The five dimensional data set was simulated by David Coleman of RCA Labs, for the Joint Statistics Meetings 1986 Data Expo [@pollen], and is an example of a hidden structure near the centre of a distribution. The data are standardised by centering and scaling such that the standard deviation of each variable is equal to one.
 
@@ -477,29 +477,35 @@ While the still views look very similar, comparing the tour animations (availabl
 # Discussion {#sec:concl}
 
 In this paper we have introduced the sage display, a visualisation technique for reversing
-the curse of dimensionality in low dimensional projections of high dimensional data, and have shown its utility in applications in the natural sciences and machine learning. Our case studies highlight that the radial transformation can reduce the effects of data piling, and in combination with the grand tour our new sage display provides interpretable visualisation, while preserving global structure in high dimensional space. 
+the curse of dimensionality in low dimensional projections of high dimensional data, and have shown its utility in applications in the natural sciences and machine learning. 
+The new method combines animated linear dimension reduction obtained with a grand tour and a non-linear transformation of the projected data points to improve intelligibility of each view.
+Our case studies show how it reduces the effects of data piling and aids different tasks in exploratory high dimensional data analysis.
 
-The sage display is easily incorporated into exploratory high dimensional data analysis
-tasks: classification, clustering, and search. For classification tasks,
-as shown in the sketches example, the sage display decreases the number of 
-overlapping points between classes and provides better visual separation between
-classes compared to the regular tour.  For clustering tasks, as shown in the 
-single cell RNA-seq example, the sage display uncovered clusters that were 
-originally obscured by data piling. Furthermore, unlike some
-non-linear dimension reduction (NLDR) techniques like t-SNE, the sage display 
-still gives the viewer an accurate assessment of the size of a cluster, 
-and their relative orientation; we learned that yellow and blue clusters have
-less separation in high dimensional space than the clustering algorithm suggests.
-For search tasks, as shown in the pollen and pdfsense examples, the sage display
-allows to find hidden signal that is concealed by the density of points around
-the center of the projection. In the pdfsense example, by zooming in on the 
+The approach  provides interpretable visualisation that captures high dimensional information and preserves global structure, and it is complementary to non-linear dimension reduction techniques. For example, when visualising clusters, the sage display enables an assessment of cluster sizes, and accurately captures relative position and orientation. However, the sage display is currently 
+naive to information in high dimensional space that is not 
+captured by linear projections. Like t-SNE, it would be interesting to explore
+transformations of projections where points in the high dimensional space are 
+locally dense instead of expanding from the center of the distribution.
+
+XXX option to reference upcoming work in liminal paper when mentioning complementarity
+
+While the recently introduced slice tour [@sliceTour] is essentially addressing the same issue as the sage display (i.e. overplotting of points from the orthogonal space), it follows a different philosophy: we only select a small portion of the volume for plotting, based on the orthogonal distance of points from the projection plane. This approach is preferred for large sample sizes, or for concave structure, while the sage display works better in the case of limited sample size.
+
+The sage display is easily incorporated into exploratory high dimensional data analysis, and applications shown in Section \ref{sec:application} provide examples of the following tasks: 
+
+- classification tasks: the sage display decreases the number of overlapping points between classes and provides better visual separation between classes compared to the regular tour, as shown in the sketches example (Section \ref{sec:appl2})
+- clustering tasks: the sage display uncovered clusters that were originally obscured by data piling, while still giving the viewer an accurate assessment of the size of a cluster, and their relative orientation, as shown in the single cell RNA-seq example (Section \ref{sec:appl1})
+- search tasks: the sage display allows to find hidden signal that is concealed by the density of points around the center of the projection, as shown in the pollen example (Section \ref{sec:appl4})
+
+XXX is pdfsense example of search task? maybe understanding structures across multiple dimensions instead?
+In the pdfsense example, by zooming in on the 
 points in the blue cluster we saw how they were present in all directions of the
 parameter space, which was difficult to see with the regular tour.
 
-The applications also highlight that tuning is often required,
+The applications also show that tuning is often required,
 especially if the projection is dense in the center of the 
 distribution. Expanding around the center aggressively can introduce distortions
-in the display, a well known problem for other NLDR methods as well.
+in the display, a well known problem from non-linear dimension reduction techniques like t-SNE.
 However, unlike those methods, the parameters in the sage display are 
 interpretable; we know the effect of altering $\gamma$ and $R$ on the resulting 
 visualisation. Recall that the radial transformation is approximately linear near
@@ -507,23 +513,10 @@ the center, thus preserving structures such as those seen in the pdfsense and
 pollen applications. On the other hand, the tuning example showed how points away
 from the projected center get moved to the edge of the hypersphere as $\gamma$
 is increased or $R$ is decreased. 
-<!--
-Our parameter tuning example highlights this: the sage display is 
-linear up to a  given effective dimension; the default sage display, preserves 
-the correlation between the variables which is broken once points get moved
-to the edge of the hypersphere as $\gamma$ and $R$ are changed.
--->
+
 Given
 that the display is quick to compute, being able to modify these parameters in 
 real time with an interactive interface would be beneficial.
-
-Currently, the 
-sage display is naive to information in high dimensional space that is not 
-captured by linear projections. Like t-SNE, it would be interesting to explore
-transformations of projections where points in the high dimensional space are 
-locally dense instead of expanding from the center of the distribution. 
-
-The recently introduced slice tour [@sliceTour] is essentially addressing the same issue, i.e. the overplotting of points from the large orthogonal space, but follows a different philosophy. Instead of mapping orthogonal volume to projected volume, we cut through the orthogonal space and only select a small portion of the volume for plotting. This is done by defining a slice via a cutoff on the orthogonal distance of points. The approach would be preferred in the case of large number of points, or for concave structure in the distribution, while the sage display works better in the case of limited sample size.
 
 # Acknowledgements {-}
 
