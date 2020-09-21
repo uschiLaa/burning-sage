@@ -367,11 +367,11 @@ like t-SNE to verify the placement and meaning of clusters from a clustering alg
 
 Here we compare the sage display and regular tour display on mouse retinal single cell RNA-seq data from
 @Macosko2015-ot. The raw data consists of a 49,300  cells and was downloaded
-using the using the **scRNAseq** Bioconductor package [@scRNAseq-d]. We
+using the using the `scRNAseq` Bioconductor package [@scRNAseq-d]. We
 use a standard workflow for pre-processing and normalizing this data 
-(described by @Amezquita2020-at): we performed quality control using the **scater** package [@McCarthy2017]
+(described by @Amezquita2020-at): we performed quality control using the `scater` package [@McCarthy2017]
 and we log-transformed and normalised the expression 
-values and selected highly variable genes (HVGs) using **scran** 
+values and selected highly variable genes (HVGs) using `scran` 
 [@Lun2016]. The top ten percent of most HVGs were used as features to subset
 the normalised expression matrix and compute principal components.
 Using the first 25 PCs we built a shared nearest neighbours graph (with $k = 10$) and 
