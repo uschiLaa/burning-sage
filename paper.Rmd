@@ -495,7 +495,7 @@ The sage display is easily incorporated into exploratory high dimensional data a
 
 - classification tasks: the sage display decreases the number of overlapping points between classes and provides better visual separation between classes compared to the regular tour, as shown in the sketches example (Section \ref{sec:appl2})
 - clustering tasks: the sage display uncovered clusters that were originally obscured by data piling, while still giving the viewer an accurate assessment of the size of a cluster, and their relative orientation, as shown in the single cell RNA-seq example (Section \ref{sec:appl1})
-- shape analysis tasks: the sage display helps us understand structures across multiple dimensions, as shown in the pdfsense exapmple (Section \ref{sec:appl3}). By zooming in on the  points in the blue cluster we saw how they were present in all directions of the parameter space, which was difficult to see with the regular tour.
+- shape analysis tasks: the sage display helps us understand structures across multiple dimensions, for example orthogonality between multiple groups, as shown in the pdfsense example (Section \ref{sec:appl3})
 - search tasks: the sage display allows to find hidden signal that is concealed by the density of points around the center of the projection, as shown in the pollen example (Section \ref{sec:appl4})
 
 The applications also show that tuning is often required,
