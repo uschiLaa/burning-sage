@@ -51,13 +51,11 @@ library(latex2exp)
 
 <!-- Reverse, redistribute, counteract, offset, rescale, radial transformation -->
 
-The term "curse of dimensionality" was originally introduced by @BellmanRichard1961, to express the difficulty of doing optimization in high dimensions because of the exponential growth in space as dimension increases. A way to think about it is that the volume of the space grows exponentially with dimension, which makes it infeasible to sample *enough* points -- any sample will be less densely covering the space as dimension increases. The effect is that most points will be far from the sample mean, on the edge of the sample space. @doi:10.1111/j.1467-9868.2005.00510.x have shown that in the extreme case of high-dimension, low-sample size data, observations are on the vertices of a simplex. This affects many aspects of data analysis: minimizing the error during model fitting relies on effective optimisation techniques, non-parametric modeling requires finding nearest neighbors which may be far away and sampling from high-dimensional distributions is likely to have points far from the population mean. 
+The term "curse of dimensionality" was originally introduced by @BellmanRichard1961, to express the difficulty of doing optimization in high dimensions because of the exponential growth in space as dimension increases. A way to think about it is, that the volume of the space grows exponentially with dimension, which makes it infeasible to sample *enough* points -- any sample will be less densely covering the space as dimension increases. The effect is that most points will be far from the sample mean, on the edge of the sample space. @doi:10.1111/j.1467-9868.2005.00510.x have shown that in the extreme case of high-dimension, low-sample size data, observations are on the vertices of a simplex. 
 
-@Donoho00 considers the curse of dimensionality as a blessing, because the sparsity can be leveraged for computational efficiency. This is used in regularization methods, like lasso, to penalize model complexity. The penalty term results in shrinking (some of) the parameter estimates towards zero.
+This affects many aspects of data analysis: minimizing the error during model fitting relies on effective optimisation techniques, non-parametric modeling requires finding nearest neighbors which may be far away and sampling from high-dimensional distributions is likely to have points far from the population mean. @Donoho00 considers the curse of dimensionality as a blessing, because the sparsity can be leveraged for computational efficiency. This is used in regularization methods, like lasso, to penalize model complexity. The penalty term results in shrinking (some of) the parameter estimates towards zero.
 
-Paradoxically, the curse of dimensionality inverts for dimension reduction, resulting in an excessive amount of observations near the center of the distribution. This affects visualizations made on low-dimensional projections, like the tour [@As85,@BCAH05]. The effect is described by @diaconis1984, that most low-dimensional linear projections will show approximately Gaussian distributions of the data, with observations concentrating in the center. This motivated the development of indexes for projection pursuit searching for departure from normality. It is also related to what is called "data piling" in high-dimension low-sample size data [@10.2307/27639976,@10.1093/biomet/asp084]: all observations are in a single point in certain low-dimensional projections.  These issues also persist with non-linear dimension reduction techniques, and referred to as the "crowding problem", which methods like t-Distributed Stochastic Neighbor Embedding (t-SNE) [@tsne] aim to alleviate.
-
-Figure \ref{fig:density} illustrates the crowding problem. Two-dimensional linear projections of points sampled uniformly within $p$-dimensional hyperspheres in $p=3, 10, 100$ are displayed as hexbin plots. Color indicates log count of the bin, with yellow mapping the highest counts. As $p$ increases the density concentrates in the center of the projection. 
+Paradoxically, the curse of dimensionality inverts for dimension reduction, resulting in an excessive amount of observations near the center of the distribution. This affects visualizations made on low-dimensional projections, like the tour [@As85,@BCAH05]. The effect is described by @diaconis1984, that most low-dimensional linear projections are approximately Gaussian, with observations concentrating in the center. This has motivated the development of indexes for projection pursuit which search for departure from normality. It is also related to what is called "data piling" in high-dimension low-sample size data [@10.2307/27639976,@10.1093/biomet/asp084]: all observations can collapse into a single point.  These issues also persist with non-linear dimension reduction techniques, and are often referred to as the "crowding problem", which methods like t-Distributed Stochastic Neighbor Embedding (t-SNE) [@tsne] aim to alleviate. Figure \ref{fig:density} illustrates the crowding problem. Two-dimensional linear projections of points sampled uniformly within $p$-dimensional hyperspheres ($p=3, 10, 100$) are displayed as hexbin plots. Color indicates log count of the bin, with yellow mapping the highest counts. As $p$ increases the density concentrates in the center of the projection. 
 
 ```{r density, fig.cap="Illustration of data crowding, using hexbin plots of two-dimensional projections of 10k points sampled uniformly within $p$-dimensional hyperspheres, for $p=3, 10, 100$. The fill color shows the logarithm of the bin count, with the highest counts shown in yellow. As $p$ increases the density  concentrates near the center.", out.width="95%", fig.width=6, fig.height=2, fig.align = "center"}
 
@@ -95,9 +93,9 @@ ggplot(proj_points, aes(x, y)) +
 
 ```
 
-In this work we address data crowding in low-dimensional linear projections by providing a reverse transformation for tour methods. Tours show interpolated sequences of low-dimensional projections of the data. When exploring a dataset with a tour we can discover features that are only visible from specific viewing angles. However, these features could be hidden in the observation pile, and even worse leaving a large fraction of the available plotting canvas sparsely populated. To reverse the effect, we introduce a radial transformation that magnifies the center of the distribution. This is called a burning sage tour, to reflect that the curse of dimensionality is being removed.
+In this work we address data crowding in low-dimensional linear projections by providing a reverse transformation for tour methods. Tours show interpolated sequences of low-dimensional projections of the data. When exploring data with a tour we can discover features that are only visible in linear combinations of variables. However, the data crowding could hide these features. To reverse the effect, we introduce a radial transformation that magnifies the center of the distribution. This is called a burning sage tour, to reflect that the crowding caused by the curse of dimensionality is being removed.
 
-The paper is structured as follows. The radial transformation and its implementation is described in Section \ref{sec:method}. Section \ref{sec:application} illustrates the use of the sage tour with examples in clustering, supervised classification and a classic needle-in-the-haystack problem.
+The paper is structured as follows. The radial transformation and its implementation is described in Section \ref{sec:method}. Section \ref{sec:application} illustrates the use of the sage tour with examples in clustering, supervised classification and a classical needle-in-the-haystack problem. Section \ref{sec:concl} describes possible extensions to the method.
 
 # Burning sage algorithm {#sec:method}
 
@@ -453,7 +451,7 @@ pdfsense <- draw_panel(pdfsense_grand_panel, pdfsense_sage_panel)
 pdfsense
 ```
 
-Following the processing described there, we tour the first 6 principal components, rescaled to have zero mean and unit variance. In Figure \ref{fig:pdfsense} we see that the sage display with $R = 10$ (Figure \ref{fig:pdfsense}, bottom), maintains the overall shape of the data seen using the default tour display (Figure \ref{fig:pdfsense}, top). The different physical process, shown in different colors, are indeed orthogonal in the parameter space, as can be seen most clearely by looking at the animations  available in the supplementary material.
+Following the processing described there, we tour the first 6 principal components, rescaled to have zero mean and unit variance. In Figure \ref{fig:pdfsense} we see that the sage display with $R = 10$ (Figure \ref{fig:pdfsense}, bottom), maintains the overall shape of the data seen using the default tour display (Figure \ref{fig:pdfsense}, top). The different physical process, shown in different colors, are indeed orthogonal in the parameter space, as can be seen most clearly by looking at the animations  available in the supplementary material.
 
 The particular structure of this distribution, with some clusters extending linearly away from the center and a set of outlying points, results in poor use of the plotting space, and high level of clustering near the center. For example, focussing on the blue cluster, we can see that it extends out along different directions, but it can be challenging to observe how the point move under the tour rotation, as overplotting becomes an issue when points move through the center. Here, the new display has a clear advantage, as illustrated with the selected views in Figure \ref{fig:pdfsense} (bottom).
 
@@ -472,7 +470,7 @@ Neither the standard scatter display nor the sage display with default settings 
 \label{fig:pollen}
 \end{figure}
 
-While the still views look very similar, comparing the tour animations (available in the supplementary material) revelas some differences between the display with trimming or tuning. When trimming by setting $R=1$ the focus is clearely on the center of the distribution, and most points get pushed out towards the circle of this maximum radius. On the other hand, tuning the display by setting $\gamma=20$ preserves the elliptical shape of the distribution, making it is easier to see correlation patterns.
+While the still views look very similar, comparing the tour animations (available in the supplementary material) reveals some differences between the display with trimming or tuning. When trimming by setting $R=1$ the focus is clearly on the center of the distribution, and most points get pushed out towards the circle of this maximum radius. On the other hand, tuning the display by setting $\gamma=20$ preserves the elliptical shape of the distribution, making it is easier to see correlation patterns.
 
 # Discussion {#sec:concl}
 
@@ -486,7 +484,6 @@ This new technique is easily incorporated into exploratory high dimensional data
 - search tasks: the sage display allows to find hidden signal that is concealed by the density of points around the center of the projection, as shown in the pollen example (Section \ref{sec:appl4})
 
 The approach  provides interpretable visualisation that captures high dimensional information and preserves global structure, and it is complementary to non-linear dimension reduction techniques. For example, when visualising clusters, the sage display enables an assessment of cluster shapes, and accurately captures relative position and orientation. The burning sage transformation is global and does not magnify local structure like t-SNE does.
-
 
 However, the sage display is currently 
 naive to information in high dimensional space that is not 
@@ -504,7 +501,7 @@ demonstrated how points away from the projected center get moved to the edge of 
 transformation can introduce distortions which is a well known problem for any
 non-linear dimension reduction technique including t-SNE. However, any distortion
 introduced by the sage display are interpretable because it is controlled
-by a simple function (equations xxx).
+by a simple function (Equation \ref{eq:resc}).
 
 The sage display is fast to compute, which lends itself to being embedded into
 an interactive interface. An ideal interface would allow real time changes to the
