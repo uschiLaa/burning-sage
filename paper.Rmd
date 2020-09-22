@@ -463,9 +463,9 @@ Neither the standard scatter display nor the sage display with default settings 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.3\textwidth]{png/pollen_sage-88.png}
-\includegraphics[width=0.3\textwidth]{png/pollen_sage_R1-88.png}
-\includegraphics[width=0.3\textwidth]{png/pollen_sage_gam20-88.png}
+\includegraphics[width=0.3\textwidth]{pngs/pollen_sage-088.png}
+\includegraphics[width=0.3\textwidth]{pngs/pollen_sage_R1-088.png}
+\includegraphics[width=0.3\textwidth]{pngs/pollen_sage_gam20-088.png}
 \caption{Selected view of the pollen data in the new sage display, with default settings (left), setting $R=1$ (middle) or $\gamma=20$ (right). We can tune either $\gamma$, $R$ or a combination of the two to reveal the word "EUREKA" near the center of the distribution.}
 \label{fig:pollen}
 \end{figure}
