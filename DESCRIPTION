@@ -1,6 +1,6 @@
 Package: burningsage
 Title: Remove the Curse
-Version: 0.99.1
+Version: 0.1.0
 Authors@R:
     c(
     person(given = "Ursula",
@@ -37,7 +37,11 @@ Suggests:
     animation,
     ggplot2,
     dplyr,
-    magick
+    magick,
+    ggforce,
+    latex2exp,
+    tidyverse
+    gridExtra
 Depends: 
     R (>= 4.0)
 License: MIT + file LICENSE

@@ -10,3 +10,4 @@
 \.html$
 \.Rmd$
 ^\.Rproj\.user$
+^paper$

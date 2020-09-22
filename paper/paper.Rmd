@@ -1,0 +1,519 @@
+---
+title: |
+  Burning sage: Reversing the curse of dimensionality in the visualisation of high-dimensional data
+type: Article
+author:
+  - name: Ursula Laa
+    affil: a, b
+    email: ursula.laa@monash.edu
+  - name: Dianne Cook
+    affil: b
+    email: dicook@monash.edu
+  - name: Stuart Lee
+    affil: b, c
+    email: stuart.lee1@monash.edu
+affiliation:
+  - num: a
+    address: |
+      School of Physics and Astronomy, Monash University
+  - num: b
+    address: |
+      Department of Econometrics and Business Statistics, Monash University
+  - num: c
+    address: |
+      Molecular Medicine Division, Walter and Eliza Hall Institute, Parkville, Australia
+bibliography: biblio.bib
+geometry: margin=2.5cm
+abstract: |
+  In high-dimensional data analysis the curse of dimensionality reasons that points tend to be far away from the center of the distribution and on the edge of high-dimensional space. Contrary to this, is that projected data tends to clump at the center. This gives a sense that any structure near the center of the projection is obscured, whether this is true or not. A transformation to reverse the curse, is defined in this paper, which uses radial transformations on the projected data. It is integrated seamlessly into the grand tour algorithm, and we have called it a burning sage tour, to indicate that it reverses the curse. The work is implemented into the tourr package in R. Several case studies are included that show how the sage visualisations enhance exploratory clustering and classification problems.
+keywords: |
+  data visualisation; grand tour; statistical computing; statistical graphics; multivariate data; dynamic graphics
+header-includes: |
+  \usepackage{hyperref}
+  \usepackage[utf8]{inputenc}
+  \def\tightlist{}
+  \usepackage{setspace}
+output: rticles::tf_article
+keep_tex: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE,
+                      root.dir = here::here())
+library(tidyverse)
+library(gridExtra)
+library(ggforce)
+library(tourr)
+library(latex2exp)
+```
+
+\doublespacing
+# Introduction
+
+<!-- Reverse, redistribute, counteract, offset, rescale, radial transformation -->
+
+The term "curse of dimensionality" was originally introduced by @BellmanRichard1961, to express the difficulty of doing optimization in high dimensions because of the exponential growth in space as dimension increases. A way to think about it is, that the volume of the space grows exponentially with dimension, which makes it infeasible to sample *enough* points -- any sample will be less densely covering the space as dimension increases. The effect is that most points will be far from the sample mean, on the edge of the sample space. @doi:10.1111/j.1467-9868.2005.00510.x have shown that in the extreme case of high-dimension, low-sample size data, observations are on the vertices of a simplex. 
+
+This affects many aspects of data analysis: minimizing the error during model fitting relies on effective optimisation techniques, non-parametric modeling requires finding nearest neighbors which may be far away and sampling from high-dimensional distributions is likely to have points far from the population mean. @Donoho00 considers the curse of dimensionality as a blessing, because the sparsity can be leveraged for computational efficiency. This is used in regularization methods, like lasso, to penalize model complexity. The penalty term results in shrinking (some of) the parameter estimates towards zero.
+
+Paradoxically, the curse of dimensionality inverts for dimension reduction, resulting in an excessive amount of observations near the center of the distribution. This affects visualizations made on low-dimensional projections, like the tour [@As85,@BCAH05]. The effect is described by @diaconis1984, that most low-dimensional linear projections are approximately Gaussian, with observations concentrating in the center. This has motivated the development of indexes for projection pursuit which search for departure from normality. It is also related to what is called "data piling" in high-dimension low-sample size data [@10.2307/27639976,@10.1093/biomet/asp084]: all observations can collapse into a single point.  These issues also persist with non-linear dimension reduction techniques, and are often referred to as the "crowding problem", which methods like t-Distributed Stochastic Neighbor Embedding (t-SNE) [@tsne] aim to alleviate. Figure \ref{fig:density} illustrates the crowding problem. Two-dimensional linear projections of points sampled uniformly within $p$-dimensional hyperspheres ($p=3, 10, 100$) are displayed as hexbin plots. Color indicates log count of the bin, with yellow mapping the highest counts. As $p$ increases the density concentrates in the center of the projection. 
+
+```{r density, fig.cap="Illustration of data crowding, using hexbin plots of two-dimensional projections of 10k points sampled uniformly within $p$-dimensional hyperspheres, for $p=3, 10, 100$. The fill color shows the logarithm of the bin count, with the highest counts shown in yellow. As $p$ increases the density  concentrates near the center.", out.width="95%", fig.width=6, fig.height=2, fig.align = "center"}
+
+set.seed(12345)
+
+
+n <- 10000
+
+# sample points, only keep first two components for 2D projection
+p3 <- geozoo::sphere.solid.random(3, n)$points[, c(1,2)]
+p10 <- geozoo::sphere.solid.random(10, n)$points[, c(1,2)]
+p100 <- geozoo::sphere.solid.random(100, n)$points[, c(1,2)]
+colnames(p3) <- c("x", "y")
+colnames(p10) <- c("x", "y")
+colnames(p100) <- c("x", "y")
+
+proj_points <- as_tibble(rbind(p3, p10, p100)) %>%
+  mutate(p = factor(c(rep("p = 3", n), rep("p = 10", n), rep("p = 100", n)), levels = c("p = 3", "p = 10", "p = 100")))
+
+
+ggplot(proj_points, aes(x, y)) +
+  geom_hex(bins = 20, aes(fill=log(..count..))) +
+  scale_fill_viridis_c() +
+  facet_wrap(~p, scales = "free") +
+  guides(fill = FALSE) +
+  theme_bw() +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text = element_blank(),
+        aspect.ratio = 1)
+
+
+
+```
+
+In this work we address data crowding in low-dimensional linear projections by providing a reverse transformation for tour methods. Tours show interpolated sequences of low-dimensional projections of the data. When exploring data with a tour we can discover features that are only visible in linear combinations of variables. However, the data crowding could hide these features. To reverse the effect, we introduce a radial transformation that magnifies the center of the distribution. This is called a burning sage tour, to reflect that the crowding caused by the curse of dimensionality is being removed.
+
+The paper is structured as follows. The radial transformation and its implementation is described in Section \ref{sec:method}. Section \ref{sec:application} illustrates the use of the sage tour with examples in clustering, supervised classification and a classical needle-in-the-haystack problem. Section \ref{sec:concl} describes possible extensions to the method.
+
+# Burning sage algorithm {#sec:method}
+
+To understand why points tend to be away from the center in the high-dimensional space, but pile near the center in low-dimensional projections, we need to consider the projected volume. It is useful to think of the data as being distributed in a hypersphere, i.e. all data points are within a specified distance from the center. Compared to the common assumption of a distribution in a box or hypercube this has the advantage of being rotation invariant, and more accurately captures commonly observed distributions.
+
+```{r, out.width="60%", fig.cap="The diagram on the left is illustrating the different volumes considered for a three-dimensional sphere. The full sphere has volume $V(R, p)$. Within a radius $r$ the sphere contains the reduced volume $V(r; p, R)$, shown in blue, but the projected volume within a radius $r$ in a two-dimensional plane is much larger, given by the volume of the cylinder with rounded caps, $V_{2D}(r; p ,R)$, shown in red. The intersection of the plane with the sphere is illustrated in grey, and the plane with both radii is shown in the right diagram.", fig.align = "center"}
+
+xp <- 0.4
+n <- 200
+
+x <- seq(-xp, xp,length.out = n)
+yp <- sqrt(1-x^2)
+ym <- -yp
+
+x_outer1 <- c(seq(1-xp, 1, length.out = n/2))
+yp_outer1 <- sqrt(1-x_outer1^2)
+ym_outer1 <- -yp_outer1
+
+x_outer2 <- c(seq(-1, -1+xp, length.out = n/2))
+yp_outer2 <- sqrt(1-x_outer2^2)
+ym_outer2 <- -yp_outer2
+
+p1 <- ggplot() +
+  geom_ellipse(aes(x0 = 0, y0 = 0, a = 1, b = 0.2, angle = 0), fill = "grey") +
+  geom_circle(aes(x0= 0, y0=0, r = 1)) +
+  geom_circle(aes(x0= 0, y0=0, r = xp), color="blue", fill = "blue", alpha=0.5) +
+  geom_ellipse(aes(x0 = 0, y0 = 0, a = xp, b = xp/10, angle = 0), color="red") +
+  geom_ellipse(aes(x0 = 0, y0 = sqrt(1 - (2*xp)^2/4)-xp/100, a = xp, b = xp/10, angle = 0), color="red") +
+  geom_ellipse(aes(x0 = 0, y0 = -sqrt(1 - (2*xp)^2/4)+xp/100, a = xp, b = xp/10, angle = 0), color="red") +
+  geom_area(aes(x=x, y=yp), fill = "red", alpha = 0.5) +
+  geom_area(aes(x=x, y=ym), fill = "red", alpha = 0.5) +
+  geom_segment(aes(x = 0, y = 0, xend = 1, yend = 0),
+               size = 0.5, arrow = arrow(length = unit(0.1, "inches"))) +
+  annotate("text", x = 0.5, y = 0.05, label="R") +
+  geom_segment(aes(x = 0, y = 0, xend = 0, yend = xp),
+               size = 0.5, arrow = arrow(length = unit(0.1, "inches"))) +
+  annotate("text", x = -0.05, y = xp/2, label="r") +
+  annotate("text", x = 0, y = 0.75, label=TeX("\\textit{V}$_{2D}$\\textit{(r;p,R)}")) + 
+  annotate("text", x = 0, y = -xp * 0.75, label=TeX("\\textit{V(r;p,R)}")) + 
+  annotate("text", x = 0.65, y = 0.5, label=TeX("\\textit{V(R,p)}")) +
+  theme_void() +
+  coord_fixed()
+
+p2 <- ggplot() +
+  geom_circle(aes(x0= 0, y0=0, r = 1), fill = "grey") +
+  geom_segment(aes(x = 0, y = 0, xend = 1, yend = 0),
+               size = 0.5, arrow = arrow(length = unit(0.1, "inches"))) +
+  annotate("text", x = 0.5, y = 0.05, label="R") +
+  geom_segment(aes(x = 0, y = 0, xend = 0, yend = xp),
+               size = 0.5, arrow = arrow(length = unit(0.1, "inches"))) +
+  annotate("text", x = -0.05, y = xp/2, label="r") +
+  geom_circle(aes(x0= 0, y0=0, r = xp), color="red") +
+  theme_void() +
+  coord_fixed()
+
+  
+
+grid.arrange(p1, p2, nrow=1)
+
+```
+
+We can picture this for a 3D sphere. In any 2D projection a large fraction of the volume will be projected onto a small region near the center of the resulting disk. This is a consequence of the curved shape, which extends further in the orthogonal direction at the center of the disk, since the projection corresponds to an integration over the orthogonal space. The effect will be further enhanced when projecting onto 1D instead. The same intuition holds as we increase the number of original dimensions that are projected down to one or two dimensions for visualization, with increasing fractions of the volume being projected onto a small area around the center, see Figure \ref{fig:density} for illustration.
+
+To reverse this effect, we introduce a radial transformation that redistributes the projected points, such that equal volume in the original ($p$-dimensional) space is projected onto equal area in a 2-dimensional projection. Note that it is straightforward to generalize this for $d$-dimensional projections by mapping onto equal $d$-dimensional volume instead.
+
+## Definition of the relative projected volume
+
+To understand how the $p$ dimensional volume is projected onto a $2$ dimensional plane, we study what fraction of the total volume is projected onto the area of a disk depending on its radius. This dependence was described in @Laa:2020wkm. We start from a $p$ dimensional hypersphere with radius $R$ and volume $V(R, p)$, and its projected volume onto a centered $2$-dimensional disk of radius $r$, $V_{2D}(r; p, R)$, where $r$ can be any radius within $[0, R]$. The relative projected volume is then given as the ratio of these two quantities,
+\begin{equation}
+v_{2} (r; p, R) = \frac{V_{2D}(r; p, R)}{V(R, p)} = 1 - \left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
+\label{eq:cdf}
+\end{equation}
+This ratio is of particular interest because it gives the 2-dimensional radial cumulative distribution function (CDF) of points when assuming a uniform distribution within the $p$-dimensional hypersphere.
+
+We can compare $v_{2} (r; p, R)$ to the relative volume within a radius $r$ in the original $p$-dimensional hypersphere,
+\begin{equation}
+v_{p} (r; p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p.
+\end{equation}
+This comparison is shown in Fig. \ref{fig:cdf}, for $p=3, 10, 100$. The left graph shows $v_{p} (r; p, R)$ and the right graph $v_{2} (r; p, R)$. We clearly see the opposing behavior of the two functions as $p$ increases. While $v_{p} (r; p, R)$ concentrates more and more towards large values of $r/R$, $v_{2} (r; p, R)$ has the inverse behavior.
+
+```{r cdf, fig.cap="Comparing the relative volume of a $p$ dimensional hypersphere captured within a radius $r$, in the $p$-dimensional space (left) and in a 2-dimensional projection (right), for $p=3, 10, 100$. While most of the volume is squeezed towards larger values of $r$ as $p$ increases, the projected volume gets concentrated near the center instead.", fig.height=2.2, fig.width=6, out.width = "90%", fig.align = "center"}
+
+cdf_2 <- function(p){
+  function(r){
+    1 - (1 - r^2)^(p/2)
+  }
+}
+
+cdf_p <- function(p){
+  function(r){
+    r^p
+  }
+}
+
+p1 <- ggplot(data = data.frame(r = c(0,1)), mapping = aes(x = r)) +
+  stat_function(
+        fun = cdf_p(3),
+        mapping = aes(color = "ca")) +
+  stat_function(
+        fun = cdf_p(10),
+        mapping = aes(color = "cb")) +
+    stat_function(
+        fun = cdf_p(100),
+        mapping = aes(color = "cc")) +
+  scale_color_manual(name = "p",
+                     values = RColorBrewer::brewer.pal(3, "Dark2"),
+                     labels = c("3", "10", "100")) +
+  xlab("r/R") + ylab("Relative volume") + theme_bw() +
+  ggtitle("Volume in p dimensions") +
+  theme(legend.position=c(0.2, 0.55))
+  
+  
+p2 <- ggplot(data = data.frame(r = c(0,1)), mapping = aes(x = r)) +
+  stat_function(
+        fun = cdf_2(3),
+        mapping = aes(color = "ca")) +
+  stat_function(
+        fun = cdf_2(10),
+        mapping = aes(color = "cb")) +
+    stat_function(
+        fun = cdf_2(100),
+        mapping = aes(color = "cc")) +
+  scale_color_manual(name = "p",
+                     values = RColorBrewer::brewer.pal(3, "Dark2"),
+                     labels = c("3", "10", "100")) +
+  xlab("r/R") + ylab("Relative volume") + theme_bw() +
+  ggtitle("2D projected volume") +
+  guides(color = FALSE)
+  
+grid.arrange(p1, p2, ncol=2)
+
+```
+
+## Calculating the radial transformation
+
+The aim of the algorithm is to redistribute the projected volume such that equal relative areas on the disk, as given by $v_{2} (r; p=2, R)= v_p(r; p=2, R) = (r/R)^2$, contain equal relative projected volume, given by $v_{2} (r; p, R)$. This is achieved through a transformation of the projected radius that can be defined for any $r\in[0,R]$, and is applied to the projected data points in the plane, $y = (y_1, y_2)$. We work with polar coordinates and represent the data points as $y = (r_y, \theta_y)$. The angular component $\theta_y$ is uniform for this distribution, by the rotation invariance of the sphere, and thus does not need to be transformed. The radial component $r_y$ is transformed in two steps.
+
+The first transformation is to replace $r_y$ with $v_{2} (r_y; p, R)$. Since this is the radial CDF of the assumed underlying distribution, we expect that $v_{2} (r_y; p, R)$ is approximately uniformly distributed in radius. We then transform $v_{2} (r_y; p, R)$ using the inverse of $v_{2} (r_y; 2, R)$, to go from a uniform distribution in radius to a uniform distribution in area of the disk. This inverse is defined via
+\begin{equation}
+v_2^{-1}(v_2(r_y; 2, R); 2, R) = v_2(v_2^{-1}(r_y; 2, R); 2, R) = r_y
+\end{equation}
+and thus
+\begin{equation}
+v_2^{-1}(r_y; 2, R) = R \sqrt{r_y}.
+\end{equation}
+
+The full radial transformation is therefore given by 
+\begin{equation}
+r'_y = v_2^{-1} (v_2(r_y; p, R); 2, R) =  R \sqrt{v_2(r_y; p, R)} = R \sqrt{1-\left(1-\left(\frac{r_y}{R}\right)^2\right)^{p/2}}.
+\label{eq:resc}
+\end{equation}
+
+The relation between $r'_y$ and $r_y$ depends on the number of dimensions $p$, and is illustrated for selected values in Figure \ref{fig:radii}. We see that the transformation is approximately linear near the center. As $p$ increases it becomes non-linear faster, and e.g. for $p=10$ the points with radius $r_y>0.5$ will already be highly distorted and pushed out towards the last eighth in $r'_y$. Figure \ref{fig:circles} demonstrates this for different values of $p$ by showing equidistant circles for which the radius has been transformed according to Eq. \ref{eq:resc}.
+
+```{r radii, fig.cap="Relation between $r_y$ and $r'_y$ for different values of $p$ and assuming $R=1$. The scaling is approximately linear near the center, but leads to distortion at large radii when $p$ is large.", fig.height=3, fig.width=6, out.width="60%", fig.align = "center"}
+# define index as function of c
+trans_p <- function(p){
+  function(r){
+    sqrt( 1 - (1-r^2)^(p/2))
+  }
+}
+  
+# plot dependence for selected values
+ggplot(data = data.frame(x = c(0,1)), mapping = aes(x = x)) +
+    stat_function(
+        fun = trans_p(2),
+        mapping = aes(color = "ca")) +
+  stat_function(
+        fun = trans_p(4),
+        mapping = aes(color = "cb")) +
+  stat_function(
+        fun = trans_p(6),
+        mapping = aes(color = "cc")) +
+    stat_function(
+        fun = trans_p(10),
+        mapping = aes(color = "cd")) +
+    stat_function(
+        fun = trans_p(20),
+        mapping = aes(color = "ce")) +
+  scale_color_manual(name = "p",
+                     values = RColorBrewer::brewer.pal(5, "Dark2"),
+                     labels = c("2 (baseline)", "4", "6", "10", "20")) +
+  xlab(expression(r[y])) + ylab(expression(r[y]*minute)) + theme_bw()
+
+```
+
+```{r circles, fig.cap="Equidistant concentric circles, for $p=2, 3, 10, 100$, illustrating the radial transformation. The circles remain equidistant for $p=2$ where no transformation is performed, and get pushed out towards the edge as $p$ increases.", out.width="100%", fig.align = "center", fig.height=2}
+
+lbl <- c("p=2", "p=3", "p=10", "p=100")
+names(lbl) <- c("p4", "p6", "p10", "p20")
+
+tibble(x = 0, y = 0, r = seq(0.1, 1, length.out = 10)) %>%
+  mutate(p4 = trans_p(2)(r)) %>%
+  mutate(p6 = trans_p(3)(r)) %>%
+  mutate(p10 = trans_p(10)(r)) %>%
+  mutate(p20 = trans_p(100)(r)) %>%
+  mutate(r = as.factor(r)) %>%
+  pivot_longer(cols = starts_with(("p"))) %>%
+  mutate(name = factor(name, levels = c("p4", "p6", "p10", "p20"))) %>%
+  ggplot() +
+  geom_circle(aes(x0=x, y0=y, r=value, color=r)) +
+  coord_fixed() +
+  theme_bw() +
+  facet_wrap(~name, labeller = labeller(name = lbl), ncol=4) +
+  guides(color = FALSE) +
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank())
+
+```
+
+## Trimming and tuning {#sec:params}
+
+The transformation in Eq. \ref{eq:resc} is fixed for a given input dataset, by evaluating the number of dimensions $p$ and the maximum distance from the center $R$. However, in realistic applications we may wish to trim the projected data or tune the transformation. In practice, a combination of both adjustments can be used to further zoom in on the center of the distribution, or alternatively, to soften the transformation.
+
+### Trimming
+The overall scale of the transformation is determined by $R$. In the case of an approximately spherical and uniform distribution the maximum distance from the center works well and ensures the validity of the rescaling in Eq. \ref{eq:resc}. But this is not robust and might result in a much larger scale than desired, especially when it is determined by outlying observations.
+
+We therefore allow trimming of the projected observations, using $R$ as a free parameter of the display function. When selecting a value $R$ that is smaller than the maximum distance from the center, we need to ensure that the projected radius of points is always smaller than $R$, by trimming $r_y$ as
+\begin{equation}
+r_y^{\mathrm{trim}} = \min(r_y, R)
+\label{eq:cutR}
+\end{equation}
+for each observation.
+
+### Tuning
+The dimension of the input might not reflect the intrinsic dimensionality of the dataset. This could be the case when dimension reduction was used prior to visualization, e.g. displaying only the first few principal components. In this case the effective dimensionality $p_{\mathrm{eff}}$ is likely between the original number of dimensions and the selected number of principal components. We can think of omitted components as being in the orthogonal space of all considered projections, with some directions being pure noise, while others may still carry relevant information.
+
+We allow tuning $p_{\mathrm{eff}} = \gamma p$ by selecting the scaling parameter $\gamma$. By default, $\gamma=1$ and $p_{\mathrm{eff}}=p$. When $\gamma<1$ the rescaling will be softer, and $\gamma>1$ results in more aggressive rescaling than suggested by $p$ alone. Note that when $p_{\mathrm{eff}} < 2$ we actually invert the behavior and shift the focus away from the center, in general this is not wanted.
+
+
+## Implementation as a dynamic display {#sec:implementation}
+
+While the radial transformation can in general be used with any low-dimensional display that suffers from data piling, it is most useful when combined with a dynamic display showing a sequence of interpolated low-dimensional projections obtained when running a tour. We have implemented it as a new display method `display_sage` in the `tourr` package [@tourr] in R [@rref].
+
+We can think of the display functions as part of a data pipeline obtained when running a tour. The initial step is pre-processing the data, given by $\mathbf{X}$, an $n \times p$ matrix containing $n$ observations in $p$ dimensions. Typically, this includes centering and scaling, using either the overall range or the variance. Ensuring a common scale of all variables, comparable to the selected scale parameter $R$, is especially important with the new display. The tour then iterates over the following steps:
+
+1. Obtain projection matrix $\mathbf{A}$. For $d$-dimensional projections this is an orthonormal $p \times d$ matrix. To ensure the smooth rotation of projections, each new $\mathbf{A}$ is obtained as an interpolated step in the sequence, as explained in @BCAH05.
+2. Project the data by computing $\mathbf{Y} = \mathbf{X}\cdot\mathbf{A}$.
+3. Map $\mathbf{Y}$ to the display to re-draw the projected data. For $d=2$ this typically maps the projected points onto a scatter plot display. With the new display we first transform $\mathbf{Y}$ as:
+    + Center the 2-dimensional matrix $\mathbf{Y}$ and compute its polar coordinate representation $(r_y, \theta_y)$.
+    + For each observation, first use Eq. \ref{eq:cutR} to get the trimmed radius $r_y^{\mathrm{trim}}$  within the specified range, and then apply the radial transformation defined in Eq. \ref{eq:resc} to obtain $r'_y$.
+    + Use the transformed radial coordinate $r'_y$ to re-compute the mapping onto Euclidean coordinates $(y_1, y_2)$.
+4. To fit the final projection onto the plotting canvas ranging between $[-1,1]$, we rescale each mapped observation $y$ using a scaling parameter $s$.
+
+The display can be added when calling the `animate` function in `tourr`, as
+
+
+```{r codeExample, echo=TRUE, eval=FALSE}
+tourr::animate(
+  data,
+  tour_path = tourr::grand_tour(),
+  display = display_sage(gam, R, half_range)
+  )
+```
+
+\noindent and uses `gam` to set the $\gamma$ parameter for computing $p_{\mathrm{eff}}$, and the overall range `R` used for trimming. Both these parameters are described in Section \ref{sec:params} above. Finally, `half_range` sets the scale parameter $s$ to adjust the scale to the drawing canvas. The ratio $R/s$ sets the scale for fitting the displayed data on the plotting canvas, by default $s = R$ and we apply the scaling factor $0.9$ to contain the projected points within the display. When adjusting $R$ the user should take care to adjust $s$ accordingly.
+
+# Applications {#sec:application}
+
+Four applications of the sage tour are shown here, which illustrate the benefit of using the reverse transformation for examining data using a tour: single cell RNA-seq, classifying hand-sketched images, comparing physics experiments, and the classical pollen data which is used to illustrate the effect of parameter choices. 
+
+## Clustering single-cell RNA-seq data sets {#sec:appl1}
+
+
+In the analysis of single cell RNA-seq data, cluster analysis is performed to
+detect cell types and find expression of genes that define those cell types, and the relative orientation of the cell types  to each other (trajectory analysis) [@Amezquita2020-at]. Generally, for cluster verification, analysts use embedding methods
+like t-SNE to verify the placement and meaning of clusters from a clustering algorithm. 
+
+Here we compare the sage display and regular tour display on mouse retinal single cell RNA-seq data from
+@Macosko2015-ot. The raw data consists of a 49,300  cells and was downloaded
+using the using the `scRNAseq` Bioconductor package [@scRNAseq-d]. We
+use a standard workflow for pre-processing and normalizing this data 
+(described by @Amezquita2020-at): we performed quality control using the `scater` package [@McCarthy2017]
+and we log-transformed and normalised the expression 
+values and selected highly variable genes (HVGs) using `scran` 
+[@Lun2016]. The top ten percent of most HVGs were used as features to subset
+the normalised expression matrix and compute principal components.
+Using the first 25 PCs we built a shared nearest neighbours graph (with $k = 10$) and 
+clustered this graph using Louvain clustering, resulting in 11 clusters being formed [@Blondel2008-bx]. 
+
+We tour the first five PCs (approximately 20% of the variance in expression),
+on a weighted subsample of cells based on their cluster membership - 4,590 cells. When running the sage display, we set $\gamma = 3$, fixing the effective dimensionality of the data to $p_{\mathrm{eff}} = 15$. For the displays we have rescaled the PCs so they each have zero mean and unit variance. Here we are interested in mitigating the effects of overplotting by focusing on three clusters that were identified by graph based clustering but appear to overlap on PC plots.  
+
+```{r mouse-cluster, fig.cap = "Selected frames from using a tour of the mouse data with the default tour display (top), and the sage display with $\\gamma=3$ (bottom). Three selected clusters are highlighted in color, all other points are shown in grey. Using the sage display mitigates overplotting and provides a better understanding of cluster separation.", out.width="0.9\\textwidth", fig.align="center"}
+library(magick)
+dir <- here::here("pngs/")
+frames <- c("001", "016", "038", "074")
+draw_frames <- function(pngs) {
+  res <- lapply(pngs, image_read)
+  res <- do.call("c", res)
+  image_append(res)
+}
+ 
+draw_panel <- function(a, b) {
+  whitespace <- image_blank(image_info(a)$width, 50, color = "none")
+  img <- c(a, whitespace, b)
+  image_append(img, stack = TRUE)
+}
+mouse_grand <- paste0(dir, "mouse_grand_2c-", frames, ".png")
+mouse_grand_panel <- draw_frames(mouse_grand)
+mouse_sage <- paste0(dir, "mouse_sage_2c_gam3-", frames, ".png")
+mouse_sage_panel <- draw_frames(mouse_sage)
+
+mouse <- draw_panel(mouse_grand_panel, mouse_sage_panel)
+mouse
+```
+
+Figure \ref{fig:mouse-cluster} shows selected frames from the animations available in the supplementary material. The still views serve to illustrate the main points, but we encourage the reader to look at the tour animations to fully appreciate the advantage of the sage display.
+
+Using the default tour display (Figure \ref{fig:mouse-cluster}, top), the three clusters (dark green, blue, and yellow) are obscured by points in other clusters as we move through the frames of the animation. The points in the dark green cluster are overlapping those found in the yellow and blue clusters; and it is difficult to see if there is any separation between the blue and yellow clusters.
+
+On the other hand using the sage display (Figure \ref{fig:mouse-cluster}, bottom), expands the center of projection, and results in the
+three clusters appearing more separable than the default display. The dark green cluster becomes more visible; the outlier cell that is far away from the rest of the clustered points is more apparent. Moreover, the relative positions of the yellow and blue clusters centers are easier to see, those clusters are distinct from the dark green cluster, yet in most frames they appear to overlap and jumble together, indicating that perhaps those clusters should be merged together.
+
+
+
+
+## Classifying hand-sketches {#sec:appl2}
+
+We next use the new display to look at different distributions of images from the Google QuickDraw collection [@quickdraw-paper]. These are $28\times28=784$ pixel grey scale data that are available publicly. In this example, we sample 1000 images from three types of sketches (banana, cactus, crab) and see if we can separate the classes in the high-dimensional parameter space. 
+
+We reduce the dimensionality from 784 variables to the first 5 PCs, which captures approximately 20 per cent of the variation of the data. Before applying the tour we rescale each component to have mean zero and unit variance. To account for the dimension reduction before visualisation we set $\gamma=2$ for the sage display.
+
+
+```{r sketches, fig.cap = "Selected frames  of the tour run on the sketches data using the default tour display (top), and using the default sage display with $\\gamma=2$ (bottom). Three types of sketches are indicated by color: banana (green), cactus (orange) and crab (purple). Overplotting of points is a problem for the grand tour display, while the sage display reveals low density near the center.", out.width="0.9\\textwidth", fig.align="center"}
+frames <- c("001", "036", "077", "092")
+
+sketches_grand <- paste0(dir, "sketches_grand-", frames, ".png")
+sketches_grand_panel <- draw_frames(sketches_grand)
+sketches_sage <- paste0(dir, "sketches_sage-", frames, ".png")
+sketches_sage_panel <- draw_frames(sketches_sage)
+
+sketches <- draw_panel(sketches_grand_panel, sketches_sage_panel)
+sketches
+```
+
+Figure \ref{fig:sketches} shows the grand tour on the PCs, where green points correspond to the banana class, orange points represent the cactus class and purple points are the crab class. In the selected frames of both displays points belonging to the cactus class are concentrated near the center, however on the default display (Figure \ref{fig:sketches}, top) there is overplotting: points from other classes overlap those in the cactus class. The sage display (Figure \ref{fig:sketches}, bottom) helps reduce overplotting, it is easier to see that the centers of class are separated and that there is substructure in the banana class, which further collapses into two subgroups.
+
+The animated sage tour available in the supplementary material further reveals a low density of points near the center of the distribution: observing the movement of points when rotating the viewing angle shows that even the cactus class is clustering away from the mean.
+
+## Comparing physics experiments: PDFSense {#sec:appl3}
+
+Data were obtained from CT14HERA2 parton distribution function fits and describe the sensitivity of fit parameters to experimental measurements [@Wang:2018heo]. There are 28 parameters, and varying one at a time to move $\pm 1 \sigma$ away from the 'best fit point' (maximum likelihood estimate) provides our input variables, labelled X1-X56. Each of the 2808 observations corresponds to a physical observable and measures how the fit prediction changes along the 56 directions in parameter space. Points are grouped based on the underlying process in the experiment, which is mapped to color in the following. With the analysis of the distribution along these variables X1-X56 we can understand to what extent each experimental measurement provides new information for the global fit. For example, orthogonality between groups marks complementary constraints, and outlying points are considered as important for future fits, see discussion in @Cook:2018mvr.
+
+```{r pdfsense, fig.cap = "Selected frames of the tour run on the pdfsense data using the default tour display (top), and using the sage display with $R=10$ (bottom). Different underlying physical processes are shown by color and we can see orthogonality between the three groups. The sage display preserves the overall structure while revealing details that are hidden near the center in the default display.", fig.align="center", out.width="0.9\\textwidth"}
+frames <- c("001", "051", "078", "092")
+
+pdfsense_grand <- paste0(dir, "pdfsense_grand-", frames, ".png")
+pdfsense_grand_panel <- draw_frames(pdfsense_grand)
+pdfsense_sage <- paste0(dir, "pdfsense_sage_r10-", frames, ".png")
+pdfsense_sage_panel <- draw_frames(pdfsense_sage)
+
+pdfsense <- draw_panel(pdfsense_grand_panel, pdfsense_sage_panel)
+pdfsense
+```
+
+Following the processing described there, we tour the first 6 principal components, rescaled to have zero mean and unit variance. In Figure \ref{fig:pdfsense} we see that the sage display with $R = 10$ (Figure \ref{fig:pdfsense}, bottom), maintains the overall shape of the data seen using the default tour display (Figure \ref{fig:pdfsense}, top). The different physical process, shown in different colors, are indeed orthogonal in the parameter space, as can be seen most clearly by looking at the animations  available in the supplementary material.
+
+The particular structure of this distribution, with some clusters extending linearly away from the center and a set of outlying points, results in poor use of the plotting space, and high level of clustering near the center. For example, focussing on the blue cluster, we can see that it extends out along different directions, but it can be challenging to observe how the point move under the tour rotation, as overplotting becomes an issue when points move through the center. Here, the new display has a clear advantage, as illustrated with the selected views in Figure \ref{fig:pdfsense} (bottom).
+
+## Tuning the parameters: Pollen {#sec:appl4}
+
+The classical pollen data allows us to better demonstrate the use of the trimming and tuning parameters. The five dimensional data set was simulated by David Coleman of RCA Labs, for the Joint Statistics Meetings 1986 Data Expo [@pollen], and is an example of a hidden structure near the centre of a distribution. The data are standardised by centering and scaling such that the standard deviation of each variable is equal to one.
+
+Neither the standard scatter display nor the sage display with default settings can reveal the structure, see still view from the sage display with default settings in Figure \ref{fig:pollen} (left). This view uses the maximum radius in the scaled data, thus $R=6.6$, and no tuning of $p_{\mathrm{eff}}$, thus $\gamma=1$. We can use either $\gamma$, $R$ or a combination of the two to zoom in further near the center, for example we use trimming $(R=1, \gamma=1)$ or tuning $(R=6.6,\gamma=20)$ in the middle and right view shown in Figure \ref{fig:pollen}. There is approximate equivalence between the results obtained using either tuning or trimming, and both views clearly reveal the word "EUREKA" hidden in the distribution.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.3\textwidth]{../pngs/pollen_sage-088.png}
+\includegraphics[width=0.3\textwidth]{../pngs/pollen_sage_R1-088.png}
+\includegraphics[width=0.3\textwidth]{../pngs/pollen_sage_gam20-088.png}
+\caption{Selected view of the pollen data in the new sage display, with default settings (left), setting $R=1$ (middle) or $\gamma=20$ (right). We can tune either $\gamma$, $R$ or a combination of the two to reveal the word "EUREKA" near the center of the distribution.}
+\label{fig:pollen}
+\end{figure}
+
+While the still views look very similar, comparing the tour animations (available in the supplementary material) reveals some differences between the display with trimming or tuning. When trimming by setting $R=1$ the focus is clearly on the center of the distribution, and most points get pushed out towards the circle of this maximum radius. On the other hand, tuning the display by setting $\gamma=20$ preserves the elliptical shape of the distribution, making it is easier to see correlation patterns.
+
+# Discussion {#sec:concl}
+
+This paper has introduced the sage tour, which reduces the data piling effects 
+that occur when taking low dimensional projections of high dimensional data.
+This new technique is easily incorporated into exploratory high dimensional data analysis, and applications shown in Section \ref{sec:application} provide examples of the following tasks: 
+
+- classification tasks: the sage display decreases the number of overlapping points between classes and provides better visual separation between classes compared to the regular tour, as shown in the sketches example (Section \ref{sec:appl2})
+- clustering tasks: the sage display uncovered clusters that were originally obscured by data piling, while still giving the viewer an accurate assessment of the size of a cluster, and their relative orientation, as shown in the single cell RNA-seq example (Section \ref{sec:appl1})
+- shape analysis tasks: the sage display helps us understand structures across multiple dimensions, for example orthogonality between multiple groups, as shown in the pdfsense example (Section \ref{sec:appl3})
+- search tasks: the sage display allows to find hidden signal that is concealed by the density of points around the center of the projection, as shown in the pollen example (Section \ref{sec:appl4})
+
+The approach  provides interpretable visualisation that captures high dimensional information and preserves global structure, and it is complementary to non-linear dimension reduction techniques. For example, when visualising clusters, the sage display enables an assessment of cluster shapes, and accurately captures relative position and orientation. The burning sage transformation is global and does not magnify local structure like t-SNE does.
+
+However, the sage display is currently 
+naive to information in high dimensional space that is not 
+captured by linear projections. Like t-SNE, it would be interesting to explore
+transformations of projections where points in the high dimensional space are 
+locally dense instead of expanding from the center of the distribution.
+
+An alternative is the slice tour [@sliceTour] which  allows distributions
+of points around the center of the data to be explored using sections instead of projections. The slice tour is useful when there are large numbers of observations
+or if there is concave structure in the data.
+
+The sage tour can be tuned to more aggressively expand the center of the display. 
+All of the examples shown had some tuning.  The last example 
+demonstrated how points away from the projected center get moved to the edge of the hypersphere as $\gamma$ is increased or $R$ is decreased. The non-linear
+transformation can introduce distortions which is a well known problem for any
+non-linear dimension reduction technique including t-SNE. However, any distortion
+introduced by the sage display are interpretable because it is controlled
+by a simple function (Eq. \ref{eq:resc}).
+
+The sage display is fast to compute, which lends itself to being embedded into
+an interactive interface. An ideal interface would allow real time changes to the
+parameters of the transformation. This would be especially useful when coupled with linked brushing in complementary views. 
+
+# Acknowledgements {-}
+
+The authors gratefully acknowledge the support of the Australian Research Council. The paper was written in `rmarkdown` [@rmarkdown] using `knitr` [@knitr].
+
+# Supplementary material {-}
+
+The source material for this paper is available at \url{https://github.com/uschiLaa/burning-sage} XXX rename repo!!!!. The animated gifs for all applications are also included in html files in the supplementary material.
