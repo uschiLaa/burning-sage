@@ -1,0 +1,19 @@
+---
+title: "Supplementary Materials - QuickDraw Image Clustering"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, 
+  message = FALSE, 
+  warning = FALSE,
+  error = FALSE)
+```
+
+## QuickDraw Sketches
+
+The left hand is the default grand tour display and the right hand side is the sage display with $\gamma=2$.
+
+<img src="../gifs/sketches_grand.gif" width="450"/> <img src="../gifs/sketches_sage.gif" width="450"/>
