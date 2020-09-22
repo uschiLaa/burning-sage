@@ -487,7 +487,6 @@ This new technique is easily incorporated into exploratory high dimensional data
 
 The approach  provides interpretable visualisation that captures high dimensional information and preserves global structure, and it is complementary to non-linear dimension reduction techniques. For example, when visualising clusters, the sage display enables an assessment of cluster shapes, and accurately captures relative position and orientation. The burning sage transformation is global and does not magnify local structure like t-SNE does.
 
-
 However, the sage display is currently 
 naive to information in high dimensional space that is not 
 captured by linear projections. Like t-SNE, it would be interesting to explore
@@ -504,7 +503,7 @@ demonstrated how points away from the projected center get moved to the edge of 
 transformation can introduce distortions which is a well known problem for any
 non-linear dimension reduction technique including t-SNE. However, any distortion
 introduced by the sage display are interpretable because it is controlled
-by a simple function (equations xxx).
+by a simple function (Equation \ref{eq:resc}).
 
 The sage display is fast to compute, which lends itself to being embedded into
 an interactive interface. An ideal interface would allow real time changes to the
