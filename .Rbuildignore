@@ -11,3 +11,5 @@
 \.Rmd$
 ^\.Rproj\.user$
 ^paper$
+^supp-materials$
+^supp-materials\.zip$

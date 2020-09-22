@@ -7,7 +7,7 @@ In high-dimensional data analysis the curse of dimensionality reasons that point
 
 ## Install Dependencies
 
-You can install the dependencies to run the examples using
+You can install the dependencies including the data to run the examples using
 the `devtools` package from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
@@ -26,11 +26,10 @@ BiocManager::install(c("scran", "scater", "scRNAseq", "AnnotationHub", "ensembld
 
 ## Repo Structure
 
-
-* `R/` the source code for the sage algorithm
+* `paper/` the Rmarkdown file and templates to reproduce the paper in pdf format
+* `supp-materials/` the Rmarkdown files to view the gif files as a webpage
+* `R/` the source code for the data used by the paper
 * `scripts/` the source code for creating the examples in the paper
-* `data/` the data sets used in the paper
-* `gifs/` artefacts produced by scripts
-* `pngs/` artefacts produced by scripts
-* `paper.Rmd` the Rmarkdown file to reproduce the paper
-
+* `data/` the data sets used in the paper as ".rda" files
+* `gifs/` tour animation artefacts produced by scripts
+* `pngs/` tour frame artefacts produced by scripts

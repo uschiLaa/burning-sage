@@ -40,7 +40,7 @@ Suggests:
     magick,
     ggforce,
     latex2exp,
-    tidyverse
+    tidyverse,
     gridExtra
 Depends: 
     R (>= 4.0)
