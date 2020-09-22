@@ -204,7 +204,7 @@ uniform distribution in hypercube (box).
 
 }
 
-\caption{Illustration (and notation) for describing the element used in the burning sage transformation. The 3D sphere (left) shows the different volumes to be compared. The full sphere has volume $V(R, p)$. Within a radius $r$ the sphere contains the reduced volume $V(r; p, R)$, shown in blue, but the projected volume within a radius $r$ in a two-dimensional plane is much larger, given by the volume of the cylinder with rounded caps, $V_{2D}(r; p ,R)$, shown in red. The intersection of the plane with the sphere is illustrated in grey, and the plane representing the projection with both radii is shown at right.}\label{fig:unnamed-chunk-1}
+\caption{Illustration (and notation) for describing the elements used in the burning sage transformation. The 3D sphere (left) shows the different volumes to be compared. The full sphere has volume $V(R, p)$. Within a radius $r$ the sphere contains the reduced volume $V(r; p, R)$, shown in blue, but the projected volume within a radius $r$ in a two-dimensional plane is much larger, given by the volume of the cylinder with rounded caps, $V_{2D}(r; p ,R)$, shown in red. The intersection of the plane with the sphere is illustrated in grey, and the plane representing the projection with both radii is shown at right.}\label{fig:unnamed-chunk-1}
 \end{figure}
 
 Figure \ref{fig:density} illustrates the comparison to be made, using
@@ -226,13 +226,13 @@ volume instead.
 \subsection{Definition of the relative projected
 volume}\label{definition-of-the-relative-projected-volume}}
 
-To understand how the \(p\) dimensional volume is projected onto a \(2\)
+To understand how the \(p\)-dimensional volume is projected onto a \(2\)
 dimensional plane, we study what fraction of the total volume is
 projected onto the area of a disk depending on its radius. This
-dependence was described in \citet{Laa:2020wkm}. We start from a \(p\)
-dimensional hypersphere with radius \(R\) and volume \(V(R, p)\), and
-its projected volume onto a centered \(2\)-dimensional disk of radius
-\(r\), \(V_{2D}(r; p, R)\), where \(r\) can be any radius within
+dependence was described in \citet{Laa:2020wkm}. We start from a
+\(p\)-dimensional hypersphere, with radius \(R\) and volume \(V(R, p)\),
+and its projected volume onto a centered \(2\)-dimensional disk of
+radius \(r\), \(V_{2D}(r; p, R)\), where \(r\) can be any radius within
 \([0, R]\). The relative projected volume is then given as the ratio of
 these two quantities, \begin{equation}
 v_{2} (r; p, R) = \frac{V_{2D}(r; p, R)}{V(R, p)} = 1 - \left(1-\left(\frac{r}{R}\right)^2\right)^{p/2}.
@@ -246,12 +246,16 @@ We can compare \(v_{2} (r; p, R)\) to the relative volume within a
 radius \(r\) in the original \(p\)-dimensional hypersphere,
 \begin{equation}
 v_{p} (r; p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p.
-\end{equation} This comparison is shown in Fig. \ref{fig:cdf}, for
-\(p=3, 10, 100\). The left graph shows \(v_{p} (r; p, R)\) and the right
-graph \(v_{2} (r; p, R)\). We clearly see the opposing behavior of the
-two functions as \(p\) increases. While \(v_{p} (r; p, R)\) concentrates
-more and more towards large values of \(r/R\), \(v_{2} (r; p, R)\) has
-the inverse behavior.
+\label{eq:vp}
+\end{equation}
+
+Figure \ref{fig:cdf} compares these two quantities (equations
+\ref{eq:cdf} and \ref{eq:vp}), for \(p=3, 10, 100\). At left is
+\(v_{2} (r; p, R)\) and on the right is \(v_{p} (r; p, R)\). The
+function shapes change in opposite directions as \(p\) increases:
+\(v_{2} (r; p, R)\) peaks earlier and \(v_{p} (r; p, R)\) gets flatter.
+This is the paradox of the curse of dimensionality in that projected
+volume at the center increases with \(p\).
 
 \begin{figure}
 
@@ -259,7 +263,7 @@ the inverse behavior.
 
 }
 
-\caption{Comparing the relative volume of a $p$ dimensional hypersphere captured within a radius $r$, in the $p$-dimensional space (left) and in a 2-dimensional projection (right), for $p=3, 10, 100$. While most of the volume is squeezed towards larger values of $r$ as $p$ increases, the projected volume gets concentrated near the center instead.}\label{fig:cdf}
+\caption{Comparing relative volume of a $p$-dimensional hypersphere captured within a radius $r$, in the 2-dimensional space (left) and in a $p$-dimensional projection (right), for $p=3, 10, 100$. The difference is dramatic, which illustrates the paradox of the curse of dimensionality. The relative volume of a $p$D sphere shrinks, as $p$ increases, while the projected volume (near the center) grows.}\label{fig:cdf}
 \end{figure}
 
 \hypertarget{calculating-the-radial-transformation}{%
