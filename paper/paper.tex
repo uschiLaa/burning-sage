@@ -107,7 +107,8 @@ clustering and classification problems.
 
 \begin{keywords}
 data visualisation; grand tour; statistical computing; statistical
-graphics; multivariate data; dynamic graphics
+graphics; multivariate data; dynamic graphics; data science; machine
+learning
 \end{keywords}
 
 \doublespacing
@@ -189,13 +190,13 @@ possible extensions to the method.
 \section{Burning sage algorithm}\label{sec:method}}
 
 To understand why points tend to be away from the center in the
-high-dimensional space, but pile near the center in low-dimensional
-projections, we need to consider the projected volume. It is useful to
-think of the data as being distributed in a hypersphere, i.e.~all data
-points are within a specified distance from the center. Compared to the
-common assumption of a distribution in a box or hypercube this has the
-advantage of being rotation invariant, and more accurately captures
-commonly observed distributions.
+high-dimensional space, but crowd the center in low-dimensional
+projections, it is helpful to consider the projected volume relative to
+high-dimensional volume. To avoid edge effects and to impose rotation
+invariance, we will start from the data being uniformly distributed in a
+hypersphere, i.e.~all data points are within a specified distance from
+the center. This makes calculations more tractable than assuming a
+uniform distribution in hypercube (box).
 
 \begin{figure}
 
@@ -203,27 +204,23 @@ commonly observed distributions.
 
 }
 
-\caption{The diagram on the left is illustrating the different volumes considered for a three-dimensional sphere. The full sphere has volume $V(R, p)$. Within a radius $r$ the sphere contains the reduced volume $V(r; p, R)$, shown in blue, but the projected volume within a radius $r$ in a two-dimensional plane is much larger, given by the volume of the cylinder with rounded caps, $V_{2D}(r; p ,R)$, shown in red. The intersection of the plane with the sphere is illustrated in grey, and the plane with both radii is shown in the right diagram.}\label{fig:unnamed-chunk-1}
+\caption{Illustration (and notation) for describing the element used in the burning sage transformation. The 3D sphere (left) shows the different volumes to be compared. The full sphere has volume $V(R, p)$. Within a radius $r$ the sphere contains the reduced volume $V(r; p, R)$, shown in blue, but the projected volume within a radius $r$ in a two-dimensional plane is much larger, given by the volume of the cylinder with rounded caps, $V_{2D}(r; p ,R)$, shown in red. The intersection of the plane with the sphere is illustrated in grey, and the plane representing the projection with both radii is shown at right.}\label{fig:unnamed-chunk-1}
 \end{figure}
 
-We can picture this for a 3D sphere. In any 2D projection a large
-fraction of the volume will be projected onto a small region near the
-center of the resulting disk. This is a consequence of the curved shape,
-which extends further in the orthogonal direction at the center of the
-disk, since the projection corresponds to an integration over the
-orthogonal space. The effect will be further enhanced when projecting
-onto 1D instead. The same intuition holds as we increase the number of
-original dimensions that are projected down to one or two dimensions for
-visualization, with increasing fractions of the volume being projected
-onto a small area around the center, see Figure \ref{fig:density} for
-illustration.
+Figure \ref{fig:density} illustrates the comparison to be made, using
+something we can easily picture, a 3D sphere. Projecting the data from
+within a 3D sphere to 2D (grey disk) will result in mass being condensed
+into the disk. Imagine comparing the volume of a cylinder at different
+locations in the disk. A centered cylinder has more volume. This is
+exaggerated as \(p\) increases: the centered cylinder has much more
+volume than any other cylinder.
 
 To reverse this effect, we introduce a radial transformation that
 redistributes the projected points, such that equal volume in the
 original (\(p\)-dimensional) space is projected onto equal area in a
-2-dimensional projection. Note that it is straightforward to generalize
-this for \(d\)-dimensional projections by mapping onto equal
-\(d\)-dimensional volume instead.
+2-dimensional projection. Note that this can be generalized for
+\(d\)-dimensional projections by mapping onto equal \(d\)-dimensional
+volume instead.
 
 \hypertarget{definition-of-the-relative-projected-volume}{%
 \subsection{Definition of the relative projected
