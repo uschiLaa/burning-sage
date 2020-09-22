@@ -22,7 +22,7 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports: 
-    tourr,
+    tourr (>= 0.5.7),
     geozoo,
     graphics
 Suggests:
@@ -41,3 +41,5 @@ Suggests:
 Depends: 
     R (>= 4.0)
 License: MIT + file LICENSE
+Remotes:
+    ggobi/tourr
