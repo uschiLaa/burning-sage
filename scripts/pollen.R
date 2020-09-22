@@ -1,6 +1,5 @@
 library(tourr)
 library(animation)
-library(burningsage)
 library(here)
 
 data(pollen)

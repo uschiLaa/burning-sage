@@ -6,7 +6,6 @@ suppressPackageStartupMessages(library(scran))
 library(ggplot2)
 library(tourr)
 library(here)
-library(burningsage)
 
 sce <- scRNAseq::MacoskoRetinaData(ensembl = FALSE)
 # annotation ensembl database
