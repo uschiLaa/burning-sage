@@ -459,9 +459,9 @@ The particular structure of this distribution, with some clusters extending line
 
 ## Tuning the parameters: Pollen {#sec:appl4}
 
-The classical pollen data allows us to better demonstrate the use of the trimming and tuning parameters. The five dimensional data set was simulated by David Coleman of RCA Labs, for the Joint Statistics Meetings 1986 Data Expo [@pollen], and is an example of a hidden structure near the centre of a distribution. The data are standardised by centering and scaling such that the standard deviation of each variable is equal to one.
+The classical pollen data is useful to demonstrate the trimming and tuning parameters. The five dimensional data set was simulated by David Coleman of RCA Labs, for the Joint Statistics Meetings 1986 Data Expo [@pollen], and is an example of a hidden structure near the centre of a distribution. The data are standardised by centering and scaling such that the standard deviation of each variable is equal to one.
 
-Neither the standard scatter display nor the sage display with default settings can reveal the structure, see still view from the sage display with default settings in Figure \ref{fig:pollen} (left). This view uses the maximum radius in the scaled data, thus $R=6.6$, and no tuning of $p_{\mathrm{eff}}$, thus $\gamma=1$. We can use either $\gamma$, $R$ or a combination of the two to zoom in further near the center, for example we use trimming $(R=1, \gamma=1)$ or tuning $(R=6.6,\gamma=20)$ in the middle and right view shown in Figure \ref{fig:pollen}. There is approximate equivalence between the results obtained using either tuning or trimming, and both views clearly reveal the word "EUREKA" hidden in the distribution.
+Neither the standard tour display nor the sage display with default settings ($R=6.6$ which is set by the data scale, and $\gamma=1$) reveals the structure (left plot in Figure \ref{fig:pollen}). We can use either $\gamma$, $R$ or a combination of the two to zoom in further near the center.  For example, we can use trimming $(R=1, \gamma=1)$ (middle plot) or tuning $(R=6.6,\gamma=20)$ (right plot) as shown in Figure \ref{fig:pollen}. There is an approximate equivalence between the results obtained using either tuning or trimming, and both views clearly reveal the word "EUREKA" hidden in the distribution.
 
 \begin{figure}
 \centering
@@ -472,7 +472,7 @@ Neither the standard scatter display nor the sage display with default settings 
 \label{fig:pollen}
 \end{figure}
 
-While the still views look very similar, comparing the tour animations (available in the supplementary material) reveals some differences between the display with trimming or tuning. When trimming by setting $R=1$ the focus is clearly on the center of the distribution, and most points get pushed out towards the circle of this maximum radius. On the other hand, tuning the display by setting $\gamma=20$ preserves the elliptical shape of the distribution, making it is easier to see correlation patterns.
+While the static views look very similar, comparing the tour animations (available in the supplementary material) reveals some differences between the display with trimming or tuning. When trimming (by setting $R=1$) the focus is clearly on the center of the distribution, and most points get pushed out towards a maximum radias circle. On the other hand, tuning the display by setting $\gamma=20$ preserves the elliptical shape of the distribution, making it easier to see correlation patterns.
 
 # Discussion {#sec:concl}
 
