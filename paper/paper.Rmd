@@ -332,7 +332,7 @@ We allow tuning $p_{\mathrm{eff}} = \gamma p$ by selecting the scaling parameter
 
 ## Implementation as a dynamic display {#sec:implementation}
 
-While the radial transformation can in general be used with any low-dimensional display that suffers from data piling, it is most useful when combined with a dynamic display showing a sequence of interpolated low-dimensional projections obtained when running a tour. We have implemented it as a new display method `display_sage` in the `tourr` package [@tourr] in R [@rref].
+While the radial transformation can in general be used with any low-dimensional display that suffers from data crowding, it is most useful when combined with a dynamic display showing a sequence of interpolated low-dimensional projections obtained when running a tour. We have implemented it as a new display method called `display_sage` in the `tourr` package [@tourr] in R [@rref].
 
 We can think of the display functions as part of a data pipeline obtained when running a tour. The initial step is pre-processing the data, given by $\mathbf{X}$, an $n \times p$ matrix containing $n$ observations in $p$ dimensions. Typically, this includes centering and scaling, using either the overall range or the variance. Ensuring a common scale of all variables, comparable to the selected scale parameter $R$, is especially important with the new display. The tour then iterates over the following steps:
 
