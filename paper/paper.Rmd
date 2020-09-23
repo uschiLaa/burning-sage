@@ -441,7 +441,7 @@ The animated sage tour available in the supplementary material further reveals a
 
 Data were obtained from CT14HERA2 parton distribution function fits and describe the sensitivity of fit parameters to experimental measurements [@Wang:2018heo]. There are 28 parameters, and varying one at a time to move $\pm 1 \sigma$ away from the 'best fit point' (maximum likelihood estimate) provides our input variables, labelled X1-X56. Each of the 2808 observations corresponds to a physical observable and measures how the fit prediction changes along the 56 directions in parameter space. Points are grouped based on the underlying process in the experiment, which is mapped to color in the following. With the analysis of the distribution along these variables X1-X56 we can understand to what extent each experimental measurement provides new information for the global fit. For example, orthogonality between groups marks complementary constraints, and outlying points are considered as important for future fits, see discussion in @Cook:2018mvr.
 
-```{r pdfsense, fig.cap = "Selected frames of the tour run on the pdfsense data using the default tour display (top), and using the sage display with $R=10$ (bottom). Different underlying physical processes are shown by color and we can see orthogonality between the three groups. The sage display preserves the overall structure while revealing details that are hidden near the center in the default display.", fig.align="center", out.width="0.9\\textwidth"}
+```{r pdfsense, fig.cap = "Selected frames of the tour of the pdfsense data using the default tour display (top), and using the sage display with $R=10$ (bottom). Different underlying physical processes are shown by color and we can see orthogonality between the three groups. The sage display preserves the overall structure while revealing details that are hidden near the center in the default display.", fig.align="center", out.width="0.9\\textwidth"}
 frames <- c("001", "051", "078", "092")
 
 pdfsense_grand <- paste0(dir, "pdfsense_grand-", frames, ".png")
@@ -468,7 +468,7 @@ Neither the standard tour display nor the sage display with default settings ($R
 \includegraphics[width=0.3\textwidth]{../pngs/pollen_sage-088.png}
 \includegraphics[width=0.3\textwidth]{../pngs/pollen_sage_R1-088.png}
 \includegraphics[width=0.3\textwidth]{../pngs/pollen_sage_gam20-088.png}
-\caption{Selected view of the pollen data in the new sage display, with default settings (left), setting $R=1$ (middle) or $\gamma=20$ (right). We can tune either $\gamma$, $R$ or a combination of the two to reveal the word "EUREKA" near the center of the distribution.}
+\caption{Selected views of the pollen data in the new sage display, with default settings (left), setting $R=1$ (middle) and $\gamma=20$ (right). We can tune either $\gamma$, $R$ or a combination of the two to reveal the word "EUREKA" near the center of the distribution.}
 \label{fig:pollen}
 \end{figure}
 
@@ -476,38 +476,25 @@ While the static views look very similar, comparing the tour animations (availab
 
 # Discussion {#sec:concl}
 
-This paper has introduced the sage tour, which reduces the data piling effects 
+This paper has introduced the sage tour, which reduces the data crowding effects 
 that occur when taking low dimensional projections of high dimensional data.
 This new technique is easily incorporated into exploratory high dimensional data analysis, and applications shown in Section \ref{sec:application} provide examples of the following tasks: 
 
-- classification tasks: the sage display decreases the number of overlapping points between classes and provides better visual separation between classes compared to the regular tour, as shown in the sketches example (Section \ref{sec:appl2})
-- clustering tasks: the sage display uncovered clusters that were originally obscured by data piling, while still giving the viewer an accurate assessment of the size of a cluster, and their relative orientation, as shown in the single cell RNA-seq example (Section \ref{sec:appl1})
-- shape analysis tasks: the sage display helps us understand structures across multiple dimensions, for example orthogonality between multiple groups, as shown in the pdfsense example (Section \ref{sec:appl3})
-- search tasks: the sage display allows to find hidden signal that is concealed by the density of points around the center of the projection, as shown in the pollen example (Section \ref{sec:appl4})
+- clustering: the sage display uncovered clusters that were originally obscured by data piling, while still giving the viewer an accurate assessment of the size of a cluster, and their relative orientation, as shown in the single cell RNA-seq example (Section \ref{sec:appl1})
+- classification: the sage display decreases the number of overlapping points between classes and provides better visual separation between classes compared to the regular tour, as shown in the sketches example (Section \ref{sec:appl2})
+- shape analysis: the sage display helps us understand structures across multiple dimensions, for example orthogonality between multiple groups, as shown in the pdfsense example (Section \ref{sec:appl3})
+- needle discovery: the sage display allows to find hidden signal that is concealed by the density of points around the center of the projection, as shown in the pollen example (Section \ref{sec:appl4})
 
 The approach  provides interpretable visualisation that captures high dimensional information and preserves global structure, and it is complementary to non-linear dimension reduction techniques. For example, when visualising clusters, the sage display enables an assessment of cluster shapes, and accurately captures relative position and orientation. The burning sage transformation is global and does not magnify local structure like t-SNE does.
-
-However, the sage display is currently 
-naive to information in high dimensional space that is not 
-captured by linear projections. Like t-SNE, it would be interesting to explore
-transformations of projections where points in the high dimensional space are 
-locally dense instead of expanding from the center of the distribution.
 
 An alternative is the slice tour [@sliceTour] which  allows distributions
 of points around the center of the data to be explored using sections instead of projections. The slice tour is useful when there are large numbers of observations
 or if there is concave structure in the data.
 
-The sage tour can be tuned to more aggressively expand the center of the display. 
-All of the examples shown had some tuning.  The last example 
-demonstrated how points away from the projected center get moved to the edge of the hypersphere as $\gamma$ is increased or $R$ is decreased. The non-linear
-transformation can introduce distortions which is a well known problem for any
-non-linear dimension reduction technique including t-SNE. However, any distortion
-introduced by the sage display are interpretable because it is controlled
-by a simple function (Eq. \ref{eq:resc}).
+The tuning parameters can be used to more aggressively expand the center of the display. All of the examples shown had some tuning.  The last example demonstrated how points away from the projected center get moved to the edge of the hypersphere as $\gamma$ is increased or $R$ is decreased. With more center magnification, the  non-linear transformation can introduce distortions, but this is a well known problem for any
+non-linear dimension reduction technique including t-SNE. However, unlike t-SNE, any distortion introduced by the sage display is interpretable because it is controlled by a simple function (Eq. \ref{eq:resc}).
 
-The sage display is fast to compute, which lends itself to being embedded into
-an interactive interface. An ideal interface would allow real time changes to the
-parameters of the transformation. This would be especially useful when coupled with linked brushing in complementary views. 
+The sage display is fast to compute, which lends itself to being embedded into an interactive interface. An ideal interface would allow real time changes to the parameters of the transformation. This would be especially useful when coupled with linked brushing in complementary views. 
 
 # Acknowledgements {-}
 
