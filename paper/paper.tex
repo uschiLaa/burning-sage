@@ -200,14 +200,14 @@ uniform distribution in hypercube (box).
 
 \begin{figure}
 
-{\centering \includegraphics[width=0.6\linewidth]{paper_files/figure-latex/unnamed-chunk-1-1} 
+{\centering \includegraphics[width=0.6\linewidth]{paper_files/figure-latex/sketch-1} 
 
 }
 
-\caption{Illustration (and notation) for describing the elements used in the burning sage transformation. The 3D sphere (left) shows the different volumes to be compared. The full sphere has volume $V(R, p)$. Within a radius $r$ the sphere contains the reduced volume $V(r; p, R)$, shown in blue, but the projected volume within a radius $r$ in a two-dimensional plane is much larger, given by the volume of the cylinder with rounded caps, $V_{2D}(r; p ,R)$, shown in red. The intersection of the plane with the sphere is illustrated in grey, and the plane representing the projection with both radii is shown at right.}\label{fig:unnamed-chunk-1}
+\caption{Illustration (and notation) for describing the elements used in the burning sage transformation. The 3D sphere (left) shows the different volumes to be compared. The full sphere has volume $V(R, p)$. Within a radius $r$ the sphere contains the reduced volume $V(r; p, R)$, shown in blue, but the projected volume within a radius $r$ in a two-dimensional plane is much larger, given by the volume of the cylinder with rounded caps, $V_{2D}(r; p ,R)$, shown in red. The intersection of the plane with the sphere is illustrated in grey, and the plane representing the projection with both radii is shown at right.}\label{fig:sketch}
 \end{figure}
 
-Figure \ref{fig:density} illustrates the comparison to be made, using
+Figure \ref{fig:sketch} illustrates the comparison to be made, using
 something we can easily picture, a 3D sphere. Projecting the data from
 within a 3D sphere to 2D (grey disk) will result in mass being condensed
 into the disk. Imagine comparing the volume of a cylinder at different
@@ -226,8 +226,8 @@ volume instead.
 \subsection{Definition of the relative projected
 volume}\label{definition-of-the-relative-projected-volume}}
 
-To understand how the \(p\)-dimensional volume is projected onto a \(2\)
-dimensional plane, we study what fraction of the total volume is
+To understand how the \(p\)-dimensional volume is projected onto a
+\(2\)-dimensional plane, we study what fraction of the total volume is
 projected onto the area of a disk depending on its radius. This
 dependence was described in \citet{Laa:2020wkm}. We start from a
 \(p\)-dimensional hypersphere, with radius \(R\) and volume \(V(R, p)\),
@@ -250,8 +250,8 @@ v_{p} (r; p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p.
 \end{equation}
 
 Figure \ref{fig:cdf} compares these two quantities (Eq. \ref{eq:cdf} and
-\ref{eq:vp}), for \(p=3, 10, 100\). At left is \(v_{2} (r; p, R)\) and
-on the right is \(v_{p} (r; p, R)\). The function shapes change in
+\ref{eq:vp}), for \(p=3, 10, 100\). On the left is \(v_{2} (r; p, R)\)
+and on the right is \(v_{p} (r; p, R)\). The function shapes change in
 opposite directions as \(p\) increases: \(v_{2} (r; p, R)\) peaks
 earlier and \(v_{p} (r; p, R)\) gets flatter. This is the paradox of the
 curse of dimensionality in that projected volume at the center increases
@@ -263,7 +263,7 @@ with \(p\).
 
 }
 
-\caption{Comparing relative volume of a $p$-dimensional hypersphere captured within a radius $r$, in the 2-dimensional space (left) and in a $p$-dimensional projection (right), for $p=3, 10, 100$. The difference is dramatic, which illustrates the paradox of the curse of dimensionality. The relative volume of a $p$D sphere shrinks, as $p$ increases, while the projected volume (near the center) grows.}\label{fig:cdf}
+\caption{Comparing relative volume of a $p$-dimensional hypersphere captured within a radius $r$, in the 2-dimensional projection (left) and in the $p$-dimensional space (right), for $p=3, 10, 100$. The difference is dramatic, which illustrates the paradox of the curse of dimensionality. The relative volume of a $p$D sphere shrinks, as $p$ increases, while the projected volume (near the center) grows.}\label{fig:cdf}
 \end{figure}
 
 \hypertarget{calculating-the-radial-transformation}{%
@@ -485,7 +485,7 @@ retinal single cell RNA-seq data from \citet{Macosko2015-ot}. The raw
 data consists of a 49,300 cells and was downloaded using the using the
 \texttt{scRNAseq} Bioconductor package \citep{scRNAseq-d}. We use a
 standard workflow for pre-processing and normalizing this data
-(described by \citet{Amezquita2020-at}): quality control was perfirmed
+(described by \citet{Amezquita2020-at}): quality control was performed
 using the \texttt{scater} package \citep{McCarthy2017} and
 \texttt{scran} \citep{Lun2016} was used to transform and normalise the
 expression values and select highly variable genes (HVGs). The top ten
@@ -503,13 +503,13 @@ fixing the effective dimensionality of the data to
 variance. Here we focus on comparing three of the clusters. In the PC
 plots they look very similar, begging the question whether they should
 be considered to be separate groups. Figure \ref{fig:mouse-cluster}
-shows selected frames a default tour (top row) and the sage tour (bottom
-row). The columns show the same projection, with the difference being
-the the sage transformation is applied in the sage tour projections. The
-full animations are available in the supplementary material. The static
-plots serve to illustrate the main points, but we encourage the reader
-to look at the tour animations to fully appreciate the advantage of the
-sage display.
+shows selected frames from a default tour (top row) and the sage tour
+(bottom row). The columns show the same projection, with the difference
+being the the sage transformation is applied in the sage tour
+projections. The full animations are available in the supplementary
+material. The static plots serve to illustrate the main points, but we
+encourage the reader to look at the tour animations to fully appreciate
+the advantage of the sage display.
 
 \begin{figure}
 
@@ -558,7 +558,7 @@ visualisation we set \(\gamma=2\) for the sage display.
 
 }
 
-\caption{Selected frames  of the tour run on the sketches data using the default tour display (top), and using the default sage display with $\gamma=2$ (bottom). Three types of sketches are indicated by color: banana (green), cactus (orange) and crab (purple). Overplotting of points is a problem for the grand tour display, while the sage display reveals low density near the center.}\label{fig:sketches}
+\caption{Selected frames  of the tour run on the sketches data using the default tour display (top), and using the sage display with $\gamma=2$ (bottom). Three types of sketches are indicated by color: banana (green), cactus (orange) and crab (purple). Overplotting of points is a problem for the grand tour display, while the sage display reveals low density near the center.}\label{fig:sketches}
 \end{figure}
 
 Figure \ref{fig:sketches} shows the grand tour on the PCs, where green
@@ -628,7 +628,7 @@ the new display (bottom row) shows a clearer view.
 \subsection{Tuning the parameters: Pollen}\label{sec:appl4}}
 
 The classical pollen data is useful to demonstrate the trimming and
-tuning parameters. The five dimensional data set was simulated by David
+tuning parameters. The five-dimensional data set was simulated by David
 Coleman of RCA Labs, for the Joint Statistics Meetings 1986 Data Expo
 \citep{pollen}, and is an example of a hidden structure near the centre
 of a distribution. The data are standardised by centering and scaling
@@ -657,7 +657,7 @@ While the static views look very similar, comparing the tour animations
 (available in the supplementary material) reveals some differences
 between the display with trimming or tuning. When trimming (by setting
 \(R=1\)) the focus is clearly on the center of the distribution, and
-most points get pushed out towards a maximum radias circle. On the other
+most points get pushed out towards a maximum radius circle. On the other
 hand, tuning the display by setting \(\gamma=20\) preserves the
 elliptical shape of the distribution, making it easier to see
 correlation patterns.
@@ -666,9 +666,9 @@ correlation patterns.
 \section{Discussion}\label{sec:concl}}
 
 This paper has introduced the sage tour, which reduces the data crowding
-effects that occur when taking low dimensional projections of high
-dimensional data. This new technique is easily incorporated into
-exploratory high dimensional data analysis, and applications shown in
+effects that occur when taking low-dimensional projections of
+high-dimensional data. This new technique is easily incorporated into
+exploratory high-dimensional data analysis, and applications shown in
 Section \ref{sec:application} provide examples of the following tasks:
 
 \begin{itemize}
@@ -737,9 +737,9 @@ Research Council. The paper was written in \texttt{rmarkdown}
 \addcontentsline{toc}{section}{Supplementary material}
 
 The source material for this paper is available at
-\url{https://github.com/uschiLaa/burning-sage} XXX rename repo!!!!. The
-animated gifs for all applications are also included in html files in
-the supplementary material.
+\url{https://github.com/uschiLaa/burning-sage}. The animated gifs for
+all applications are also included in html files in the supplementary
+material.
 
 \bibliographystyle{tfcad}
 \bibliography{biblio.bib}
