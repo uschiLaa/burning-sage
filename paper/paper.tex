@@ -77,7 +77,7 @@
 
 \articletype{Article}
 
-\title{Burning sage: Reversing the curse of dimensionality in the visualisation
+\title{Burning sage: Reversing the curse of dimensionality in the visualization
 of high-dimensional data}
 
 
@@ -101,7 +101,7 @@ paper, which uses radial transformations on the projected data. It is
 integrated seamlessly into the grand tour algorithm, and we have called
 it a burning sage tour, to indicate that it reverses the curse. The work
 is implemented into the tourr package in R. Several case studies are
-included that show how the sage visualisations enhance exploratory
+included that show how the sage visualizations enhance exploratory
 clustering and classification problems.
 \end{abstract}
 
@@ -129,7 +129,7 @@ the extreme case of high-dimension, low-sample size data, observations
 are on the vertices of a simplex.
 
 This affects many aspects of data analysis: minimizing the error during
-model fitting relies on effective optimisation techniques,
+model fitting relies on effective optimization techniques,
 non-parametric modeling requires finding nearest neighbors which may be
 far away and sampling from high-dimensional distributions is likely to
 have points far from the population mean. \citet{Donoho00} considers the
@@ -471,7 +471,7 @@ used to illustrate the effect of parameter choices in the sage tour.
 \subsection{Clustering single-cell RNA-seq data sets}\label{sec:appl1}}
 
 In the analysis of single cell RNA-seq data, cluster analysis is
-performed to detect cell types and characterise the expression of genes
+performed to detect cell types and characterize the expression of genes
 that define those cell types, and the relative orientation of the cell
 types to each other (trajectory analysis) \citep{Amezquita2020-at}.
 Generally, for cluster verification, analysts use embedding methods like
@@ -487,11 +487,11 @@ data consists of a 49,300 cells and was downloaded using the using the
 standard workflow for pre-processing and normalizing this data
 (described by \citet{Amezquita2020-at}): quality control was performed
 using the \texttt{scater} package \citep{McCarthy2017} and
-\texttt{scran} \citep{Lun2016} was used to transform and normalise the
+\texttt{scran} \citep{Lun2016} was used to transform and normalize the
 expression values and select highly variable genes (HVGs). The top ten
-percent of the most HVGs were used as features to subset the normalised
+percent of the most HVGs were used as features to subset the normalized
 expression matrix and compute the principal components. Using the first
-25 PCs we built a shared nearest neighbours graph (with \(k = 10\)) and
+25 PCs we built a shared nearest neighbors graph (with \(k = 10\)) and
 clustered this graph using Louvain clustering, resulting in 11 clusters
 being formed \citep{Blondel2008-bx}.
 
@@ -505,7 +505,7 @@ plots they look very similar, begging the question whether they should
 be considered to be separate groups. Figure \ref{fig:mouse-cluster}
 shows selected frames from a default tour (top row) and the sage tour
 (bottom row). The columns show the same projection, with the difference
-being the the sage transformation is applied in the sage tour
+being that the sage transformation is applied in the sage tour
 projections. The full animations are available in the supplementary
 material. The static plots serve to illustrate the main points, but we
 encourage the reader to look at the tour animations to fully appreciate
@@ -550,7 +550,7 @@ We reduce the dimensionality from 784 variables to the first 5 PCs,
 which captures approximately 20 per cent of the variation of the data.
 Before applying the tour we rescale each component to have mean zero and
 unit variance. To account for the dimension reduction before
-visualisation we set \(\gamma=2\) for the sage display.
+visualization we set \(\gamma=2\) for the sage display.
 
 \begin{figure}
 
@@ -618,7 +618,7 @@ looking at the animations available in the supplementary material.
 The particular structure of this distribution, with some clusters
 extending linearly away from the center and a set of outlying points,
 results in poor use of the plotting space, and high level of clustering
-near the center. For example, focussing on the blue cluster, we can see
+near the center. For example, focusing on the blue cluster, we can see
 that it extends out along different directions, but it can be
 challenging to observe how the points move under the tour rotation, as
 overplotting becomes an issue when points move through the center. Here,
@@ -630,8 +630,8 @@ the new display (bottom row) shows a clearer view.
 The classical pollen data is useful to demonstrate the trimming and
 tuning parameters. The five-dimensional data set was simulated by David
 Coleman of RCA Labs, for the Joint Statistics Meetings 1986 Data Expo
-\citep{pollen}, and is an example of a hidden structure near the centre
-of a distribution. The data are standardised by centering and scaling
+\citep{pollen}, and is an example of a hidden structure near the center
+of a distribution. The data are standardized by centering and scaling
 such that the standard deviation of each variable is equal to one.
 
 Neither the standard tour display nor the sage display with default
@@ -693,10 +693,10 @@ Section \ref{sec:application} provide examples of the following tasks:
   projection, as shown in the pollen example (Section \ref{sec:appl4})
 \end{itemize}
 
-The approach provides interpretable visualisation that captures high
+The approach provides interpretable visualization that captures high
 dimensional information and preserves global structure, and it is
 complementary to non-linear dimension reduction techniques. For example,
-when visualising clusters, the sage display enables an assessment of
+when visualizing clusters, the sage display enables an assessment of
 cluster shapes, and accurately captures relative position and
 orientation. The burning sage transformation is global and does not
 magnify local structure like t-SNE does.

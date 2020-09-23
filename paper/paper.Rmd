@@ -1,6 +1,6 @@
 ---
 title: |
-  Burning sage: Reversing the curse of dimensionality in the visualisation of high-dimensional data
+  Burning sage: Reversing the curse of dimensionality in the visualization of high-dimensional data
 type: Article
 author:
   - name: Ursula Laa
@@ -25,7 +25,7 @@ affiliation:
 bibliography: biblio.bib
 geometry: margin=2.5cm
 abstract: |
-  In high-dimensional data analysis the curse of dimensionality reasons that points tend to be far away from the center of the distribution and on the edge of high-dimensional space. Contrary to this, is that projected data tends to clump at the center. This gives a sense that any structure near the center of the projection is obscured, whether this is true or not. A transformation to reverse the curse, is defined in this paper, which uses radial transformations on the projected data. It is integrated seamlessly into the grand tour algorithm, and we have called it a burning sage tour, to indicate that it reverses the curse. The work is implemented into the tourr package in R. Several case studies are included that show how the sage visualisations enhance exploratory clustering and classification problems.
+  In high-dimensional data analysis the curse of dimensionality reasons that points tend to be far away from the center of the distribution and on the edge of high-dimensional space. Contrary to this, is that projected data tends to clump at the center. This gives a sense that any structure near the center of the projection is obscured, whether this is true or not. A transformation to reverse the curse, is defined in this paper, which uses radial transformations on the projected data. It is integrated seamlessly into the grand tour algorithm, and we have called it a burning sage tour, to indicate that it reverses the curse. The work is implemented into the tourr package in R. Several case studies are included that show how the sage visualizations enhance exploratory clustering and classification problems.
 keywords: |
   data visualisation; grand tour; statistical computing; statistical graphics; multivariate data; dynamic graphics; data science; machine learning
 header-includes: |
@@ -56,7 +56,7 @@ library(latex2exp)
 
 The term "curse of dimensionality" was originally introduced by @BellmanRichard1961, to express the difficulty of doing optimization in high dimensions because of the exponential growth in space as dimension increases. A way to think about it is, that the volume of the space grows exponentially with dimension, which makes it infeasible to sample *enough* points -- any sample will be less densely covering the space as dimension increases. The effect is that most points will be far from the sample mean, on the edge of the sample space. @doi:10.1111/j.1467-9868.2005.00510.x have shown that in the extreme case of high-dimension, low-sample size data, observations are on the vertices of a simplex. 
 
-This affects many aspects of data analysis: minimizing the error during model fitting relies on effective optimisation techniques, non-parametric modeling requires finding nearest neighbors which may be far away and sampling from high-dimensional distributions is likely to have points far from the population mean. @Donoho00 considers the curse of dimensionality as a blessing, because the sparsity can be leveraged for computational efficiency. This is used in regularization methods, like lasso, to penalize model complexity. The penalty term results in shrinking (some of) the parameter estimates towards zero.
+This affects many aspects of data analysis: minimizing the error during model fitting relies on effective optimization techniques, non-parametric modeling requires finding nearest neighbors which may be far away and sampling from high-dimensional distributions is likely to have points far from the population mean. @Donoho00 considers the curse of dimensionality as a blessing, because the sparsity can be leveraged for computational efficiency. This is used in regularization methods, like lasso, to penalize model complexity. The penalty term results in shrinking (some of) the parameter estimates towards zero.
 
 Paradoxically, the curse of dimensionality inverts for dimension reduction, resulting in an excessive amount of observations near the center of the distribution. This affects visualizations made on low-dimensional projections, like the tour [@As85,@BCAH05]. The effect is described by @diaconis1984, that most low-dimensional linear projections are approximately Gaussian, with observations concentrating in the center. This has motivated the development of indexes for projection pursuit which search for departure from normality. It is also related to what is called "data piling" in high-dimension low-sample size data [@10.2307/27639976,@10.1093/biomet/asp084]: all observations can collapse into a single point.  These issues also persist with non-linear dimension reduction techniques, and are often referred to as the "crowding problem", which methods like t-Distributed Stochastic Neighbor Embedding (t-SNE) [@tsne] aim to alleviate. Figure \ref{fig:density} illustrates the crowding problem. Two-dimensional linear projections of points sampled uniformly within $p$-dimensional hyperspheres ($p=3, 10, 100$) are displayed as hexbin plots. Color indicates log count of the bin, with yellow mapping the highest counts. As $p$ increases the density concentrates in the center of the projection. 
 
@@ -365,7 +365,7 @@ To illustrate the benefit of using the reverse transformation for examining data
 
 
 In the analysis of single cell RNA-seq data, cluster analysis is performed to
-detect cell types and characterise the expression of genes that define those cell types, and the relative orientation of the cell types  to each other (trajectory analysis) [@Amezquita2020-at]. Generally, for cluster verification, analysts use embedding methods
+detect cell types and characterize the expression of genes that define those cell types, and the relative orientation of the cell types  to each other (trajectory analysis) [@Amezquita2020-at]. Generally, for cluster verification, analysts use embedding methods
 like t-SNE to verify the placement and meaning of clusters from a clustering algorithm. An alternative is to use a tour on a small number of principal components to examine the clusters relative to gene expression.
 
 Here we compare the sage display and regular tour display on mouse retinal single cell RNA-seq data from
@@ -374,14 +374,14 @@ using the using the `scRNAseq` Bioconductor package [@scRNAseq-d]. We
 use a standard workflow for pre-processing and normalizing this data 
 (described by @Amezquita2020-at): quality control was performed using the `scater` package [@McCarthy2017]
 and `scran` 
-[@Lun2016] was used to transform and normalise the expression 
+[@Lun2016] was used to transform and normalize the expression 
 values and select highly variable genes (HVGs). The top ten percent of the most HVGs were used as features to subset
-the normalised expression matrix and compute the principal components.
-Using the first 25 PCs we built a shared nearest neighbours graph (with $k = 10$) and 
+the normalized expression matrix and compute the principal components.
+Using the first 25 PCs we built a shared nearest neighbors graph (with $k = 10$) and 
 clustered this graph using Louvain clustering, resulting in 11 clusters being formed [@Blondel2008-bx]. 
 
 A tour is run on the first five PCs (approximately 20% of the variance in expression),
-on a weighted subsample of cells based on their cluster membership - 4,590 cells. For the sage display, we set $\gamma = 3$, fixing the effective dimensionality of the data to $p_{\mathrm{eff}} = 15$. The PCs are scaled to have zero mean and unit variance. Here we focus on comparing three of the clusters. In the PC plots they look very similar, begging the question whether they should be considered to be separate groups. Figure \ref{fig:mouse-cluster} shows selected frames from a default tour (top row) and the sage tour (bottom row). The columns show the same projection, with the difference being the the sage transformation is applied in the sage tour projections. The full animations are available in the supplementary material. The static plots serve to illustrate the main points, but we encourage the reader to look at the tour animations to fully appreciate the advantage of the sage display.
+on a weighted subsample of cells based on their cluster membership - 4,590 cells. For the sage display, we set $\gamma = 3$, fixing the effective dimensionality of the data to $p_{\mathrm{eff}} = 15$. The PCs are scaled to have zero mean and unit variance. Here we focus on comparing three of the clusters. In the PC plots they look very similar, begging the question whether they should be considered to be separate groups. Figure \ref{fig:mouse-cluster} shows selected frames from a default tour (top row) and the sage tour (bottom row). The columns show the same projection, with the difference being that the sage transformation is applied in the sage tour projections. The full animations are available in the supplementary material. The static plots serve to illustrate the main points, but we encourage the reader to look at the tour animations to fully appreciate the advantage of the sage display.
 
 ```{r mouse-cluster, fig.cap = "Selected frames from using a tour of the mouse data with the default tour display (top), and the sage display with $\\gamma=3$ (bottom). Three selected clusters are highlighted in color, all other points are shown in grey. Using the sage display mitigates overplotting and provides a better understanding of cluster separation.", out.width="0.9\\textwidth", fig.align="center"}
 library(magick)
@@ -418,7 +418,7 @@ three clusters being more visible. <!--The dark green cluster becomes more visib
 
 We next use the new display to look at different distributions of images from the Google QuickDraw collection [@quickdraw-paper]. These are $28\times28=784$ pixel grey scale data that are available publicly. In this example, we sample 1000 images from three types of sketches (banana, cactus, crab) and see if we can separate the classes in the high-dimensional parameter space. 
 
-We reduce the dimensionality from 784 variables to the first 5 PCs, which captures approximately 20 per cent of the variation of the data. Before applying the tour we rescale each component to have mean zero and unit variance. To account for the dimension reduction before visualisation we set $\gamma=2$ for the sage display.
+We reduce the dimensionality from 784 variables to the first 5 PCs, which captures approximately 20 per cent of the variation of the data. Before applying the tour we rescale each component to have mean zero and unit variance. To account for the dimension reduction before visualization we set $\gamma=2$ for the sage display.
 
 
 ```{r sketches, fig.cap = "Selected frames  of the tour run on the sketches data using the default tour display (top), and using the sage display with $\\gamma=2$ (bottom). Three types of sketches are indicated by color: banana (green), cactus (orange) and crab (purple). Overplotting of points is a problem for the grand tour display, while the sage display reveals low density near the center.", out.width="0.9\\textwidth", fig.align="center"}
@@ -455,11 +455,11 @@ pdfsense
 
 Following the processing described there, we tour the first 6 PCs, rescaled to have zero mean and unit variance. In Figure \ref{fig:pdfsense} we see that the sage display with $R = 10$ (Figure \ref{fig:pdfsense}, bottom), maintains the overall shape of the data seen using the default tour display (Figure \ref{fig:pdfsense}, top). The different physical process, shown in different colors, are indeed orthogonal in the parameter space, as can be seen most clearly by looking at the animations  available in the supplementary material.
 
-The particular structure of this distribution, with some clusters extending linearly away from the center and a set of outlying points, results in poor use of the plotting space, and high level of clustering near the center. For example, focussing on the blue cluster, we can see that it extends out along different directions, but it can be challenging to observe how the points move under the tour rotation, as overplotting becomes an issue when points move through the center. Here, the new display (bottom row) shows a clearer view<!--, as illustrated with the selected views in Figure \ref{fig:pdfsense} (bottom)-->.
+The particular structure of this distribution, with some clusters extending linearly away from the center and a set of outlying points, results in poor use of the plotting space, and high level of clustering near the center. For example, focusing on the blue cluster, we can see that it extends out along different directions, but it can be challenging to observe how the points move under the tour rotation, as overplotting becomes an issue when points move through the center. Here, the new display (bottom row) shows a clearer view<!--, as illustrated with the selected views in Figure \ref{fig:pdfsense} (bottom)-->.
 
 ## Tuning the parameters: Pollen {#sec:appl4}
 
-The classical pollen data is useful to demonstrate the trimming and tuning parameters. The five-dimensional data set was simulated by David Coleman of RCA Labs, for the Joint Statistics Meetings 1986 Data Expo [@pollen], and is an example of a hidden structure near the centre of a distribution. The data are standardised by centering and scaling such that the standard deviation of each variable is equal to one.
+The classical pollen data is useful to demonstrate the trimming and tuning parameters. The five-dimensional data set was simulated by David Coleman of RCA Labs, for the Joint Statistics Meetings 1986 Data Expo [@pollen], and is an example of a hidden structure near the center of a distribution. The data are standardized by centering and scaling such that the standard deviation of each variable is equal to one.
 
 Neither the standard tour display nor the sage display with default settings ($R=6.6$ which is set by the data scale, and $\gamma=1$) reveals the structure (left plot in Figure \ref{fig:pollen}). We can use either $\gamma$, $R$ or a combination of the two to zoom in further near the center.  For example, we can use trimming $(R=1, \gamma=1)$ (middle plot) or tuning $(R=6.6,\gamma=20)$ (right plot) as shown in Figure \ref{fig:pollen}. There is an approximate equivalence between the results obtained using either tuning or trimming, and both views clearly reveal the word "EUREKA" hidden in the distribution.
 
@@ -485,7 +485,7 @@ This new technique is easily incorporated into exploratory high-dimensional data
 - shape analysis: the sage display helps us understand structures across multiple dimensions, for example orthogonality between multiple groups, as shown in the pdfsense example (Section \ref{sec:appl3})
 - needle discovery: the sage display allows to find hidden signal that is concealed by the density of points around the center of the projection, as shown in the pollen example (Section \ref{sec:appl4})
 
-The approach  provides interpretable visualisation that captures high dimensional information and preserves global structure, and it is complementary to non-linear dimension reduction techniques. For example, when visualising clusters, the sage display enables an assessment of cluster shapes, and accurately captures relative position and orientation. The burning sage transformation is global and does not magnify local structure like t-SNE does.
+The approach  provides interpretable visualization that captures high dimensional information and preserves global structure, and it is complementary to non-linear dimension reduction techniques. For example, when visualizing clusters, the sage display enables an assessment of cluster shapes, and accurately captures relative position and orientation. The burning sage transformation is global and does not magnify local structure like t-SNE does.
 
 An alternative is the slice tour [@sliceTour] which  allows distributions
 of points around the center of the data to be explored using sections instead of projections. The slice tour is useful when there are large numbers of observations
