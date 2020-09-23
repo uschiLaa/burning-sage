@@ -359,29 +359,29 @@ tourr::animate(
 
 # Applications {#sec:application}
 
-Four applications of the sage tour are shown here, which illustrate the benefit of using the reverse transformation for examining data using a tour: single cell RNA-seq, classifying hand-sketched images, comparing physics experiments, and the classical pollen data which is used to illustrate the effect of parameter choices. 
+To illustrate the benefit of using the reverse transformation for examining data using a tour, four applications are shown: clustering of single cell RNA-seq, classifying hand-sketched images, comparing physics experiments, and the classical pollen data. The pollen data example is used to illustrate the effect of parameter choices in the sage tour. 
 
 ## Clustering single-cell RNA-seq data sets {#sec:appl1}
 
 
 In the analysis of single cell RNA-seq data, cluster analysis is performed to
-detect cell types and find expression of genes that define those cell types, and the relative orientation of the cell types  to each other (trajectory analysis) [@Amezquita2020-at]. Generally, for cluster verification, analysts use embedding methods
-like t-SNE to verify the placement and meaning of clusters from a clustering algorithm. 
+detect cell types and characterise the expression of genes that define those cell types, and the relative orientation of the cell types  to each other (trajectory analysis) [@Amezquita2020-at]. Generally, for cluster verification, analysts use embedding methods
+like t-SNE to verify the placement and meaning of clusters from a clustering algorithm. An alternative is to use a tour on a small number of principal components to examine the clusters relative to gene expression.
 
 Here we compare the sage display and regular tour display on mouse retinal single cell RNA-seq data from
 @Macosko2015-ot. The raw data consists of a 49,300  cells and was downloaded
 using the using the `scRNAseq` Bioconductor package [@scRNAseq-d]. We
 use a standard workflow for pre-processing and normalizing this data 
-(described by @Amezquita2020-at): we performed quality control using the `scater` package [@McCarthy2017]
-and we log-transformed and normalised the expression 
-values and selected highly variable genes (HVGs) using `scran` 
-[@Lun2016]. The top ten percent of most HVGs were used as features to subset
-the normalised expression matrix and compute principal components.
+(described by @Amezquita2020-at): quality control was perfirmed using the `scater` package [@McCarthy2017]
+and `scran` 
+[@Lun2016] was used to transform and normalise the expression 
+values and select highly variable genes (HVGs). The top ten percent of the most HVGs were used as features to subset
+the normalised expression matrix and compute the principal components.
 Using the first 25 PCs we built a shared nearest neighbours graph (with $k = 10$) and 
 clustered this graph using Louvain clustering, resulting in 11 clusters being formed [@Blondel2008-bx]. 
 
-We tour the first five PCs (approximately 20% of the variance in expression),
-on a weighted subsample of cells based on their cluster membership - 4,590 cells. When running the sage display, we set $\gamma = 3$, fixing the effective dimensionality of the data to $p_{\mathrm{eff}} = 15$. For the displays we have rescaled the PCs so they each have zero mean and unit variance. Here we are interested in mitigating the effects of overplotting by focusing on three clusters that were identified by graph based clustering but appear to overlap on PC plots.  
+A tour is run on the first five PCs (approximately 20% of the variance in expression),
+on a weighted subsample of cells based on their cluster membership - 4,590 cells. For the sage display, we set $\gamma = 3$, fixing the effective dimensionality of the data to $p_{\mathrm{eff}} = 15$. The PCs are scaled to have zero mean and unit variance. Here we focus on comparing three of the clusters. In the PC plots they look very similar, begging the question whether they should be considered to be separate groups. Figure \ref{fig:mouse-cluster} shows selected frames a default tour (top row) and the sage tour (bottom row). The columns show the same projection, with the difference being the the sage transformation is applied in the sage tour projections. The full animations are available in the supplementary material. The static plots serve to illustrate the main points, but we encourage the reader to look at the tour animations to fully appreciate the advantage of the sage display.
 
 ```{r mouse-cluster, fig.cap = "Selected frames from using a tour of the mouse data with the default tour display (top), and the sage display with $\\gamma=3$ (bottom). Three selected clusters are highlighted in color, all other points are shown in grey. Using the sage display mitigates overplotting and provides a better understanding of cluster separation.", out.width="0.9\\textwidth", fig.align="center"}
 library(magick)
@@ -407,12 +407,9 @@ mouse <- draw_panel(mouse_grand_panel, mouse_sage_panel)
 mouse
 ```
 
-Figure \ref{fig:mouse-cluster} shows selected frames from the animations available in the supplementary material. The still views serve to illustrate the main points, but we encourage the reader to look at the tour animations to fully appreciate the advantage of the sage display.
 
-Using the default tour display (Figure \ref{fig:mouse-cluster}, top), the three clusters (dark green, blue, and yellow) are obscured by points in other clusters as we move through the frames of the animation. The points in the dark green cluster are overlapping those found in the yellow and blue clusters; and it is difficult to see if there is any separation between the blue and yellow clusters.
-
-On the other hand using the sage display (Figure \ref{fig:mouse-cluster}, bottom), expands the center of projection, and results in the
-three clusters appearing more separable than the default display. The dark green cluster becomes more visible; the outlier cell that is far away from the rest of the clustered points is more apparent. Moreover, the relative positions of the yellow and blue clusters centers are easier to see, those clusters are distinct from the dark green cluster, yet in most frames they appear to overlap and jumble together, indicating that perhaps those clusters should be merged together.
+Using the default tour display (Figure \ref{fig:mouse-cluster}, top), the three clusters (dark green, blue, and yellow) are obscured by points in other clusters as we move through the frames of the animation. The points in the dark green cluster are overlapping those found in the yellow and blue clusters; and it is difficult to see if there is any separation between the blue and yellow clusters. In contrast, the sage display (Figure \ref{fig:mouse-cluster}, bottom), expands the center of projection, and results in the differences between the
+three clusters being more visible. <!--The dark green cluster becomes more visible; the outlier cell that is far away from the rest of the clustered points is more apparent.--> Particularly, the relative positions of the yellow and blue clusters are easier to see. While these clusters are distinct from the dark green cluster, in most frames they are still overlapping and mixed together, providing evidence that it may be appropriate to consider them a single cluster. Conversely, it can be seen that the dark green cluster is distinctly separated from the other two in some projections.  The sage tour makes these comparisons a little easier.
 
 
 

@@ -249,13 +249,13 @@ v_{p} (r; p, R) = \frac{V(r, p)}{V(R, p)} = \left({\frac{r}{R}}\right)^p.
 \label{eq:vp}
 \end{equation}
 
-Figure \ref{fig:cdf} compares these two quantities (equations
-\ref{eq:cdf} and \ref{eq:vp}), for \(p=3, 10, 100\). At left is
-\(v_{2} (r; p, R)\) and on the right is \(v_{p} (r; p, R)\). The
-function shapes change in opposite directions as \(p\) increases:
-\(v_{2} (r; p, R)\) peaks earlier and \(v_{p} (r; p, R)\) gets flatter.
-This is the paradox of the curse of dimensionality in that projected
-volume at the center increases with \(p\).
+Figure \ref{fig:cdf} compares these two quantities (Eq. \ref{eq:cdf} and
+\ref{eq:vp}), for \(p=3, 10, 100\). At left is \(v_{2} (r; p, R)\) and
+on the right is \(v_{p} (r; p, R)\). The function shapes change in
+opposite directions as \(p\) increases: \(v_{2} (r; p, R)\) peaks
+earlier and \(v_{p} (r; p, R)\) gets flatter. This is the paradox of the
+curse of dimensionality in that projected volume at the center increases
+with \(p\).
 
 \begin{figure}
 
@@ -295,7 +295,7 @@ v_2^{-1}(r_y; 2, R) = R \sqrt{r_y}.
 \end{equation}
 
 The full radial transformation is therefore given by \begin{equation}
-r'_y = v_2^{-1} (v_2(r_y; p, R); 2, R) =  R \sqrt{v_2(r_y; p, R)} = R \sqrt{1-\left(1-\left(\frac{r_y}{R}\right)^2\right)^{p/2}}.
+r'_y = v_2^{-1} (v_2(r_y; p, R); 2, R) =  R \sqrt{v_2(r_y; p, R)} = R \sqrt{1-\left(1-\left(\frac{r_y}{R}\right)^2\right)^{p/2}}
 \label{eq:resc}
 \end{equation}
 
@@ -303,11 +303,11 @@ The relation between \(r'_y\) and \(r_y\) depends on the number of
 dimensions \(p\), and is illustrated for selected values in Figure
 \ref{fig:radii}. We see that the transformation is approximately linear
 near the center. As \(p\) increases it becomes non-linear faster, and
-e.g.~for \(p=10\) the points with radius \(r_y>0.5\) will already be
-highly distorted and pushed out towards the last eighth in \(r'_y\).
-Figure \ref{fig:circles} demonstrates this for different values of \(p\)
-by showing equidistant circles for which the radius has been transformed
-according to Eq. \ref{eq:resc}.
+for \(p=10\), for example, the points with radius \(r_y>0.5\) will
+already be highly distorted and pushed out towards the last eighth in
+\(r'_y\). Figure \ref{fig:circles} demonstrates this for different
+values of \(p\) by showing equidistant circles for which the radius has
+been transformed according to Eq. \ref{eq:resc}.
 
 \begin{figure}
 
@@ -332,11 +332,10 @@ according to Eq. \ref{eq:resc}.
 
 The transformation in Eq. \ref{eq:resc} is fixed for a given input
 dataset, by evaluating the number of dimensions \(p\) and the maximum
-distance from the center \(R\). However, in realistic applications we
-may wish to trim the projected data or tune the transformation. In
-practice, a combination of both adjustments can be used to further zoom
-in on the center of the distribution, or alternatively, to soften the
-transformation.
+distance from the center \(R\). However, in practice we may wish to trim
+the projected data or tune the transformation. A combination of both
+adjustments can be used to further zoom in on the center of the
+distribution, or alternatively, to soften the transformation.
 
 \hypertarget{trimming}{%
 \subsubsection{Trimming}\label{trimming}}
@@ -376,18 +375,19 @@ parameter \(\gamma\). By default, \(\gamma=1\) and
 and \(\gamma>1\) results in more aggressive rescaling than suggested by
 \(p\) alone. Note that when \(p_{\mathrm{eff}} < 2\) we actually invert
 the behavior and shift the focus away from the center, in general this
-is not wanted.
+is not recommended.
 
 \hypertarget{sec:implementation}{%
 \subsection{Implementation as a dynamic
 display}\label{sec:implementation}}
 
 While the radial transformation can in general be used with any
-low-dimensional display that suffers from data piling, it is most useful
-when combined with a dynamic display showing a sequence of interpolated
-low-dimensional projections obtained when running a tour. We have
-implemented it as a new display method \texttt{display\_sage} in the
-\texttt{tourr} package \citep{tourr} in R \citep{rref}.
+low-dimensional display that suffers from data crowding, it is most
+useful when combined with a dynamic display showing a sequence of
+interpolated low-dimensional projections obtained when running a tour.
+We have implemented it as a new display method called
+\texttt{display\_sage} in the \texttt{tourr} package \citep{tourr} in R
+\citep{rref}.
 
 We can think of the display functions as part of a data pipeline
 obtained when running a tour. The initial step is pre-processing the
@@ -461,47 +461,55 @@ the user should take care to adjust \(s\) accordingly.
 \hypertarget{sec:application}{%
 \section{Applications}\label{sec:application}}
 
-Four applications of the sage tour are shown here, which illustrate the
-benefit of using the reverse transformation for examining data using a
-tour: single cell RNA-seq, classifying hand-sketched images, comparing
-physics experiments, and the classical pollen data which is used to
-illustrate the effect of parameter choices.
+To illustrate the benefit of using the reverse transformation for
+examining data using a tour, four applications are shown: clustering of
+single cell RNA-seq, classifying hand-sketched images, comparing physics
+experiments, and the classical pollen data. The pollen data example is
+used to illustrate the effect of parameter choices in the sage tour.
 
 \hypertarget{sec:appl1}{%
 \subsection{Clustering single-cell RNA-seq data sets}\label{sec:appl1}}
 
 In the analysis of single cell RNA-seq data, cluster analysis is
-performed to detect cell types and find expression of genes that define
-those cell types, and the relative orientation of the cell types to each
-other (trajectory analysis) \citep{Amezquita2020-at}. Generally, for
-cluster verification, analysts use embedding methods like t-SNE to
-verify the placement and meaning of clusters from a clustering
-algorithm.
+performed to detect cell types and characterise the expression of genes
+that define those cell types, and the relative orientation of the cell
+types to each other (trajectory analysis) \citep{Amezquita2020-at}.
+Generally, for cluster verification, analysts use embedding methods like
+t-SNE to verify the placement and meaning of clusters from a clustering
+algorithm. An alternative is to use a tour on a small number of
+principal components to examine the clusters relative to gene
+expression.
 
 Here we compare the sage display and regular tour display on mouse
 retinal single cell RNA-seq data from \citet{Macosko2015-ot}. The raw
 data consists of a 49,300 cells and was downloaded using the using the
 \texttt{scRNAseq} Bioconductor package \citep{scRNAseq-d}. We use a
 standard workflow for pre-processing and normalizing this data
-(described by \citet{Amezquita2020-at}): we performed quality control
-using the \texttt{scater} package \citep{McCarthy2017} and we
-log-transformed and normalised the expression values and selected highly
-variable genes (HVGs) using \texttt{scran} \citep{Lun2016}. The top ten
-percent of most HVGs were used as features to subset the normalised
-expression matrix and compute principal components. Using the first 25
-PCs we built a shared nearest neighbours graph (with \(k = 10\)) and
+(described by \citet{Amezquita2020-at}): quality control was perfirmed
+using the \texttt{scater} package \citep{McCarthy2017} and
+\texttt{scran} \citep{Lun2016} was used to transform and normalise the
+expression values and select highly variable genes (HVGs). The top ten
+percent of the most HVGs were used as features to subset the normalised
+expression matrix and compute the principal components. Using the first
+25 PCs we built a shared nearest neighbours graph (with \(k = 10\)) and
 clustered this graph using Louvain clustering, resulting in 11 clusters
 being formed \citep{Blondel2008-bx}.
 
-We tour the first five PCs (approximately 20\% of the variance in
-expression), on a weighted subsample of cells based on their cluster
-membership - 4,590 cells. When running the sage display, we set
-\(\gamma = 3\), fixing the effective dimensionality of the data to
-\(p_{\mathrm{eff}} = 15\). For the displays we have rescaled the PCs so
-they each have zero mean and unit variance. Here we are interested in
-mitigating the effects of overplotting by focusing on three clusters
-that were identified by graph based clustering but appear to overlap on
-PC plots.
+A tour is run on the first five PCs (approximately 20\% of the variance
+in expression), on a weighted subsample of cells based on their cluster
+membership - 4,590 cells. For the sage display, we set \(\gamma = 3\),
+fixing the effective dimensionality of the data to
+\(p_{\mathrm{eff}} = 15\). The PCs are scaled to have zero mean and unit
+variance. Here we focus on comparing three of the clusters. In the PC
+plots they look very similar, begging the question whether they should
+be considered to be separate groups. Figure \ref{fig:mouse-cluster}
+shows selected frames a default tour (top row) and the sage tour (bottom
+row). The columns show the same projection, with the difference being
+the the sage transformation is applied in the sage tour projections. The
+full animations are available in the supplementary material. The static
+plots serve to illustrate the main points, but we encourage the reader
+to look at the tour animations to fully appreciate the advantage of the
+sage display.
 
 \begin{figure}
 
@@ -512,27 +520,21 @@ PC plots.
 \caption{Selected frames from using a tour of the mouse data with the default tour display (top), and the sage display with $\gamma=3$ (bottom). Three selected clusters are highlighted in color, all other points are shown in grey. Using the sage display mitigates overplotting and provides a better understanding of cluster separation.}\label{fig:mouse-cluster}
 \end{figure}
 
-Figure \ref{fig:mouse-cluster} shows selected frames from the animations
-available in the supplementary material. The still views serve to
-illustrate the main points, but we encourage the reader to look at the
-tour animations to fully appreciate the advantage of the sage display.
-
 Using the default tour display (Figure \ref{fig:mouse-cluster}, top),
 the three clusters (dark green, blue, and yellow) are obscured by points
 in other clusters as we move through the frames of the animation. The
 points in the dark green cluster are overlapping those found in the
 yellow and blue clusters; and it is difficult to see if there is any
-separation between the blue and yellow clusters.
-
-On the other hand using the sage display (Figure
-\ref{fig:mouse-cluster}, bottom), expands the center of projection, and
-results in the three clusters appearing more separable than the default
-display. The dark green cluster becomes more visible; the outlier cell
-that is far away from the rest of the clustered points is more apparent.
-Moreover, the relative positions of the yellow and blue clusters centers
-are easier to see, those clusters are distinct from the dark green
-cluster, yet in most frames they appear to overlap and jumble together,
-indicating that perhaps those clusters should be merged together.
+separation between the blue and yellow clusters. In contrast, the sage
+display (Figure \ref{fig:mouse-cluster}, bottom), expands the center of
+projection, and results in the differences between the three clusters
+being more visible. Particularly, the relative positions of the yellow
+and blue clusters are easier to see. While these clusters are distinct
+from the dark green cluster, in most frames they are still overlapping
+and mixed together, providing evidence that it may be appropriate to
+consider them a single cluster. Conversely, it can be seen that the dark
+green cluster is distinctly separated from the other two in some
+projections. The sage tour makes these comparisons a little easier.
 
 \hypertarget{sec:appl2}{%
 \subsection{Classifying hand-sketches}\label{sec:appl2}}
