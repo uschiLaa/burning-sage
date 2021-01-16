@@ -1,3 +1,6 @@
+We thank the AE and reviewers for the feedback on our work. Below we specify how the concerns have been addressed in this revision of our paper.
+
+
 Reviewer 1:
 
 This paper proposes a way of visualizing high dimensional data while “breaking the curse of dimensionality”.
@@ -9,14 +12,18 @@ Also I have a couple of comments.
 is no longer a concern in the data in reduced dimensions, e.g., the first five principal component scores
 (See Figure 7). How would the authors justify the proposed sage method when the dimension is not high
 to have the curse of dimensionality?
+  REPLY: Because of the exponential scaling of the volume with number of dimensions, we can already notice the curse of dimensionality with such relatively low number of components. In the paper we use examples with 10 dimensions that are clearely already problematic (see Figure 1 and Figure 3). In addition Figure 4 shows that already the case of p=4 leads to a notable transformation of the radius. We have added a sentence in the introduction that clarifies this use of the term "high-dimensional" in our work.
+
 • As many multivariate statistics assume normality, isn’t it more natural to keep the normality rather than
 uniformity? For example, it is known that random low-dimensional projections of high-dimensional data
 tend to behave normal-like. Related to this point, bottom panels in Figure 2 look somewhat distorted and
 overly corrected.
+  REPLY: The transformation we are proposing can be considered as purely geometrical, how we are mapping a high-dimensional volume onto a low-dimensional plot. It can be used for any type of data and does NOT assume an underlying distribution (uniform or otherwise). We have expanded on this in the introduction to avoid confusion. It is not cleare which graph is mentioned here, since Figure 2 does not have a bottom panel.
 
 Reviewer 2:
 
 You have challenged the curse of dimensionality, which is a feature of high-dimensional data. The spike structure of eigenvalues is also the important feature in high-dimensional data analysis (see; Statistica Sinica, Aoshima and Yata, 2020). This structure is different from the spherical concentration, and is a phenomenon observed (for example, gene data analysis). Therefore, you should mention this point as well.
+  REPLY: TODO
 
 AE:
 
