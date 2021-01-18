@@ -33,7 +33,11 @@ problem, e.g., how important is the assumption of uniformity in
 high-dimensional space (and how well do the tuning parameters cope
 with deviations from the assumption) and how well does the technique
 cope with other high-dimensional features (see the reviewer comments).
+  REPLY: As outlined in our reply to Reviewer 1, there is no assumption on the underlying data distribution since our method is introducing a geometric transformation that is accounting for distortions occuring when projecting a high-dimensional volume. This has been now been clarified in an extended introduction. We have also added a short section on data preprocessing which discusses the preparation of a dataset for the application of our new display. The applications included in the paper already show a range of different features, none of which are uniformly distributed, and detailes the neccessary preprocessing for those cases.
+
 Also, there needs to be more discussion of alternative solutions to
 problems of overplotting and data crowding, e.g., slicing the projections
 and even just semitransparency.  Seen through this lens, could things
 like contour lines or other displays of distributions be contemplated?
+
+  REPLY: We have extended the discussion on slicing, and also added a paragraph on alternative solutions to overplotting, such as density displays and transparency, in our conclusions. 

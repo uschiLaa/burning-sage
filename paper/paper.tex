@@ -197,10 +197,9 @@ To understand why points tend to be away from the center in the
 high-dimensional space, but crowd the center in low-dimensional
 projections, it is helpful to consider the projected volume relative to
 high-dimensional volume. To avoid edge effects and to impose rotation
-invariance, we will start from the data being uniformly distributed in a
-hypersphere, i.e.~all data points are within a specified distance from
-the center. This makes calculations more tractable than assuming a
-uniform distribution in hypercube (box).
+invariance, we start from the volume in a hypersphere, i.e.~the volume
+is contained within a specified distance from the center. This is more
+tractable than assuming a hypercube (box).
 
 \begin{figure}
 
@@ -380,6 +379,39 @@ and \(\gamma>1\) results in more aggressive rescaling than suggested by
 \(p\) alone. Note that when \(p_{\mathrm{eff}} < 2\) we actually invert
 the behavior and shift the focus away from the center, in general this
 is not recommended.
+
+\hypertarget{sec:prep}{%
+\subsection{Data preprocessing}\label{sec:prep}}
+
+Before applying the transformation in practice, it can be important to
+preprocess the data, as generally required with methods for the
+visualisation of high-dimensional data. In particular, when working with
+projections that combine multiple variables it is important to ensure a
+common scale across the dimensions. This is especially important with
+the sage display, where the overall scale (set by the maximum radius
+\(R\)) determines the effect of the transformation.
+
+Scaling is commonly also combined with centering as a preprocessing
+step. This is less important here where we always center the projected
+data before applying our transformation (i.e.~the projected mean defines
+the origin of our polar coordinate system in the plane).
+
+Even relatively low numbers of dimensions, see e.g.~examples with
+\(p=10\), already lead to sizable piling and thus large distortions in
+the sage display. However, we are often confronted with much higher
+dimensional datasets in which many of the variables are primarily adding
+noise. In this case it makes sense to first reduce the number of
+dimensions, for example using principal components analysis, and to
+adjust the \(\gamma\) parameter if needed.
+
+We may also wish to apply non-linear transformations before visualising
+the data or combining variables in a projection. One example would be to
+use a log transformation in the case of a skewed distribution. These
+types of transformations will generally change the distribution across
+the high-dimensional volume (and in particular also the position of the
+mean), and can thus make the sage display more useful for a wide range
+of data distributions. XXX specific examples? explicitly mention other
+transformations?
 
 \hypertarget{sec:implementation}{%
 \subsection{Implementation as a dynamic
@@ -707,9 +739,13 @@ magnify local structure like t-SNE does.
 
 An alternative is the slice tour \citep{sliceTour} which allows
 distributions of points around the center of the data to be explored
-using sections instead of projections. The slice tour is useful when
-there are large numbers of observations or if there is concave structure
-in the data.
+using sections instead of projections.
+\textcolor{red}{Instead of adjusting for effects from projecting a high-dimensional volume, the solution with the slice tour is to only highlight projected points if they are within a small volume around the current projection plane, thus showing a local view of the distribution.}
+The slice tour is useful when there are large numbers of observations or
+if there is concave structure in the data.
+\textcolor{red}{Note that only few methods are currently available for looking at sections of the data in a systematic fashion, and further work is needed to fully explore the potential of this type of visualisation. In smaller datasets we may also use interactive approaches such as linked brushing to explore for local structures or conditional features.}
+
+\textcolor{red}{As seen in the examples, the new sage display is especially useful to circumvent the issue of overplotting. Several other approaches exist to address this problem, notably also the use of density displays or the use of transparancy in a scatterplot display. Note however that these will in general still suffer from data piling and thus reduced resolution near the center of the projection. These approaches could therefore be limited for some of the tasks discussed here, for example the identification of class boundaries or the visualisation of small features near hidden near the center of a distribution.}
 
 The tuning parameters can be used to more aggressively expand the center
 of the display. All of the examples shown had some tuning. The last
