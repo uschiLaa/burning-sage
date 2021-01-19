@@ -399,7 +399,7 @@ on a weighted subsample of cells based on their cluster membership - 4,590 cells
 
 ```{r mouse-cluster, fig.cap = "Selected frames from using a tour of the mouse data with the default tour display (top), and the sage display with $\\gamma=3$ (bottom). Three selected clusters are highlighted in color, all other points are shown in grey. Using the sage display mitigates overplotting and provides a better understanding of cluster separation.", out.width="0.9\\textwidth", fig.align="center"}
 library(magick)
-dir <- here::here("pngs//")
+dir <- here::here("../pngs/") # dir <- here::here("pngs//")
 frames <- c("001", "016", "038", "074")
 draw_frames <- function(pngs) {
   res <- lapply(pngs, image_read)
