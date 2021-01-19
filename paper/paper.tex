@@ -67,6 +67,7 @@
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 
+% Pandoc citation processing
 
 \usepackage{hyperref}
 \usepackage[utf8]{inputenc}
@@ -154,14 +155,14 @@ with non-linear dimension reduction techniques, and are often referred
 to as the ``crowding problem'', which methods like t-Distributed
 Stochastic Neighbor Embedding (t-SNE) \citep{tsne} aim to alleviate.
 
-\textcolor{blue}{Here we are providing a solution to fix a problem that has been forever present in the tour, where high-dimensional data is viewed by a movie of low-dimensional projections. Points crowding the center of the drawing canvas detract from reading the plots, even with relatively few dimensions. This is a structural problem related purely to the geometry of projections from high-dimensional spaces. We show that it can be alleviated with a radial transformation on the low-dimensional space.}
-Figure \ref{fig:density} illustrates the crowding problem, as would be
+\textcolor{blue}{Here we are providing a solution to fix a long-standing problem in the tour, where high-dimensional data is viewed by a movie of low-dimensional projections. Points crowding the center of the drawing canvas detract from reading the plots, even with relatively few dimensions. This is a structural problem related purely to the geometry of projections from high-dimensional spaces. We show that it can be alleviated with a radial transformation on the low-dimensional space.}
+Figure \ref{fig:density} illustrates this crowding problem, as would be
 experienced when using a tour. Two-dimensional linear projections of
 points are sampled uniformly within \(p\)-dimensional hyperspheres
 (\(p=3, 10, 100\)) are displayed as hexbin plots. Color indicates log
 count of the bin, with yellow mapping the highest counts. As \(p\)
 increases the density concentrates in the center of the projection.
-\textcolor{blue}{(Note that, sampling from a uniform in a sphere is used for this illustration for several reasons. Any linear projection is equally represented in the low-dimensional space. It places focus on the space, that volume is spread evenly, and not a data distribution. Also, $p=10$ would already be considered high-dimensional, as seen by the piling observed in the right-most plot.)}
+\textcolor{blue}{(Note that, sampling from a uniform in a sphere is used for this illustration for several reasons. Any linear projection is equivalent because of the rotation invariance of the distribution. The uniform sampling places focus on the space, points are spread evenly across the volume, and not a data distribution. Also, $p=10$ would already be considered high-dimensional, as seen by the piling observed in the right-most plot.)}
 
 \begin{figure}
 
@@ -172,7 +173,7 @@ increases the density concentrates in the center of the projection.
 \caption{Illustration of data crowding, using hexbin plots of two-dimensional projections of 10k points sampled uniformly within $p$-dimensional hyperspheres, for $p=3, 10, 100$. The fill color shows the logarithm of the bin count, with the highest counts shown in yellow. As $p$ increases the density  concentrates near the center.}\label{fig:density}
 \end{figure}
 
-\textcolor{blue}{Common solutions to overplotting include transparency and binned or density displays [@chang]. These are designed to tackle large sample size, not dimension reduction, problems. A low-dimensional projection represented as a scatterplot, binned plot, or contour plot, will still suffer from data piling and reduced resolution near the center of the projection. These approaches would still be applied though after the transformation, especially for large sample sizes.}
+\textcolor{blue}{Common solutions to overplotting include transparency and binned or density displays [@chang]. These are designed to tackle large sample size, not dimension reduction problems. A low-dimensional projection represented as a scatterplot, binned plot, or contour plot, will still suffer from data piling and reduced resolution near the center of the projection. These approaches can be still be applied after the transformation, especially for large sample sizes.}
 
 \textcolor{red}{The underlying idea of the (radial) transformation, to reverse the curse, is to correct for the distortion in geometry that occurs when projecting from a high-dimensional space onto low dimensions. This is done by mapping equal volume in the full space onto equal area in a two-dimensional projection via a geometrical transformation of the projected data. When used with data that is uniformly distributed in the high-dimensional space, the transformation will result in a unform distribution in the low-dimensional display. In general (for \textit{any} underlying data distribution) we can instead think about the effect in terms of resolution: adjusting for the geometric piling effect means that the resolution depends on the projected volume. The observed projected distribution is representative of the original high-dimensional distribution in this sense.}
 
