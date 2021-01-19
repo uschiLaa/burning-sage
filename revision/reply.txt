@@ -18,7 +18,7 @@ problems of overplotting and data crowding, e.g., slicing the projections
 and even just semitransparency.  Seen through this lens, could things
 like contour lines or other displays of distributions be contemplated?
 
-REPLY: We have extended the discussion on slicing, and also added a paragraph on alternative solutions to overplotting, such as density displays and transparency, in our conclusions. (MAYBE EARLIER THAN CONCLUSIONS?)
+REPLY: We have extended the discussion on slicing. We have also added a paragraph on alternative solutions to overplotting, such as density displays and transparency, in the introduction.
 
 Reviewer 1:
 

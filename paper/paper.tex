@@ -153,13 +153,15 @@ observations can collapse into a single point. These issues also persist
 with non-linear dimension reduction techniques, and are often referred
 to as the ``crowding problem'', which methods like t-Distributed
 Stochastic Neighbor Embedding (t-SNE) \citep{tsne} aim to alleviate.
-Figure \ref{fig:density} illustrates the crowding problem.
-Two-dimensional linear projections of points sampled uniformly within
-\(p\)-dimensional hyperspheres (\(p=3, 10, 100\)) are displayed as
-hexbin plots. Color indicates log count of the bin, with yellow mapping
-the highest counts. As \(p\) increases the density concentrates in the
-center of the projection.
-\textcolor{red}{While we have selected a uniform distribution for this illustration, the effect is present in any multidimensional distribution where the directions are sampled independently [@diaconis1984] (XXX some version of CLT?). Note that in this context, because of the exponential scaling of the volume, $p=10$ would already be considered high-dimensional, as confirmed by the piling observed in Figure  \ref{fig:density}.}
+
+\textcolor{blue}{Here we are providing a solution to fix a problem that has been forever present in the tour, where high-dimensional data is viewed by a movie of low-dimensional projections. Points crowding the center of the drawing canvas detract from reading the plots, even with relatively few dimensions. This is a structural problem related purely to the geometry of projections from high-dimensional spaces. We show that it can be alleviated with a radial transformation on the low-dimensional space.}
+Figure \ref{fig:density} illustrates the crowding problem, as would be
+experienced when using a tour. Two-dimensional linear projections of
+points are sampled uniformly within \(p\)-dimensional hyperspheres
+(\(p=3, 10, 100\)) are displayed as hexbin plots. Color indicates log
+count of the bin, with yellow mapping the highest counts. As \(p\)
+increases the density concentrates in the center of the projection.
+\textcolor{blue}{(Note that, sampling from a uniform in a sphere is used for this illustration for several reasons. Any linear projection is equally represented in the low-dimensional space. It places focus on the space, that volume is spread evenly, and not a data distribution. Also, $p=10$ would already be considered high-dimensional, as seen by the piling observed in the right-most plot.)}
 
 \begin{figure}
 
@@ -170,17 +172,9 @@ center of the projection.
 \caption{Illustration of data crowding, using hexbin plots of two-dimensional projections of 10k points sampled uniformly within $p$-dimensional hyperspheres, for $p=3, 10, 100$. The fill color shows the logarithm of the bin count, with the highest counts shown in yellow. As $p$ increases the density  concentrates near the center.}\label{fig:density}
 \end{figure}
 
-In this work we address data crowding in low-dimensional linear
-projections by providing a reverse transformation for tour methods.
-Tours show interpolated sequences of low-dimensional projections of the
-data. When exploring data with a tour we can discover features that are
-only visible in linear combinations of variables. However, the data
-crowding could hide these features. To reverse the effect, we introduce
-a radial transformation that magnifies the center of the distribution.
-This is called a burning sage tour, to reflect that the crowding caused
-by the curse of dimensionality is being removed.
+\textcolor{blue}{Common solutions to overplotting include transparency and binned or density displays [@chang]. These are designed to tackle large sample size, not dimension reduction, problems. A low-dimensional projection represented as a scatterplot, binned plot, or contour plot, will still suffer from data piling and reduced resolution near the center of the projection. These approaches would still be applied though after the transformation, especially for large sample sizes.}
 
-\textcolor{red}{The underlying idea of the transformation is to correct for the distortion in geometry that occurs when projecting from a high-dimensional space onto low dimensions. This is done by mapping equal volume in the full space onto equal area in a two-dimensional projection via a geometrical transformation of the projected data. When used with data that is uniformly distributed, the transformation will result in a unform distribution in the low-dimensional display. In general (for \textit{any} underlying distribution) we can instead think about the effect in terms of resolution: adjusting for the geometric piling effect means that the resolution depends on the projected volume. The observed projected distribution is representative of the original high-dimensional distribution in this sense.}
+\textcolor{red}{The underlying idea of the (radial) transformation, to reverse the curse, is to correct for the distortion in geometry that occurs when projecting from a high-dimensional space onto low dimensions. This is done by mapping equal volume in the full space onto equal area in a two-dimensional projection via a geometrical transformation of the projected data. When used with data that is uniformly distributed in the high-dimensional space, the transformation will result in a unform distribution in the low-dimensional display. In general (for \textit{any} underlying data distribution) we can instead think about the effect in terms of resolution: adjusting for the geometric piling effect means that the resolution depends on the projected volume. The observed projected distribution is representative of the original high-dimensional distribution in this sense.}
 
 The paper is structured as follows. The radial transformation and its
 implementation is described in Section \ref{sec:method}. Section
@@ -743,8 +737,6 @@ using sections instead of projections.
 The slice tour is useful when there are large numbers of observations or
 if there is concave structure in the data.
 \textcolor{red}{Note that only few methods are currently available for looking at sections of the data in a systematic fashion, and further work is needed to fully explore the potential of this type of visualisation. In smaller datasets we may also use interactive approaches such as linked brushing to explore for local structures or conditional features.}
-
-\textcolor{red}{As seen in the examples, the new sage display is especially useful to circumvent the issue of overplotting. Several other approaches exist to address this problem, notably also the use of density displays or the use of transparancy in a scatterplot display. Note however that these will in general still suffer from data piling and thus reduced resolution near the center of the projection. These approaches could therefore be limited for some of the tasks discussed here, for example the identification of class boundaries or the visualisation of small features near hidden near the center of a distribution.}
 
 The tuning parameters can be used to more aggressively expand the center
 of the display. All of the examples shown had some tuning. The last
