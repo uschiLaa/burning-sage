@@ -178,7 +178,7 @@ projection.
 \citep{chang}.
 \textcolor{red}{These are designed to tackle large sample size, rather than dimension reduction problems. A low-dimensional projection represented as a scatterplot, binned plot, or contour plot, will still suffer from data piling and reduced resolution near the center of the projection. These approaches are still useful for large sample sizes, and could be applied after the transformation.}
 
-\textcolor{red}{The underlying idea of the (radial) transformation, to reverse the curse, is to correct for the distortion in geometry that occurs when projecting from a high-dimensional space onto low dimensions. This is done by mapping equal volume in the full space onto equal area in a two-dimensional projection via a geometrical transformation of the projected data. When used with data that is uniformly distributed in the high-dimensional space, the transformation will result in a unform distribution in the low-dimensional display. In general, for \textit{any} underlying data distribution, we can instead think about the effect in terms of resolution: adjusting for the geometric piling effect means that the resolution depends on the projected volume. The observed projected distribution is representative of the original high-dimensional distribution in this sense.}
+\textcolor{red}{The underlying idea of the (radial) transformation, to reverse the curse, is to correct for the distortion in geometry that occurs when projecting from a high-dimensional space onto low dimensions. This is done by mapping equal volume in the full space onto equal area in a two-dimensional projection via a geometrical transformation of the projected data. When used with data that is uniformly distributed in the high-dimensional space, the transformation will result in a uniform distribution in the low-dimensional display. In general, for \textit{any} underlying data distribution, we can instead think about the effect in terms of resolution: adjusting for the geometric piling effect means that the resolution depends on the projected volume. The observed projected distribution is representative of the original high-dimensional distribution in this sense.}
 
 The paper is structured as follows. The radial transformation and its
 implementation is described in Section \ref{sec:method}. Section
@@ -384,7 +384,7 @@ is not recommended.
 
 \textcolor{red}{We may also wish to apply non-linear transformations before visualising the data or combining variables in a projection. One example would be to use a log transformation in the case of a variable that has a skewed distribution. These types of transformations will generally change the distribution across the high-dimensional volume (and in particular also the position of the mean), and can thus make the sage display more useful for a wide range of observed data distributions.}
 
-\textcolor{red}{The third common pre-processing would involve a dimension reduction step. Even with a relatively low number of dimensions, e.g. example with $p=10$, we see noticeable piling. However, we are often confronted with much higher dimensional datasets in which many of the variables are primarily adding noise. In this case it is advisable to first reduce the number of dimensions, for example using principal components analysis. Other dimension reduction techniques could be used. The sage tour would then be used to view the first few components, which would likely provide more insight about the data structures than is possible from only the first two. }
+\textcolor{red}{The third common pre-processing would involve a dimension reduction step. Even with a relatively low number of dimensions, e.g. with $p=10$, we see noticeable piling. However, we are often confronted with much higher dimensional datasets in which many of the variables are primarily adding noise. In this case it is advisable to first reduce the number of dimensions, for example using principal components analysis. Other dimension reduction techniques could be used. The sage tour would then be used to view the first few components, which would likely provide more insight about the data structures than is possible from only the first two. }
 
 \hypertarget{sec:implementation}{%
 \subsection{Implementation as a dynamic
@@ -594,7 +594,7 @@ Data were obtained from CT14HERA2 parton distribution function fits and
 describe the sensitivity of fit parameters to experimental measurements
 \citep{Wang:2018heo}. There are 28 parameters, and varying one at a time
 to move \(\pm 1 \sigma\) away from the `best fit point' (maximum
-likelihood estimate) provides our input variables, labelled X1-X56. Each
+likelihood estimate) provides our input variables, labeled X1-X56. Each
 of the 2808 observations corresponds to a physical observable and
 measures how the fit prediction changes along the 56 directions in
 parameter space. Points are grouped based on the underlying process in
