@@ -149,13 +149,12 @@ results in shrinking (some of) the parameter estimates towards zero.
 Paradoxically, the curse of dimensionality inverts for dimension
 reduction, resulting in an excessive amount of observations near the
 center of the distribution. This affects visualizations made on
-low-dimensional projections, like the tour \citep{As85, BCAH05}. The
-effect is described by \citet{diaconis1984}, that most low-dimensional
-linear projections are approximately Gaussian, with observations
-concentrating in the center. This has motivated the development of
-indexes for projection pursuit which search for departure from
-normality. It is also related to what is called ``data piling'' in
-high-dimension low-sample size data
+low-dimensional projections. The effect is described by
+\citet{diaconis1984},
+\textcolor{red}{showing that most linear projections onto low-dimensional subspaces are approximately Gaussian, and that observations concentrate near the center as the dimensionality of the full space increases.}
+This has motivated the development of indexes for projection pursuit
+which search for departure from normality. It is also related to what is
+called ``data piling'' in high-dimension low-sample size data
 \citep{10.2307/27639976, 10.1093/biomet/asp084}: all observations can
 collapse into a single point. These issues also persist with non-linear
 dimension reduction techniques, and are often referred to as the
@@ -163,9 +162,9 @@ dimension reduction techniques, and are often referred to as the
 Neighbor Embedding (t-SNE) \citep{tsne} aim to alleviate.
 
 Here we are providing a solution to fix a long-standing problem in the
-tour, where high-dimensional data is viewed by a movie of
-low-dimensional projections. Points crowding the center of the drawing
-canvas detract from reading the plots, even with relatively few
+tour \citep{As85, BCAH05}, where high-dimensional data is viewed by a
+movie of low-dimensional projections. Points crowding the center of the
+drawing canvas detract from reading the plots, even with relatively few
 dimensions. This is a structural problem related purely to the geometry
 of projections from high-dimensional spaces. We show that it can be
 alleviated with a radial transformation on the low-dimensional space.
@@ -353,7 +352,7 @@ been transformed according to Eq. \ref{eq:resc}.
 \caption{Concentric circles that are equidistant before the application of the radial transformation, for $p=2, 3, 10, 100$, illustrating the effect of the transformation with increasing number of dimensions. The circles remain equidistant for $p=2$ where no transformation is performed, and get pushed out towards the edge as $p$ increases.}\label{fig:circles}
 \end{figure}
 
-\textcolor{red}{At this point a few characteristics of the transformation should be noted. First, as already mentioned, it is approximately linear near the center, and thus will not affect shapes in that part of the graph. In addition, since only the radial component is transformed, angles between the points will not be altered. (This can also be shown explicitly, ). Note however that shapes will be affected further away from the center (in particular towards the maximum range $R$). For example, a linear relation might appear curved because of the non-linear nature of the transformation in that region of the projected space. Thus, while the interpretation is straightforward for points projected in the central region, care must be taken with the interpretation of features observed in the outer region of the projected distribution.}
+\textcolor{red}{At this point a few characteristics of the transformation should be noted. First, as already mentioned, it is approximately linear near the center, and thus will not affect shapes in that part of the graph. In addition, since only the radial component is transformed, angles between the points will not be altered. (This can also be shown explicitly, from mathematical reformulation of the angles between two points after the transformation.) Note however that shapes will be affected further away from the center (in particular towards the maximum range $R$). For example, a linear relation might appear curved because of the non-linear nature of the transformation in that region of the projected space. Thus, while the interpretation is straightforward for points projected in the central region, care must be taken with the interpretation of features observed in the outer region of the projected distribution.}
 
 \hypertarget{sec:params}{%
 \subsection{Trimming and tuning}\label{sec:params}}
@@ -491,12 +490,12 @@ then iterates over the following steps:
     obtain \(r'_y\).
   \item
     Use the transformed radial coordinate \(r'_y\) to re-compute the
-    mapping onto Euclidean coordinates \((y_1, y_2)\).
+    mapping onto Euclidean coordinates \((y'_1, y'_2)\).
   \end{itemize}
 \item
-  To fit the final projection onto the plotting canvas ranging between
-  \([-1,1]\), we rescale each mapped observation \(y\) using a scaling
-  parameter \(s\).
+  To fit the projected and transformed data \(\mathbf{Y}'\) onto the
+  plotting canvas ranging between \([-1,1]\), we rescale each mapped
+  observation \(y\) using a scaling parameter \(s\).
 \end{enumerate}
 
 The display can be added when calling the \texttt{animate} function in
@@ -769,6 +768,8 @@ when visualizing clusters, the sage display enables an assessment of
 cluster shapes, and accurately captures relative position and
 orientation. The burning sage transformation is global and does not
 magnify local structure like t-SNE does.
+
+\textcolor{red}{Note here that adjusting the resolution using the burning sage transformation will lead to an overall decrease in densitiy near the center. When studying the separation between groups it is important to keep in mind that the effect is the same within and between clusters. Thus, if points within a cluster remain grouped while separation between clusters becomes more apparant, this can be interpreted as a true finding. Conversely, in the case of a visual artifact we expect a general reduction of density that does not lead to better separation between the clusters.}
 
 An alternative is the slice tour \citep{sliceTour} which allows
 distributions of points around the center of the data to be explored

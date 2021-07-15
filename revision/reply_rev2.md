@@ -39,20 +39,20 @@ Indeed the transformation is inducing artifacts that alter the shape of the dist
 
 **c** p.2 L.23: Is the tour discussion relevant in Section 1? The proposed approach seems to only require a single low-dimensional visualization. If this discussion is kept as motivation, it would seem useful to briefly define “the tour” in the paragraph starting “Paradoxically” rather than the next paragraph.
 
-*Response*: XXX 
+*Response*: We agree that the tour is not relevant to the initial discussion and have moved the reference to the final paragraph on page 2 where it is briefly defined.
 
 **d** p.2 L.25: The sentence which starts “The effect is described by Diaconis and Freedman” is a bit unwieldy. Please rephrase.
 
-*Response*: XXX 
+*Response*: We have rephrased the sentence to make it easier to follow the argument.
 
 **e** p.2 L.33: The formatting of references to the two papers by Marron and Ahn is strange: why is 2010 in parentheses, but not 2007? Please fix.
 
-*Response*: We have fixed this issue (as well as a second occurence of the same problem).
+*Response*: We have fixed this issue (as well as a second occurrence of the same problem).
 
 **f** p.3 L.33: The reference to Chang (2018) isn’t ideal. There’s a large literature on overplotting and fixes that would be better to cite. A quick search identifies papers by Dang et al. [2], by Cottam et al. [1], and by Matejka et al. [3], but I’m sure there’s more. (I’m not an expert in this field - so please check these and see if there are more appropriate references.)
 If the authors insist on keeping the reference to Chang (2018), please at least give a more specific reference rather than citing the whole book - Section 5.5 seems the most relevant.
 
-*Response*: XXX need to check
+*Response*: XXX get input from Di here?
 
 **g** p.5 L.20: The citation to “Laa et al. (2020)” is ambiguous. I think this is normally resolved by using a BibTeX style that would list the two citations as “(2020a)” and “(2020b).”
 
@@ -60,7 +60,7 @@ If the authors insist on keeping the reference to Chang (2018), please at least 
 
 **h** Equation 3: is it necessary to define the inverse of a function here? I would assume that’s common knowledge to all readers of this paper.
 
-*Response*: We agree that this is probably common knowledge amongst the readers, but have included the definition for clarity of the explanation.
+*Response*: We agree that this is probably common knowledge among the readers, but have included the definition to avoid ambiguity.
 XXX say more here? I wouldn't mind removing either, but remember that it did lead to confusion before (when not explaining exactly what was meant here...)
 
 **i** Figure 5: the caption here is confusing, as the visualized circles are clearly not equidistant. (The circles shown here are the result of the transformation applied to equidistant circles.) Please make this clearer.
@@ -69,7 +69,7 @@ XXX say more here? I wouldn't mind removing either, but remember that it did lea
 
 **j** p.10 L.56 (List item 4). The term “projection” here may be overloaded since we are no longer dealing with an orthogonal projection. Please reword.
 
-*Response*: XXX
+*Response*: We have rephrased this to refer to projected and transformed data.
 
 **k** Equations (4) and (6): these can be inline and do not need to be display mode.
 
@@ -77,7 +77,7 @@ XXX say more here? I wouldn't mind removing either, but remember that it did lea
 
 **l** References: the formatting of journal names is inconsistent. For some citations, e.g., Marron et al. (2007), the full journal name is spelled out while for others, e.g., Cook et al. (2018), it is (aggressively) abbreviated.
 
-*Response*: XXX this is problem in the bib entries, need to fix by hand...
+*Response*: XXX this is problem in the bib entries, need to fix by hand. Do we want to go with full journal names everywhere?
 
 **m** Section 2.4 & 2.5: the authors highlight the importance of having all data on a standardized scale, but then apply their method to principal components of the raw data. Given that PCs are of decreasing scale by construction, does this standardization make sense?
 
@@ -90,7 +90,7 @@ XXX what more should we say here?
 BuRniNG SaGE: Baseline Radial Non-Linear Geometric Scaling for Graphical Exploration
 This could probably be work-shopped some more. . .
 
-*Response*:
+*Response*: XXX any good suggestions here?
 
 **2** An alternate way to think about the proposed transformation is not from a high-dimensional
 Euclidean space to a lower-dimensional one, but from a high-dimensional Euclidean space
@@ -98,9 +98,9 @@ to a lower-dimensional hyperbolic space, which is then plotted on a two-dimensio
 help to justify why we want to “spread out” points near the center of our view and the intuition of packing a larger space into a bounded canvas fits nicely with hyperbolic structures. This intuition (packing an very large (unbounded) Rd into a finite plot screen) feels more natural to me than preserving volumes.
 This view might be useful for a more general tour type framework, to avoid over-privileging the origin. You could also use a non-isotropic metric to avoid having to rescale each feature.
 
-*Response*: XXX I think this is interesting but don't yet know what to do with it...
+*Response*: XXX I think this is interesting but don't yet know what to do with it at the moment...
 
-**3** As the authors note, one way to motivate the proposed transformation is via manipulating a high-dimensional uniform spherical distribution (cf., Equation (1)). For more general data distributions, I wonder if it would be worth using the empirical radial CDF as the baiss of the transformation to ensure more-or-less uniform scaling (if the principal goal is to avoid overplotting).
+**3** As the authors note, one way to motivate the proposed transformation is via manipulating a high-dimensional uniform spherical distribution (cf., Equation (1)). For more general data distributions, I wonder if it would be worth using the empirical radial CDF as the basis of the transformation to ensure more-or-less uniform scaling (if the principal goal is to avoid overplotting).
 
 *Response*: We agree that this is an interesting generalization and now mention it in the discussion.
 XXX add to discussion
