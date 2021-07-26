@@ -405,16 +405,16 @@ the behavior and shift the focus away from the center, in general this
 is not recommended.
 
 \hypertarget{sec:prep}{%
-\subsection{Data preprocessing}\label{sec:prep}}
+\subsection{Data pre-processing}\label{sec:prep}}
 
-Before applying the transformation, it can be important to preprocess
+Before applying the transformation, it can be important to pre-process
 the data, as is generally required with methods for the visualisation of
 high-dimensional data. In particular, when working with projections that
 combine multiple variables it is important to ensure a common scale
 across the dimensions. This is especially important with the sage
 display, where the overall scale (set by the maximum radius \(R\))
 determines the effect of the transformation. Scaling is commonly also
-combined with centering as a preprocessing step. This is less important
+combined with centering as a pre-processing step. This is less important
 in our implementation because we always center the projected data before
 applying our transformation (i.e.~the projected mean defines the origin
 of our polar coordinate system in the plane). Centering and scaling
