@@ -140,11 +140,13 @@ This affects many aspects of data analysis: minimizing the error during
 model fitting relies on effective optimization techniques,
 non-parametric modeling requires finding nearest neighbors which may be
 far away and sampling from high-dimensional distributions is likely to
-have points far from the population mean. \citet{Donoho00} considers the
-curse of dimensionality as a blessing, because the sparsity can be
-leveraged for computational efficiency. This is used in regularization
-methods, like lasso, to penalize model complexity. The penalty term
-results in shrinking (some of) the parameter estimates towards zero.
+have points far from the population mean. Although not directly relevant
+for the topic of this paper, it is interesting to note that
+\citet{Donoho00} considers the curse of dimensionality as a blessing,
+because the sparsity can be leveraged for computational efficiency. This
+is used in regularization methods, like lasso, to penalize model
+complexity. The penalty term results in shrinking (some of) the
+parameter estimates towards zero.
 
 Paradoxically, the curse of dimensionality inverts for dimension
 reduction, resulting in an excessive amount of observations near the
@@ -192,12 +194,13 @@ in the middle plot.)
 \end{figure}
 
 Common solutions to overplotting include transparency and binned or
-density displays \citep{chang}. These are designed to tackle large
-sample size, rather than dimension reduction problems. A low-dimensional
-projection represented as a scatterplot, binned plot, or contour plot,
-will still suffer from data piling and reduced resolution near the
-center of the projection. These approaches are still useful for large
-sample sizes, and could be applied after the transformation.
+density displays \citep{carr87}, for a practical and accessible
+discussion see Section 5.5 of \citet{chang}. These are designed to
+tackle large sample size, rather than dimension reduction problems. A
+low-dimensional projection represented as a scatterplot, binned plot, or
+contour plot, will still suffer from data piling and reduced resolution
+near the center of the projection. These approaches are still useful for
+large sample sizes, and could be applied after the transformation.
 
 The underlying idea of the (radial) transformation, to reverse the
 curse, is to correct for the distortion in geometry that occurs when
@@ -242,7 +245,7 @@ tractable than assuming a hypercube (box).
 
 Figure \ref{fig:sketch} illustrates the comparison to be made, using
 something we can easily picture, a 3D sphere. Projecting the data from
-within a 3D sphere to 2D (grey disk) will result in mass being condensed
+within a 3D sphere to 2D (gray disk) will result in mass being condensed
 into the disk. Imagine comparing the volume of a cylinder at different
 locations in the disk. A centered cylinder has more volume. This is
 exaggerated as \(p\) increases: the centered cylinder has much more
@@ -408,7 +411,7 @@ is not recommended.
 \subsection{Data pre-processing}\label{sec:prep}}
 
 Before applying the transformation, it can be important to pre-process
-the data, as is generally required with methods for the visualisation of
+the data, as is generally required with methods for the visualization of
 high-dimensional data. In particular, when working with projections that
 combine multiple variables it is important to ensure a common scale
 across the dimensions. This is especially important with the sage
@@ -421,7 +424,7 @@ of our polar coordinate system in the plane). Centering and scaling
 together would be achieved by standardizing each variable in the data to
 be centered at 0 and have a variance equal to 1.
 
-We may also wish to apply non-linear transformations before visualising
+We may also wish to apply non-linear transformations before visualizing
 the data or combining variables in a projection. One example would be to
 use a log transformation in the case of a variable that has a skewed
 distribution. These types of transformations will generally change the
@@ -609,7 +612,7 @@ projections. The sage tour makes these comparisons a little easier.
 
 We next use the new display to look at different distributions of images
 from the Google QuickDraw collection \citep{quickdraw-paper}. These are
-\(28\times28=784\) pixel grey scale data that are available publicly. In
+\(28\times28=784\) pixel gray scale data that are available publicly. In
 this example, we sample 1000 images from three types of sketches
 (banana, cactus, crab) and see if we can separate the classes in the
 high-dimensional parameter space.
@@ -771,6 +774,8 @@ magnify local structure like t-SNE does.
 
 \textcolor{red}{Note here that adjusting the resolution using the burning sage transformation will lead to an overall decrease in densitiy near the center. When studying the separation between groups it is important to keep in mind that the effect is the same within and between clusters. Thus, if points within a cluster remain grouped while separation between clusters becomes more apparant, this can be interpreted as a true finding. Conversely, in the case of a visual artifact we expect a general reduction of density that does not lead to better separation between the clusters.}
 
+\textcolor{red}{We have motivated the transformation from geometric arguments: equal volume of the high-dimensional hypersphere should be mapped onto equal area in the two-dimensional projection plane. We could also think about this is in terms of the distribution function: a uniform distribution in high-dimensions should still look uniform in the projected view. Our approach is defining the transformation assuming that points are uniformly distributed in the hypersphere. This could be generalized to work with the empirical radial cumulative distribution function instead.}
+
 An alternative is the slice tour \citep{sliceTour} which allows
 distributions of points around the center of the data to be explored
 using sections instead of projections. Instead of adjusting for effects
@@ -781,7 +786,7 @@ the distribution. The slice tour is useful when there are large numbers
 of observations or if there is concave structure in the data. Note that
 only few methods are currently available for looking at sections of the
 data in a systematic fashion, and further work is needed to fully
-explore the potential of this type of visualisation. In smaller datasets
+explore the potential of this type of visualization. In smaller datasets
 we may also use interactive approaches such as linked brushing to
 explore for local structures or conditional features.
 
@@ -808,7 +813,10 @@ views.
 
 The authors gratefully acknowledge the support of the Australian
 Research Council. The paper was written in \texttt{rmarkdown}
-\citep{rmarkdown} using \texttt{knitr} \citep{knitr}.
+\citep{rmarkdown} using \texttt{knitr} \citep{knitr}. While the paper
+title was originally derived from a pun, we thank the reviewer who
+suggested that it could also be considered an acronym: BuRniNG SaGE:
+Baseline Radial Non-Linear Geometric Scaling for Graphical Exploration.
 
 \hypertarget{supplementary-material}{%
 \section*{Supplementary material}\label{supplementary-material}}
