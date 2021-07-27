@@ -83,16 +83,17 @@
 visualization of high-dimensional data}
 
 
-\author{\name{Ursula Laa$^{a, b}$, Dianne Cook$^{b}$, Stuart Lee$^{b,
-c}$}
+\author{\name{Ursula Laa$^{a, b, c}$, Dianne Cook$^{b}$, Stuart Lee$^{b,
+d}$}
 \affil{$^{a}$School of Physics and Astronomy, Monash
 University; $^{b}$Department of Econometrics and Business Statistics,
-Monash University; $^{c}$Molecular Medicine Division, Walter and Eliza
-Hall Institute, Parkville, Australia}
+Monash University; $^{c}$Institute of Statistics, University of Natural
+Resources and Life Sciences; $^{d}$Molecular Medicine Division, Walter
+and Eliza Hall Institute, Parkville, Australia}
 }
 
 \thanks{CONTACT Ursula
-Laa. Email: \href{mailto:ursula.laa@monash.edu}{\nolinkurl{ursula.laa@monash.edu}}, Dianne
+Laa. Email: \href{mailto:ursula.laa@boku.ac.at}{\nolinkurl{ursula.laa@boku.ac.at}}, Dianne
 Cook. Email: \href{mailto:dicook@monash.edu}{\nolinkurl{dicook@monash.edu}}, Stuart
 Lee. Email: \href{mailto:stuart.lee1@monash.edu}{\nolinkurl{stuart.lee1@monash.edu}}}
 
@@ -152,16 +153,17 @@ Paradoxically, the curse of dimensionality inverts for dimension
 reduction, resulting in an excessive amount of observations near the
 center of the distribution. This affects visualizations made on
 low-dimensional projections. The effect is described by
-\citet{diaconis1984},
-\textcolor{red}{showing that most linear projections onto low-dimensional subspaces are approximately Gaussian, and that observations concentrate near the center as the dimensionality of the full space increases.}
-This has motivated the development of indexes for projection pursuit
-which search for departure from normality. It is also related to what is
-called ``data piling'' in high-dimension low-sample size data
-\citep{10.2307/27639976, 10.1093/biomet/asp084}: all observations can
-collapse into a single point. These issues also persist with non-linear
-dimension reduction techniques, and are often referred to as the
-``crowding problem'', which methods like t-Distributed Stochastic
-Neighbor Embedding (t-SNE) \citep{tsne} aim to alleviate.
+\citet{diaconis1984}, showing that most linear projections onto
+low-dimensional subspaces are approximately Gaussian, and that
+observations concentrate near the center as the dimensionality of the
+full space increases. This has motivated the development of indexes for
+projection pursuit which search for departure from normality. It is also
+related to what is called ``data piling'' in high-dimension low-sample
+size data \citep{10.2307/27639976, 10.1093/biomet/asp084}: all
+observations can collapse into a single point. These issues also persist
+with non-linear dimension reduction techniques, and are often referred
+to as the ``crowding problem'', which methods like t-Distributed
+Stochastic Neighbor Embedding (t-SNE) \citep{tsne} aim to alleviate.
 
 Here we are providing a solution to fix a long-standing problem in the
 tour \citep{As85, BCAH05}, where high-dimensional data is viewed by a
@@ -312,13 +314,14 @@ a transformation of the projected radius that can be defined for any
 \(y = (y_1, y_2)\). We work with polar coordinates and represent the
 data points as \(y = (r_y, \theta_y)\). The angular component
 \(\theta_y\) is uniform for this distribution, by the rotation
-invariance of the sphere, and thus does not need to be transformed. The
-radial component \(r_y\) is transformed in two steps.
+invariance of the sphere, and thus does not need to be transformed.
 
-\textcolor{red}{We transform $r_y$ in two steps. First, we replace it with $v_{2} (r_y; p, R)$ to redistribute the volume uniformly by the radius. The second step is then to }
-transform \(v_{2} (r_y; p, R)\) using the inverse of
-\(v_{2} (r_y; 2, R)\), to go from a uniform distribution in radius to a
-uniform distribution in area of the disk. This inverse is defined via
+The radial component \(r_y\) is transformed in two steps. First, we
+replace it with \(v_{2} (r_y; p, R)\) to redistribute the volume
+uniformly by the radius. The second step is then to transform
+\(v_{2} (r_y; p, R)\) using the inverse of \(v_{2} (r_y; 2, R)\), to go
+from a uniform distribution in radius to a uniform distribution in area
+of the disk. This inverse is defined via
 \(v_2^{-1}(v_2(r_y; 2, R); 2, R) = v_2(v_2^{-1}(r_y; 2, R); 2, R) = r_y\)
 and thus \(v_2^{-1}(r_y; 2, R) = R \sqrt{r_y}\).
 
@@ -355,7 +358,19 @@ been transformed according to Eq. \ref{eq:resc}.
 \caption{Concentric circles that are equidistant before the application of the radial transformation, for $p=2, 3, 10, 100$, illustrating the effect of the transformation with increasing number of dimensions. The circles remain equidistant for $p=2$ where no transformation is performed, and get pushed out towards the edge as $p$ increases.}\label{fig:circles}
 \end{figure}
 
-\textcolor{red}{At this point a few characteristics of the transformation should be noted. First, as already mentioned, it is approximately linear near the center, and thus will not affect shapes in that part of the graph. In addition, since only the radial component is transformed, angles between the points will not be altered. (This can also be shown explicitly, from mathematical reformulation of the angles between two points after the transformation.) Note however that shapes will be affected further away from the center (in particular towards the maximum range $R$). For example, a linear relation might appear curved because of the non-linear nature of the transformation in that region of the projected space. Thus, while the interpretation is straightforward for points projected in the central region, care must be taken with the interpretation of features observed in the outer region of the projected distribution.}
+At this point a few characteristics of the transformation should be
+noted. First, as already mentioned, it is approximately linear near the
+center, and thus will not affect shapes in that part of the graph. In
+addition, since only the radial component is transformed, angles between
+the points will not be altered. (This can also be shown explicitly, from
+mathematical reformulation of the angles between two points after the
+transformation.) Note however that shapes will be affected further away
+from the center (in particular towards the maximum range \(R\)). For
+example, a linear relation might appear curved because of the non-linear
+nature of the transformation in that region of the projected space.
+Thus, while the interpretation is straightforward for points projected
+in the central region, care must be taken with the interpretation of
+features observed in the outer region of the projected distribution.
 
 \hypertarget{sec:params}{%
 \subsection{Trimming and tuning}\label{sec:params}}
@@ -772,9 +787,24 @@ cluster shapes, and accurately captures relative position and
 orientation. The burning sage transformation is global and does not
 magnify local structure like t-SNE does.
 
-\textcolor{red}{Note here that adjusting the resolution using the burning sage transformation will lead to an overall decrease in densitiy near the center. When studying the separation between groups it is important to keep in mind that the effect is the same within and between clusters. Thus, if points within a cluster remain grouped while separation between clusters becomes more apparant, this can be interpreted as a true finding. Conversely, in the case of a visual artifact we expect a general reduction of density that does not lead to better separation between the clusters.}
+Note here that adjusting the resolution using the burning sage
+transformation will lead to an overall decrease in density near the
+center. When studying the separation between groups it is important to
+keep in mind that the effect is the same within and between clusters.
+Thus, if points within a cluster remain grouped while separation between
+clusters becomes more apparent, this can be interpreted as a true
+finding. Conversely, in the case of a visual artifact we expect a
+general reduction of density that does not lead to better separation
+between the clusters.
 
-\textcolor{red}{We have motivated the transformation from geometric arguments: equal volume of the high-dimensional hypersphere should be mapped onto equal area in the two-dimensional projection plane. We could also think about this is in terms of the distribution function: a uniform distribution in high-dimensions should still look uniform in the projected view. Our approach is defining the transformation assuming that points are uniformly distributed in the hypersphere. This could be generalized to work with the empirical radial cumulative distribution function instead.}
+We have motivated the transformation from geometric arguments: equal
+volume of the high-dimensional hypersphere should be mapped onto equal
+area in the two-dimensional projection plane. We could also think about
+this is in terms of the distribution function: a uniform distribution in
+high-dimensions should still look uniform in the projected view. Our
+approach is defining the transformation assuming that points are
+uniformly distributed in the hypersphere. This could be generalized to
+work with the empirical radial cumulative distribution function instead.
 
 An alternative is the slice tour \citep{sliceTour} which allows
 distributions of points around the center of the data to be explored

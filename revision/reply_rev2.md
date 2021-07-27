@@ -7,7 +7,7 @@ We thank the additional reviewer for their valuable feedback. We have improved t
 **A** The role of the uniform distribution in Section 2 is confusing. In Section 2.1, Equation (1) is described as a CDF, and Section 2.2 refers to an assumed rotation invariance (p.6 L.33). These points aren’t relevant for the geometric argument being made, but they seem to (unnecessarily) refer back to the motivation in Section 1.
 As far as I can tell, the proposed method is entirely non-parametric and the presentation would be clearer if it reflected that.
 
-**Response**: We agree that the focus is on the geometric argument and have removed the reference to Eq. (1) as a CDF in 2.1 and rephrased the corresponding paragraph in 2.2. On the other hand, the rotation invariance is important to the derivation: we work with hyperspheres to ensure rotation invariance and adjust volume effects based on this underlying geometry. Note that we now mention the relation with the CDF in the discussion, where we also point out the alternative option of using the empirical radial CDF as suggested by the reveiwer.
+**Response**: We agree that the focus is on the geometric argument and have removed the reference to Eq. (1) as a CDF in 2.1 and rephrased the corresponding paragraph in 2.2. On the other hand, the rotation invariance is important to the derivation: we work with hyperspheres to ensure rotation invariance and adjust volume effects based on this underlying geometry. Note that we now mention the relation with the CDF in the discussion, where we also point out the alternative option of using the empirical radial CDF as suggested by the reviewer.
 
 **B** I’m confused by the interface of the tourr:burning sage function, particularly the relationship between the R and half range arguments. If R is the range, does it make sense to have half range as a separate parameter? Even if R isn’t the range, shouldn’t half range be a function of the data and not a user argument?
 The related discussion of this in the paper (end of Section 2) is confusing: L3 states that each point is scaled with a scaling parameter s, L26 says R = s, and then L26 says “the scaling factor 0.9.” I don’t see how all these can be simultaneously true.
@@ -89,7 +89,7 @@ If the authors insist on keeping the reference to Chang (2018), please at least 
 BuRniNG SaGE: Baseline Radial Non-Linear Geometric Scaling for Graphical Exploration
 This could probably be work-shopped some more. . .
 
-**Response**: We really appreciate the acronym provided by the reviewer (and did not manage to improve it further)! It now appears in the Acknowledgements where we thank the reviewer for the suggestion.
+**Response**: We really appreciate the acronym provided by the reviewer (and did not manage to improve it further)! It now appears in the Acknowledgments where we thank the reviewer for the suggestion.
 
 **2** An alternate way to think about the proposed transformation is not from a high-dimensional
 Euclidean space to a lower-dimensional one, but from a high-dimensional Euclidean space
